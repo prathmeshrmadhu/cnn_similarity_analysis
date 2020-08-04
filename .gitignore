@@ -1,0 +1,6 @@
+# ignore all logs
+*.log
+
+## ignore the file with .pyc extension
+*.pyc
+__pycache__
