@@ -74,6 +74,25 @@ def create_configuration_file(exp_path, config, args):
 
     return exp_data
 
+def load_experiment_parameters(exp_path):
+    """
+    Loading the experiment parameters given the path to the experiment directory
+    Args:
+    -----
+    exp_path: string
+        path to the experiment directory
+    Returns:
+    --------
+    exp_data: dictionary
+        dictionary containing the current experiment parameters
+    """
+
+    exp_data_path = os.path.join(exp_path, "experiment_parameters.json")
+    with open(exp_data_path) as file:
+        exp_data = json.load(file)
+
+    return exp_data
+
 def timestamp():
     """
     Obtaining the current timestamp in an human-readable way
@@ -107,3 +126,18 @@ def create_directory(path, name=None):
         os.makedirs(path)
 
     return
+
+
+def for_all_methods(decorator):
+    """
+    Decorator that applies a decorator to all methods inside a class
+    """
+    def decorate(cls):
+        for attr in cls.__dict__: # there's propably a better way to do this
+            if callable(getattr(cls, attr)):
+                setattr(cls, attr, decorator(getattr(cls, attr)))
+        return cls
+    return decorate
+
+
+#

@@ -8,6 +8,8 @@ resources/
 experiments/
 databases/
 src/notebooks/imgs/
+src/chrisarch
+visualizations/
 
 ## ignore the file with .pyc extension
 *.pyc

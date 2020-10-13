@@ -8,25 +8,27 @@ EnhancePseEstimation/src
 
 CONFIG = {
 
-"paths": {
+# "paths": {
+#         "data_path": "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cv_notebooks/data/classification_all",
+#         "database_path": "D:\work\codes\cnn_similarity_analysis\databases",
+#         "experiments_path":
+#             "D:\work\codes\cnn_similarity_analysis\experiments",
+#         "knn_path": "D:\work\codes\cnn_similarity_analysis\knn",
+#         "pretrained_path": "D:\work\codes\cnn_similarity_analysis\resources",
+#         "submission": "submission_dict.json"
+#     },
+
+    "paths": {
         "data_path": "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cv_notebooks/data/classification_all",
-        "database_path": "D:\work\codes\cnn_similarity_analysis\databases",
+        "database_path": "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/databases",
+        "visualization_path":
+            "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/visualizations",
         "experiments_path":
-            "D:\work\codes\cnn_similarity_analysis\experiments",
-        "knn_path": "D:\work\codes\cnn_similarity_analysis\knn",
-        "pretrained_path": "D:\work\codes\cnn_similarity_analysis\resources",
+            "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/experiments",
+        "knn_path": "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/knn",
+        "pretrained_path": "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/resources",
         "submission": "submission_dict.json"
     },
-
-    # "paths": {
-    #     "data_path": "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cv_notebooks/data/classification_all",
-    #     "database_path": "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/databases",
-    #     "experiments_path":
-    #         "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/experiments",
-    #     "knn_path": "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/knn",
-    #     "pretrained_path": "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/resources",
-    #     "submission": "submission_dict.json"
-    # },
     "num_workers": 0,
     "random_seed": 42
 }
@@ -54,6 +56,9 @@ DEFAULT_ARGS = {
         "gamma2": 0
     },
     "evaluation": {
+    },
+    "retrieval":{
+        "num_images": 5
     }
 }
 

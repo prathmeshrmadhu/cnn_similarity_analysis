@@ -8,8 +8,9 @@ cnn_similarity_analysis/src/lib
 
 import torch
 import torchvision
+import pdb
 
-def load_model(exp_data, checkpoint=None):
+def load_model(exp_data, pretrained, checkpoint=None):
     """
     Args:
     -----
@@ -20,17 +21,16 @@ def load_model(exp_data, checkpoint=None):
     model: nn.Module
         Lightweight CNN model
     """
-
     model_name = exp_data["model"]["model_name"]
 
     if(model_name == "resnet18"):
-        model = torchvision.models.resnet18(pretrained=True)
+        model = torchvision.models.resnet18(pretrained=pretrained)
 
     elif(model_name == "resnet34"):
-        model = torchvision.models.resnet34(pretrained=True)
+        model = torchvision.models.resnet34(pretrained=pretrained)
 
     elif(model_name == "resnet50"):
-        model = torchvision.models.resnet50(pretrained=True)
+        model = torchvision.models.resnet50(pretrained=pretrained)
 
     else:
         raise NotImplementedError("So far only ['resnet18', 'resnet34', 'resnet50']" +\

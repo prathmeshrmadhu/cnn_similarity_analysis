@@ -1,11 +1,13 @@
 """
 Extracting the cnn features from the arch data
 to compare the similarity between them and visualization
+filepath: cnn_similarity_analysis/src
 
 @author: Prathmesh R. Madhu
 """
 
 import os
+import pdb
 import pickle
 from tqdm import tqdm
 import argparse
@@ -16,11 +18,12 @@ from torch.nn import DataParallel
 import torch.nn.functional as F
 import torchvision.transforms as transforms
 
-from CONFIG import CONFIG
+from CONFIG import CONFIG, DEFAULT_ARGS
 from lib.logger import Logger, log_function, print_
-from lib.model_setup import load_checkpoint, load_model, setup_detector
+from lib.model_setup import load_model
 from lib.utils import create_directory, for_all_methods, load_experiment_parameters
 from lib.arguments import process_experiment_directory_argument, process_checkpoint
+from data.dataloader import get_classification_dataset
 
 
 @log_function
@@ -61,10 +64,6 @@ class ArchDataExtractor:
         self.params = params if params is not None else {}
         self.exp_data = load_experiment_parameters(exp_path)
 
-        # model and processing parameters
-        self.num_classes = len(self.class_ids)
-
-
         # defining and creating directories to save the results
         plots_path = os.path.join(self.exp_path, "plots")
         create_directory(plots_path)
@@ -79,54 +78,96 @@ class ArchDataExtractor:
         Loading the ArchData dataset and fitting a data loader
         """
 
-        train_loader, _  = get_classification_dataset(exp_data=self.exp_data, train=True,
-                                                 validation=False, shuffle_train=False,
-                                                 shuffle_valid=False, valid_size=0,
-                                                 class_ids=self.class_ids)
+        train_loader, num_classes = get_classification_dataset(exp_data=self.exp_data, train=True,
+                                                      shuffle_train=False, get_dataset=False)
         self.train_loader = train_loader
+        self.num_classes = num_classes
 
         return
 
 
     def load_models(self):
         """
-        Loading pretrained models for person detection as well as keypoint detection
+        Loading pretrained models for feature extraction
         """
 
         # setting up the device
         torch.backends.cudnn.fastest = True
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-        # seting up person detector model
-        det_model_name = self.exp_data["model"]["detector_name"]
-        det_model_type = self.exp_data["model"]["detector_type"]
-        det_model = setup_detector(model_name=det_model_name,
-                                   model_type=det_model_type,
-                                   pretrained=True,
-                                   num_classes=self.num_classes)
-        det_model.eval()
-        det_model = DataParallel(det_model).to(self.device)
-        # loading pretrained person detector checkpoint if specified
-        if(self.person_det_checkpoint is not None):
-            print_(f"Loading checkpoint {self.person_det_checkpoint}")
-            checkpoint_path = os.path.join(self.exp_path, "models", "detector",
-                                          self.person_det_checkpoint)
-            det_model = load_checkpoint(checkpoint_path,
-                                        model=det_model,
-                                        only_model=True)
-        self.det_model = det_model
-
-        # setting up pretrained keypoint detector
-        pose_model = load_model(self.exp_data, checkpoint=self.keypoint_det_checkpoint)
-        self.pose_model = DataParallel(pose_model)
-        if(self.keypoint_det_checkpoint is not None):
-            print_(f"Loading checkpoint {self.keypoint_det_checkpoint}")
-            checkpoint_path = os.path.join(self.exp_path, "models",
-                                          self.keypoint_det_checkpoint)
-            self.pose_model = load_checkpoint(checkpoint_path,
-                                              model=self.pose_model,
-                                              only_model=True)
-        self.pose_model = self.pose_model.to(self.device)
-        self.pose_model.eval()
+        # seting up cnn model
+        cnn_model = load_model(self.exp_data, pretrained=True)
+        self.cnn_model = cnn_model
+        self.cnn_model = self.cnn_model.to(self.device)
+        self.cnn_model.eval()
 
         return
+
+    def create_embedding(self):
+        """
+        Creates embedding using encoder from dataloader.
+        encoder: A convolutional Encoder. E.g. torch_model ConvEncoder
+        full_loader: PyTorch dataloader, containing (images, images) over entire dataset.
+        embedding_dim: Tuple (c, h, w) Dimension of embedding = output of encoder dimesntions.
+        device: "cuda" or "cpu"
+        Returns: Embedding of size (num_images_in_loader + 1, c, h, w)
+        """
+        # Set encoder to eval mode.
+        self.cnn_model.eval()
+
+        # Again we do not compute loss here so. No gradients.
+        with torch.no_grad():
+            for batch_idx, (train_img, target_img, img_path) in enumerate(tqdm(self.train_loader)):
+                # We can compute this on GPU. be faster
+                train_img = train_img.to(self.device)
+
+                # Get encoder outputs and move outputs to cpu
+                enc_output = self.cnn_model(train_img).cpu()
+                # Keep adding these outputs to embeddings.
+                self.retrieval_db[img_path] = enc_output
+
+        return
+
+    @torch.no_grad()
+    def extract_retrieval_dataset(self):
+        """
+        Iterating over all images from the ArchData dataset, extracting the cnn features.
+        The results are saved in a json file to then use for retrieval database purposes
+        """
+
+        self.retrieval_db = {}
+        self.embedding_dim = 2048
+
+        self.create_embedding()
+
+        return
+
+    def save_retrieval_db(self):
+        """
+        Saving the retrieval db into a pickle file
+        """
+
+        database_root = CONFIG["paths"]["database_path"]
+        create_directory(database_root)
+        database_path = os.path.join(database_root,
+                                     f"database_{DEFAULT_ARGS['dataset']['dataset_name']}.pkl")
+        with open(database_path, "wb") as file:
+            pickle.dump(self.retrieval_db, file)
+
+        return
+
+if __name__ == "__main__":
+    os.system("clear")
+    exp_path = process_arguments()
+
+    # initializing logger and logging the beggining of the experiment
+    logger = Logger(exp_path)
+    message = f"Starting to extract ArchData retrieval dataset."
+    logger.log_info(message=message, message_type="new_exp")
+
+    extractor = ArchDataExtractor(exp_path=exp_path)
+    extractor.load_dataset()
+    extractor.load_models()
+    extractor.extract_retrieval_dataset()
+    extractor.save_retrieval_db()
+    logger.log_info(message=f"Dataset extracted successfully.")

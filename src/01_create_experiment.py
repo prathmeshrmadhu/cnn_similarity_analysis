@@ -1,6 +1,7 @@
 """
 Initializing a new experiment
 filepath: cnn_similarity_analysis/src
+
 @author: Prathmesh R Madhu
 
 Usage:
@@ -25,7 +26,6 @@ def create_experiment():
     # creating relevant directories for the experiment
     exp_name = f"experiment_{utils.timestamp()}"
     exp_path = os.path.abspath(os.path.join(CONFIG["paths"]["experiments_path"], args.exp_directory, exp_name))
-    pdb.set_trace()
     utils.create_directory(exp_path)
     utils.create_directory(exp_path, "models")
     utils.create_directory(exp_path, "plots")
