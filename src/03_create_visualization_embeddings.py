@@ -17,6 +17,9 @@ from sklearn.manifold import TSNE
 
 from lib.utils import create_directory
 from data.utils import load_data
+from lib.utils import load_experiment_parameters, create_directory
+from lib.arguments import process_experiment_directory_argument
+
 
 from CONFIG import CONFIG
 
@@ -107,9 +110,15 @@ def vizualise_tsne(tsne_embedding):
 if __name__ == '__main__':
     os.system("clear")
     args = process_arguments()
-    pdb.set_trace()
+
+    ## Loading the require experiment parameters
+    exp_directory = process_experiment_directory_argument(args.exp_directory)
+    exp_data = load_experiment_parameters(exp_directory)
+    model_name = exp_data['model']['model_name']
+    layer = exp_data['model']['layer']
+
     ## Loads the embeddings
-    embeddings, image_filenames = load_data(args.dataset_name)
+    embeddings, image_filenames = load_data(args.dataset_name, layer)
 
     ## Cluster the embeddings
     cluster_images(args, embeddings, pca_num_components=50, tsne_num_components=2)

@@ -120,9 +120,10 @@ class ArchDataExtractor:
             for batch_idx, (train_img, target_img, img_path) in enumerate(tqdm(self.train_loader)):
                 # We can compute this on GPU. be faster
                 train_img = train_img.to(self.device)
-
                 # Get encoder outputs and move outputs to cpu
                 enc_output = self.cnn_model(train_img).cpu()
+                if len(enc_output.shape) == 4:
+                    enc_output = enc_output.squeeze(-1).squeeze(-1)
                 # Keep adding these outputs to embeddings.
                 self.retrieval_db[img_path] = enc_output
 
@@ -150,7 +151,8 @@ class ArchDataExtractor:
         database_root = CONFIG["paths"]["database_path"]
         create_directory(database_root)
         database_path = os.path.join(database_root,
-                                     f"database_{DEFAULT_ARGS['dataset']['dataset_name']}.pkl")
+                                     f"database_{self.exp_data['dataset']['dataset_name']}_"
+                                     f"{self.exp_data['model']['model_name']}_{self.exp_data['model']['layer']}.pkl")
         with open(database_path, "wb") as file:
             pickle.dump(self.retrieval_db, file)
 

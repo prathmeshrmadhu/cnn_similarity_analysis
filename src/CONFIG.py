@@ -41,6 +41,7 @@ DEFAULT_ARGS = {
     },
     "model": {
         "model_name": "resnet18",
+        "layer": "2"
     },
     "training": {
         "num_epochs": 100,

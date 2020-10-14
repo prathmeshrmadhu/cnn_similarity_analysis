@@ -39,7 +39,6 @@ def process_arguments():
     # parser.add_argument("--model_path", required=True, help="path to pre-trained model")
     arguments = parser.parse_args()
     exp_directory = process_experiment_directory_argument(arguments.exp_directory)
-    # exp_data = load_experiment_parameters(exp_dir_path)
 
     return arguments, exp_directory
 
@@ -104,6 +103,10 @@ def plot_similar_images(args, exp_directory, indices_list, image_filenames):
     Args:
     indices_list : List of List of indexes. E.g. [[1, 2, 3]]
     """
+
+    exp_data = load_experiment_parameters(exp_directory)
+    model_name = exp_data['model']['model_name']
+
     query_filename = args.test_image_path.split('/')[-1].split('.')[0]
     indices = indices_list[0]
     for index in indices:
@@ -113,12 +116,9 @@ def plot_similar_images(args, exp_directory, indices_list, image_filenames):
         else:
             img_path = image_filenames[index]
             img_name = img_path.split('/')[-1].split('.')[0]
-            # print(img_path)
-            img = Image.open(img_path).convert("RGB")
-            # plt.imshow(img)
-            # plt.show()
 
-            save_dir_path = os.path.join(exp_directory, f"retrieval_{query_filename}")
+            img = Image.open(img_path).convert("RGB")
+            save_dir_path = os.path.join(exp_directory, "results", model_name, f"retrieval_{query_filename}")
             create_directory(save_dir_path)
             img.save(os.path.join(save_dir_path, f"recommended_{img_name}_{index}.jpg"))
 
@@ -176,12 +176,18 @@ if __name__ == "__main__":
     torch.backends.cudnn.fastest = True
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+    ## Loading the require experiment parameters
+    exp_directory = process_experiment_directory_argument(arguments.exp_directory)
+    exp_data = load_experiment_parameters(exp_directory)
+    model_name = exp_data['model']['model_name']
+    layer = exp_data['model']['layer']
+
     # Loads the model
     encoder = load_cnn_model(exp_directory, device)
     encoder.to(device)
 
     # Loads the embedding
-    embeddings, image_filenames = load_data(arguments.dataset_name)
+    embeddings, image_filenames = load_data(arguments.dataset_name, model_name, layer)
 
     num_images = DEFAULT_ARGS["retrieval"]["num_images"]
     indices_list = compute_similar_images(
