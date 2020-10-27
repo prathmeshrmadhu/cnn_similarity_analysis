@@ -10,7 +10,8 @@ databases/
 src/notebooks/imgs/
 src/chrisarch
 visualizations/
-
+notebooks/*.png
+notebooks/*.json
 ## ignore the file with .pyc extension
 *.pyc
 __pycache__
