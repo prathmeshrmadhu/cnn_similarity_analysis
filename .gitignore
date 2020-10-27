@@ -12,6 +12,7 @@ src/chrisarch
 visualizations/
 notebooks/*.png
 notebooks/*.json
+notebooks/umap-explorer/node_modules/
 ## ignore the file with .pyc extension
 *.pyc
 __pycache__
