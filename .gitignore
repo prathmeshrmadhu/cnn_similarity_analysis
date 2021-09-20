@@ -13,6 +13,9 @@ visualizations/
 notebooks/*.png
 notebooks/*.json
 notebooks/umap-explorer/
+notebooks/umap-explorer-cha/
+notebooks/umap-explorer-cha/*
+
 ## ignore the file with .pyc extension
 *.pyc
 __pycache__
