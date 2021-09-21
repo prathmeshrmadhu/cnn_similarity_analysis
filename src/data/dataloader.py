@@ -7,6 +7,7 @@ cnn_similarity_analysis/src/data
 
 import os
 import pdb
+import random
 import torch
 import torchvision
 import torchvision.transforms as transforms
@@ -157,3 +158,5 @@ def get_classification_dataset(exp_data, train=True, shuffle_train=False, get_da
         return train_loader, train_set, train_set.num_classes
     else:
         return train_loader, train_set.num_classes
+
+#

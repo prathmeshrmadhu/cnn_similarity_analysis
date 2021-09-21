@@ -16,6 +16,25 @@ from matplotlib import pyplot as plt
 from CONFIG import CONFIG, DEFAULT_ARGS
 
 
+def imshow(img, text=None, should_save=False, pth=None):
+    np_img = img.numpy()
+    plt.axis("off")
+    if text:
+        plt.text(75, 8, text, style='italic',fontweight='bold',
+            bbox={'facecolor':'white', 'alpha':0.8, 'pad':10})
+    plt.imshow(np.transpose(np_img, (1, 2, 0)))
+    if should_save:
+        plt.savefig(pth)
+    plt.show()
+
+
+def gem_npy(x, p=3, eps=1e-6):
+    x = np.clip(x, a_min=eps, a_max=np.inf)
+    x = x ** p
+    x = x.mean(axis=0)
+    return x ** (1. / p)
+
+
 def create_configuration_file(exp_path, config, args):
     """
     Creating a configuration file for an experiment, including the hyperparemters
@@ -74,6 +93,7 @@ def create_configuration_file(exp_path, config, args):
 
     return exp_data
 
+
 def load_experiment_parameters(exp_path):
     """
     Loading the experiment parameters given the path to the experiment directory
@@ -93,6 +113,7 @@ def load_experiment_parameters(exp_path):
 
     return exp_data
 
+
 def timestamp():
     """
     Obtaining the current timestamp in an human-readable way
@@ -107,6 +128,7 @@ def timestamp():
                                             .replace(':', '-')
 
     return timestamp
+
 
 def create_directory(path, name=None):
     """

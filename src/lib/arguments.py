@@ -25,18 +25,20 @@ def process_create_experiment_arguments():
 
     # dataset parameters
     parser.add_argument('--dataset_name', help="Dataset to take the images from " +\
-                        "[chrisarch]", required=True, default="chrisarch")
-    parser.add_argument('--image_size', help="Size used to standarize the images (size x size)")
+                        "[arthist, classarch, chrisarch]", required=True, default="arthist")
+    parser.add_argument('--image_size', help="Size used to standardize the images (size x size)")
     parser.add_argument('--shuffle_train', help="If True, train set is iterated randomly",
                         action='store_true')
     parser.add_argument('--shuffle_test', help="If True, valid/test set is iterated randomly",
                         action='store_true')
-    parser.add_argument('--flip', help="If True, images might be flippled during training." +\
+
+    # transform and augmentations parameters
+    parser.add_argument('--flip', help="If True, images might be flipped during training." +\
                         " We recommend setting it to true", action='store_true')
     parser.add_argument('--rot_factor', help="Maximum rotation angle for the affine " +\
-                        " transofrm. A suiable value is 45", type=float)
+                        " transform. A suitable value is 45", type=float)
     parser.add_argument('--scale_factor', help="Maximum scaling factor for the affine " +\
-                        "transofrm. A suitalbe value is 0.35", type=float)
+                        "transform. A suitable value is 0.35", type=float)
 
     # model parameters
     parser.add_argument('--model_name', help="Model to use for feature extraction " +\
@@ -60,8 +62,8 @@ def process_create_experiment_arguments():
     args = parser.parse_args()
 
     # enforcing correct values
-    assert args.dataset_name in ["chrisarch", "styled_coco"],\
-        "Wrong dataset given. Only ['chrisarch', 'styled_coco'] are allowed"
+    assert args.dataset_name in ["arthist", "classarch", "chrisarch"],\
+        "Wrong dataset given. Only ['arthist', 'classarch', 'chrisarch'] are allowed"
     assert args.model_name in ["resnet18", "resnet34", "resnet50"],\
         "Wrong model name given. Only ['resnet18', 'resnet34', 'resnet50'] are allowed"
     return args
@@ -77,7 +79,7 @@ def get_directory_argument(get_checkpoint=False, get_dataset=False):
     parser.add_argument("-d", "--exp_directory", help="Path to the experiment directory")
     parser.add_argument("--checkpoint", help="Name of the checkpoint file to load")
     parser.add_argument("--dataset_name", help="Name of the dataset to use for training" \
-                        " or evaluation purposes ['chrisarch', 'styled_coco']",
+                        " or evaluation purposes ['arthist', 'classarch', 'chrisarch']",
                         default="")
     args = parser.parse_args()
 
@@ -90,7 +92,7 @@ def get_directory_argument(get_checkpoint=False, get_dataset=False):
     if(get_checkpoint is True and checkpoint is not None):
         checkpoint = process_checkpoint(checkpoint, exp_directory)
     if(get_dataset is True):
-        assert dataset_name in ["", "chrisarch", "styled_coco"]
+        assert dataset_name in ["", "arthist", "classarch", "chrisarch"]
         dataset_name = None if dataset_name == "" else dataset_name
 
     if(get_dataset==True and get_checkpoint==True):
