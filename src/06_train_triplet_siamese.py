@@ -52,6 +52,7 @@ def train(args, augmentations_list):
     epoch_losses = list()
     train_losses = list()
     epoch_size = int(len(train_list) / args.epoch)
+    best_val_loss = np.inf
     for epoch in range(args.num_epochs):
         training_subset = train_list[epoch * epoch_size: (epoch + 1) * epoch_size - 1]
         image_pairs = TripletTrainList(training_subset, train_images,
@@ -73,11 +74,10 @@ def train(args, augmentations_list):
             optimizer.step()
             loss_history.append(loss)
 
-            if (i + 1) * args.batch_size % 10 == 0:
-                mean_loss = torch.mean(torch.Tensor(loss_history))
-                loss_history.clear()
+        mean_loss = torch.mean(torch.Tensor(loss_history))
+        loss_history.clear()
 
-                print("Epoch:{},  Current training loss {}\n".format(epoch, mean_loss))
+        print("Epoch:{},  Current training loss {}\n".format(epoch, mean_loss))
         train_losses.append(mean_loss)  # Q: Does this only store the mean loss of the last 10 iterations?
 
         # Validating over batches
@@ -95,10 +95,18 @@ def train(args, augmentations_list):
         print("Epoch:{},  Current validation loss {}\n".format(epoch, val_loss))
         epoch_losses.append(val_loss.cpu())
 
-        trained_model_name = 'Siamese_Epoch_{}.pth'.format(epoch)
-        model_full_path = args.net + trained_model_name
-        torch.save(net.state_dict(), model_full_path)
-        print('model saved as: {}\n'.format(trained_model_name))
+        # This re-write the model if validation loss is lower
+        if val_loss.cpu() <= best_val_loss:
+            best_val_loss = val_loss.cpu()
+            best_model_name = 'Siamese_best.pth'
+            model_full_path = args.net + best_model_name
+            torch.save(net.state_dict(), model_full_path)
+            print('best model updated\n')
+
+        # trained_model_name = 'Siamese_Epoch_{}.pth'.format(epoch)
+        # model_full_path = args.net + trained_model_name
+        # torch.save(net.state_dict(), model_full_path)
+        # print('model saved as: {}\n'.format(trained_model_name))
 
     epoch_losses = np.asarray(epoch_losses)
     train_losses = np.asarray(train_losses)
@@ -114,14 +122,14 @@ def train(args, augmentations_list):
     plt.savefig(args.images + 'loss.png')
     plt.show()
 
-    # Saving model with best validation loss
-    best_epoch = np.argmin(epoch_losses)
-    best_model_name = 'Siamese_Epoch_{}.pth'.format(best_epoch)
-    pth_files = glob.glob(args.net + '*.pth')
-    pth_files.remove(args.net + best_model_name)
-    for file in pth_files:
-        os.remove(file)
-    print("best model is: {} with validation loss {}\n".format(best_model_name, epoch_losses[best_epoch]))
+    # # Saving model with best validation loss
+    # best_epoch = np.argmin(epoch_losses)
+    # best_model_name = 'Siamese_Epoch_{}.pth'.format(best_epoch)
+    # pth_files = glob.glob(args.net + '*.pth')
+    # pth_files.remove(args.net + best_model_name)
+    # for file in pth_files:
+    #     os.remove(file)
+    # print("best model is: {} with validation loss {}\n".format(best_model_name, epoch_losses[best_epoch]))
 
 
 if __name__ == "__main__":
