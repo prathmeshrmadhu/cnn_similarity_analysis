@@ -24,7 +24,7 @@ CONFIG = {
         "visualization_path":
             "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/visualizations",
         "experiments_path":
-            "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/experiments",
+            "/cluster/yinan/cnn_similarity_analysis/experiments",
         "knn_path": "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/knn",
         "pretrained_path": "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/resources",
         "submission": "submission_dict.json"
