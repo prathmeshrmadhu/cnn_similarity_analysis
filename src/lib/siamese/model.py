@@ -10,7 +10,7 @@ import timm
 
 
 def load_siamese_checkpoint(name, checkpoint_file):
-    if name == "zoo_resnet50":
+    if name == "resnet50":
         print('--------------------------------------------------------------')
         print('used model: zoo_resnet50')
         print('--------------------------------------------------------------')
@@ -18,7 +18,23 @@ def load_siamese_checkpoint(name, checkpoint_file):
         model.eval()
         return model
 
-    if name == "multigrain_resnet50":
+    elif name == "resnet18":
+        print('--------------------------------------------------------------')
+        print('used model: zoo_resnet18')
+        print('--------------------------------------------------------------')
+        model = torchvision.models.resnet18(pretrained=True)
+        model.eval()
+        return model
+
+    elif name == "resnet34":
+        print('--------------------------------------------------------------')
+        print('used model: zoo_resnet34')
+        print('--------------------------------------------------------------')
+        model = torchvision.models.resnet34(pretrained=True)
+        model.eval()
+        return model
+
+    elif name == "multigrain_resnet50":
         print('--------------------------------------------------------------')
         print('used model: multigrain_resnet50')
         print('--------------------------------------------------------------')
@@ -34,7 +50,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         model.eval()
         return model
 
-    if name == "vgg":
+    elif name == "vgg":
         print('--------------------------------------------------------------')
         print('used model: VGG16')
         print('--------------------------------------------------------------')
@@ -42,7 +58,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         model.eval()
         return model
 
-    if name == "resnet152":
+    elif name == "resnet152":
         print('--------------------------------------------------------------')
         print('used model: ResNet152')
         print('--------------------------------------------------------------')
@@ -50,7 +66,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         model.eval()
         return model
 
-    if name == "efficientnetb1":
+    elif name == "efficientnetb1":
         print('--------------------------------------------------------------')
         print('used model: EfficientNet-b1')
         print('--------------------------------------------------------------')
@@ -58,7 +74,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         model.eval()
         return model
 
-    if name == "efficientnetb7":
+    elif name == "efficientnetb7":
         print('--------------------------------------------------------------')
         print('used model: EfficientNet-b7')
         print('--------------------------------------------------------------')
@@ -66,7 +82,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         model.eval()
         return model
 
-    if name == "transformer":
+    elif name == "transformer":
         print('--------------------------------------------------------------')
         print('used model: ViT')
         print('--------------------------------------------------------------')
@@ -74,7 +90,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         model.eval()
         return model
 
-    if name == "visformer":
+    elif name == "visformer":
         print('--------------------------------------------------------------')
         print('used model: vit_large_patch16_384')
         print('--------------------------------------------------------------')
@@ -83,7 +99,14 @@ def load_siamese_checkpoint(name, checkpoint_file):
         return model
     
     # TODO: Train from scratch if the network weights are not available
-    assert False
+    else:
+        print('--------------------------------------------------------------')
+        print('used model: resnet50')
+        print('--------------------------------------------------------------')
+        model = torchvision.models.resnet50(pretrained=False)
+        model.eval()
+        return model
+
 
 
 class ContrastiveSiameseNetwork(nn.Module):

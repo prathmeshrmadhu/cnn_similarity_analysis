@@ -1,5 +1,8 @@
 import argparse
+from lib.io import read_config
 
+EXP_PATH = "/cluster/yinan/cnn_similarity_analysis/experiments/test_exp/experiment_2021-09-23_10-41-21/experiment_parameters.json"
+EXP_PARAMS = read_config(EXP_PATH)
 
 def siamese_args():
     parser = argparse.ArgumentParser()
@@ -13,21 +16,21 @@ def siamese_args():
     aa('--start', default=False, action="store_true", help="run Siamese training without lodading checkpoint")
     aa('--track2', default=False, action="store_true", help="run feature extraction for track2")
     aa('--device', default="cuda:0", help='pytroch device')
-    aa('--batch_size', default=32, type=int, help="max batch size to use for extraction")
-    aa('--num_workers', default=8, type=int, help="nb of dataloader workers")
+    aa('--batch_size', default=EXP_PARAMS['training']['batch_size'], type=int, help="max batch size to use for extraction")
+    aa('--num_workers', default=EXP_PARAMS['num_workers'], type=int, help="nb of dataloader workers")
 
     group = parser.add_argument_group('model options')
-    aa('--model', default='multigrain_resnet50', help="model to use")
+    aa('--model', default=EXP_PARAMS['model']['model_name'], help="model to use")
     aa('--checkpoint', default='Siamese_Epoch_4.pth', help='best saved model name')
     aa('--GeM_p', default=7.0, type=float, help="Power used for GeM pooling")
     aa('--scales', default="1.0", help="scale levels")
-    aa('--imsize', default=512, type=int, help="max image size at extraction time")
-    aa('--lr', default=0.0001, type=float, help="learning rate")
-    aa('--weight_decay', default=0.0005, type=float, help="max image size at extraction time")
+    aa('--imsize', default=EXP_PARAMS['dataset']['image_size'], type=int, help="max image size at extraction time")
+    aa('--lr', default=EXP_PARAMS['training']['learning_rate'], type=float, help="learning rate")
+    aa('--weight_decay', default=EXP_PARAMS['training']['momentum'], type=float, help="max image size at extraction time")
     aa('--margin', default=10.0, type=float, help="margin in loss function")
 
     group = parser.add_argument_group('dataset options')
-    aa('--query_list', required=True, help="file with  query image filenames")
+    aa('--query_list', required=True, help="file with query image filenames")
     aa('--gt_list', required=True, help="file with ground truth image filenames")
     aa('--train_list', required=True, help="file with training image filenames")
     aa('--db_list', required=True, help="file with training image filenames")
