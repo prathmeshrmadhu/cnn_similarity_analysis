@@ -35,7 +35,7 @@ def siamese_args():
     aa('--train_list', required=True, help="file with training image filenames")
     aa('--db_list', required=True, help="file with training image filenames")
     aa('--len', default=1000, type=int, help="nb of training vectors for the SiameseNetwork")
-    aa('--num_epochs', default=100, type=int, help="nb of training epochs for the SiameseNetwork")
+    aa('--num_epochs', default=EXP_PARAMS['training']['num_epochs'], type=int, help="nb of training epochs for the SiameseNetwork")
     aa('--i0', default=0, type=int, help="first image to process")
     aa('--i1', default=-1, type=int, help="last image to process + 1")
 
