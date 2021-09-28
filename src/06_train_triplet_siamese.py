@@ -3,6 +3,8 @@ import glob
 import torch
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
+import sys
+sys.path.append('/cluster/yinan/cnn_similarity_analysis/src')
 
 from src.lib.loss import TripletLoss
 from src.lib.siamese.args import  siamese_args
