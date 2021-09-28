@@ -3,11 +3,18 @@
 
 from typing import Iterable, List, Optional
 
+import json
 import numpy as np
 import h5py
 
 from .metrics import GroundTruthMatch, PredictedMatch
 
+
+def read_config(cfg_path):
+    with open(cfg_path, 'r') as f:
+        params = json.load(f)
+
+    return params
 
 def read_ground_truth(filename: str) -> List[GroundTruthMatch]:
     """

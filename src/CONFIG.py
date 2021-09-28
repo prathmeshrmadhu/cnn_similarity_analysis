@@ -4,6 +4,25 @@ Configuration macros and default argument values
 EnhancePseEstimation/src
 @author: Angel Villar-Corrales
 """
+import os
+
+osuname = os.uname().nodename
+print("osuname", osuname)
+if osuname == "prathmeshmadhu":
+    data_path = "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cv_notebooks/data/classification_all"
+    database_path = "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/databases"
+    visualization_path = "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/visualizations"
+    experiments_path = "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/experiments"
+    knn_path = "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/knn"
+    pretrained_path = "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/resources"
+elif osuname == "lme242":
+    data_path = "/cluster/shared_dataset/omniart"
+    database_path = "/cluster/yinan/cnn_similarity_analysis/databases"
+    visualization_path = "/cluster/yinan/cnn_similarity_analysis/visualizations"
+    experiments_path = "/cluster/yinan/cnn_similarity_analysis/experiments"
+    knn_path = "/cluster/yinan/cnn_similarity_analysis/knn"
+    pretrained_path = "/cluster/yinan/cnn_similarity_analysis/resources"
+
 
 
 CONFIG = {
@@ -19,14 +38,12 @@ CONFIG = {
 #     },
 
     "paths": {
-        "data_path": "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cv_notebooks/data/classification_all",
-        "database_path": "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/databases",
-        "visualization_path":
-            "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/visualizations",
-        "experiments_path":
-            "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/experiments",
-        "knn_path": "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/knn",
-        "pretrained_path": "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/resources",
+        "data_path": data_path,
+        "database_path": database_path,
+        "visualization_path": visualization_path,
+        "experiments_path": experiments_path,
+        "knn_path": knn_path,
+        "pretrained_path": pretrained_path,
         "submission": "submission_dict.json"
     },
     "num_workers": 0,

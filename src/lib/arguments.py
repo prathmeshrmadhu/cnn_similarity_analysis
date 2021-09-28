@@ -43,6 +43,7 @@ def process_create_experiment_arguments():
     # model parameters
     parser.add_argument('--model_name', help="Model to use for feature extraction " +\
                         "[resnet18, resnet34, resnet50]", default="resnet18")
+    parser.add_argument('--layer', help="Model layers ", default="2")
 
     # training parameters
     parser.add_argument('--num_epochs', help="Number of epochs to train for", type=int)
