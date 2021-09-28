@@ -54,7 +54,7 @@ def train(args, augmentations_list):
     loss_history = list()
     epoch_losses = list()
     train_losses = list()
-    epoch_size = int(len(train_list) / args.epoch)
+    epoch_size = int(len(train_list) / args.num_epochs)
     best_val_loss = np.inf
     for epoch in range(args.num_epochs):
         training_subset = train_list[epoch * epoch_size: (epoch + 1) * epoch_size - 1]
