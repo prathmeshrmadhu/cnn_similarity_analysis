@@ -27,7 +27,7 @@ def train(args, augmentations_list):
 
     # creating the dataset
     _, _, train_images = generate_extraction_dataset(query_list, database_list, train_list)
-    train_list = train_images
+    train_list = train_images[args.i0:args.i1]
 
     # defining the transforms
     transforms = get_transforms(args)
