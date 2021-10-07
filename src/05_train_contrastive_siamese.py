@@ -15,7 +15,7 @@ from src.lib.siamese.model import ContrastiveSiameseNetwork
 
 
 def train(args, augmentations_list):
-    if args.device == "gpu":
+    if args.device == "cuda:0":
         print("hardware_image_description:", torch.cuda.get_device_name(0))
 
     # Getting the query, train, ref.. lists
