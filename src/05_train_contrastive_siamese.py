@@ -115,7 +115,7 @@ def train(args, augmentations_list):
 
     epoch_losses = np.asarray(epoch_losses)
     train_losses = np.asarray(train_losses)
-    epochs = np.asarray(range(args.epoch))
+    epochs = np.asarray(range(args.num_epochs))
 
     # Loss plot
     plt.title('Loss Visualization')

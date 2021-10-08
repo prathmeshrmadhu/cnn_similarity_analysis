@@ -4,7 +4,7 @@ import torchvision
 
 QUERY = '/cluster/shared_dataset/isc2021/query_images/'
 REFERENCE = '/cluster/shared_dataset/isc2021/reference_images/'
-TRAIN = '/cluster/shared_dataset/isc2021/training_images/training_images/'
+TRAIN = '/cluster/shared_dataset/WAG/download/types/genre/'
 
 
 def get_transforms(args):
