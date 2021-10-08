@@ -2,9 +2,11 @@
 This is a working repository for understanding the similarity in features space for SOTA CNNs
 
 
-### The Replica Project [[Link](https://link.springer.com/content/pdf/10.1007%2F978-3-319-46604-0_52.pdf)]
 
-#### Training Details
+### Literature review
+#### 1. The Replica Project [[Link](https://link.springer.com/content/pdf/10.1007%2F978-3-319-46604-0_52.pdf)]
+
+#### _Training Details_
 50 epochs to converge  
 SGD with momentum (learning rate: 10−5, momentum term: 0.9)   
 minimal batch size of 5   
