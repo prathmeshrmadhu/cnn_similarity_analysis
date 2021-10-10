@@ -4,7 +4,7 @@ import torchvision
 
 QUERY = '/cluster/shared_dataset/isc2021/query_images/'
 REFERENCE = '/cluster/shared_dataset/isc2021/reference_images/'
-TRAIN = '/cluster/shared_dataset/WAG/download/types/genre/'
+TRAIN = '/cluster/shared_dataset/Inria/train/'
 
 
 def get_transforms(args):
@@ -82,3 +82,9 @@ def generate_extraction_dataset(query_list, db_list, train_list):
     db_images = [REFERENCE + r + ".jpg" for r in db_list]
     train_images = [TRAIN + t + ".jpg" for t in train_list]
     return query_images, db_images, train_images
+
+def generate_train_dataset(query, p_list, n_list):
+    query_images = [TRAIN + q + ".jpg" for q in query]
+    p_images = [TRAIN + p + ".jpg" for p in p_list]
+    n_images = [TRAIN + n + ".jpg" for n in n_list]
+    return query_images, p_images, n_images

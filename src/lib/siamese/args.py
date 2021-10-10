@@ -1,7 +1,7 @@
 import argparse
 from lib.io import read_config
 
-EXP_PATH = "/cluster/yinan/cnn_similarity_analysis/experiments/test_exp/experiment_2021-09-23_10-41-21/experiment_parameters.json"
+EXP_PATH = "/cluster/yinan/cnn_similarity_analysis/experiments/test_exp/experiment_2021-10-10_12-16-55/experiment_parameters.json"
 EXP_PARAMS = read_config(EXP_PATH)
 
 def siamese_args():
@@ -26,7 +26,9 @@ def siamese_args():
     aa('--scales', default="1.0", help="scale levels")
     aa('--imsize', default=EXP_PARAMS['dataset']['image_size'], type=int, help="max image size at extraction time")
     aa('--lr', default=EXP_PARAMS['training']['learning_rate'], type=float, help="learning rate")
-    aa('--weight_decay', default=EXP_PARAMS['training']['momentum'], type=float, help="max image size at extraction time")
+    aa('--momentum', default=EXP_PARAMS['training']['momentum'], type=float,
+       help="momentum for sgd")
+    aa('--weight_decay', default=0.0, type=float, help="max image size at extraction time")
     aa('--margin', default=10.0, type=float, help="margin in loss function")
 
     group = parser.add_argument_group('dataset options')

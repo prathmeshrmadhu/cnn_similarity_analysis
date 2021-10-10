@@ -113,29 +113,29 @@ class ContrastiveSiameseNetwork(nn.Module):
     def __init__(self, model, checkpoint='vgg'):
         super(ContrastiveSiameseNetwork, self).__init__()
         self.head = load_siamese_checkpoint(model, checkpoint)
-        for p in self.parameters():
-            p.requires_grad = False
+        # for p in self.parameters():
+        #     p.requires_grad = False
         if model == "zoo_resnet50" or model == "multigrain_resnet50" or model == "resnet152":
             self.map = True
         else:
             self.map = False
-        self.flatten = nn.Flatten()
-        self.fc1 = nn.Sequential(
-            nn.Linear(2048, 1024),
-            # nn.Linear(2048 * 16 * 16, 1024),
-            nn.ReLU(inplace=True),
-            nn.Dropout2d(p=0.2),
-            nn.Linear(1024, 512),
-            nn.ReLU(inplace=True),
-            nn.Linear(512, 256)
-        )
-
-        self.fc2 = nn.Sequential(
-            nn.Linear(1000, 512),
-            nn.ReLU(inplace=True),
-
-            nn.Linear(512, 256)
-        )
+        # self.flatten = nn.Flatten()
+        # self.fc1 = nn.Sequential(
+        #     nn.Linear(2048, 1024),
+        #     # nn.Linear(2048 * 16 * 16, 1024),
+        #     nn.ReLU(inplace=True),
+        #     nn.Dropout2d(p=0.2),
+        #     nn.Linear(1024, 512),
+        #     nn.ReLU(inplace=True),
+        #     nn.Linear(512, 256)
+        # )
+        #
+        # self.fc2 = nn.Sequential(
+        #     nn.Linear(1000, 512),
+        #     nn.ReLU(inplace=True),
+        #
+        #     nn.Linear(512, 256)
+        # )
 
         self.score = nn.PairwiseDistance(p=2)
 
@@ -151,11 +151,11 @@ class ContrastiveSiameseNetwork(nn.Module):
             x = self.head.layer3(x)
             x = self.head.layer4(x)
             x = F.adaptive_avg_pool2d(x, (1, 1))
-            x = self.flatten(x)
-            output = self.fc1(x)
+            output = self.flatten(x)
+            # output = self.fc1(x)
         else:
-            x = self.head(x)
-            output = self.fc2(x)
+            output = self.head(x)
+            # output = self.fc2(x)
         return output
 
     def forward(self, input1, input2):
@@ -175,24 +175,24 @@ class TripletSiameseNetwork(nn.Module):
             self.map = True
         else:
             self.map = False
-        self.flatten = nn.Flatten()
-        self.fc1 = nn.Sequential(
-            nn.Linear(2048, 1024),
-            # nn.Linear(2048 * 16 * 16, 1024),
-            nn.ReLU(inplace=True),
-            nn.Dropout2d(p=0.2),
-            nn.Linear(1024, 512),
-            nn.ReLU(inplace=True),
-            nn.Linear(512, 256)
-        )
-
-        self.fc2 = nn.Sequential(
-            nn.Linear(1000, 512),
-            # nn.Dropout2d(p=0.5),
-            nn.ReLU(inplace=True),
-
-            nn.Linear(512, 256)
-        )
+        # self.flatten = nn.Flatten()
+        # self.fc1 = nn.Sequential(
+        #     nn.Linear(2048, 1024),
+        #     # nn.Linear(2048 * 16 * 16, 1024),
+        #     nn.ReLU(inplace=True),
+        #     nn.Dropout2d(p=0.2),
+        #     nn.Linear(1024, 512),
+        #     nn.ReLU(inplace=True),
+        #     nn.Linear(512, 256)
+        # )
+        #
+        # self.fc2 = nn.Sequential(
+        #     nn.Linear(1000, 512),
+        #     # nn.Dropout2d(p=0.5),
+        #     nn.ReLU(inplace=True),
+        #
+        #     nn.Linear(512, 256)
+        # )
 
         self.score = nn.PairwiseDistance(p=2)
 
@@ -208,11 +208,11 @@ class TripletSiameseNetwork(nn.Module):
             x = self.head.layer3(x)
             x = self.head.layer4(x)
             x = F.adaptive_avg_pool2d(x, (1, 1))
-            x = self.flatten(x)
-            output = self.fc1(x)
+            output = self.flatten(x)
+            # output = self.fc1(x)
         else:
-            x = self.head(x)
-            output = self.fc2(x)
+            output = self.head(x)
+            # output = self.fc2(x)
         return output
 
     def calculate_distance(self, input1, input2):
