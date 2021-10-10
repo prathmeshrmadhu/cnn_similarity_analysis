@@ -45,7 +45,7 @@ def train(args, augmentations_list):
     n_val = negative_images[101:-1]
     val_list = []
     for j in range(len(query_val)):
-        val_list.append((query_val[i], p_val[i], n_val[i]))
+        val_list.append((query_val[j], p_val[j], n_val[j]))
 
     val_pairs = TripletValList(val_list, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
     val_dataloader = DataLoader(dataset=val_pairs, shuffle=True, num_workers=args.num_workers,
