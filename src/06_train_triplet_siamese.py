@@ -18,7 +18,7 @@ def train(args, augmentations_list):
     if args.device == "gpu":
         print("hardware_image_description:", torch.cuda.get_device_name(0))
 
-    query_ind = list(range(1000, 1130))
+    query_ind = list(range(1000, 1300))
     query = [str(l) + '00' for l in query_ind]
     ref_positive = [str(l) + '01' for l in query_ind]
     ref_negative = []
@@ -29,9 +29,9 @@ def train(args, augmentations_list):
 
     # creating the dataset
     query_images, positive_images, negative_images = generate_train_dataset(query, ref_positive, ref_negative)
-    query_train = query_images[0:100]
-    p_train = positive_images[0:100]
-    n_train = negative_images[0:100]
+    query_train = query_images[0:250]
+    p_train = positive_images[0:250]
+    n_train = negative_images[0:250]
     train_list = []
     for i in range(len(query_train)):
         train_list.append((query_train[i], p_train[i], n_train[i]))
@@ -40,9 +40,9 @@ def train(args, augmentations_list):
     transforms = get_transforms(args)
 
     # Defining the fixed validation dataloader for modular evaluation
-    query_val = query_images[101:-1]
-    p_val = positive_images[101:-1]
-    n_val = negative_images[101:-1]
+    query_val = query_images[250:300]
+    p_val = positive_images[250:300]
+    n_val = negative_images[250:300]
     val_list = []
     for j in range(len(query_val)):
         val_list.append((query_val[j], p_val[j], n_val[j]))
