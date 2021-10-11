@@ -21,7 +21,7 @@ def siamese_args():
 
     group = parser.add_argument_group('model options')
     aa('--model', default=EXP_PARAMS['model']['model_name'], help="model to use")
-    aa('--checkpoint', default='Siamese_Epoch_4.pth', help='best saved model name')
+    aa('--checkpoint', default='Triplet_best.pth', help='best saved model name')
     aa('--GeM_p', default=7.0, type=float, help="Power used for GeM pooling")
     aa('--scales', default="1.0", help="scale levels")
     aa('--imsize', default=EXP_PARAMS['dataset']['image_size'], type=int, help="max image size at extraction time")

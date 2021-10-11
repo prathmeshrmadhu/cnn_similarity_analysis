@@ -5,6 +5,7 @@ import torchvision
 QUERY = '/cluster/shared_dataset/isc2021/query_images/'
 REFERENCE = '/cluster/shared_dataset/isc2021/reference_images/'
 TRAIN = '/cluster/shared_dataset/Inria/train/'
+TEST = '/cluster/shared_dataset/Inria/test/'
 
 
 def get_transforms(args):
@@ -78,10 +79,11 @@ def generate_validation_dataset(query_list, gt_list, train_list, len_data):
 
 
 def generate_extraction_dataset(query_list, db_list, train_list):
-    query_images = [QUERY + q + ".jpg" for q in query_list]
-    db_images = [REFERENCE + r + ".jpg" for r in db_list]
-    train_images = [TRAIN + t + ".jpg" for t in train_list]
+    query_images = [TEST + q + ".jpg" for q in query_list]
+    db_images = [TEST + r + ".jpg" for r in db_list]
+    train_images = [TEST + t + ".jpg" for t in train_list]
     return query_images, db_images, train_images
+
 
 def generate_train_dataset(query, p_list, n_list):
     query_images = [TRAIN + q + ".jpg" for q in query]

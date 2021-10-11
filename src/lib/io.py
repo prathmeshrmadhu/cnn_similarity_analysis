@@ -6,6 +6,7 @@ from typing import Iterable, List, Optional
 import json
 import numpy as np
 import h5py
+import pickle
 
 from .metrics import GroundTruthMatch, PredictedMatch
 
@@ -193,6 +194,16 @@ def write_hdf5_descriptors(vectors, image_names, fname):
     with h5py.File(fname, "w") as f:
         f.create_dataset("vectors", data=vectors)
         f.create_dataset("image_names", data=image_names)
+
+def write_pickle_descriptors(vectors, image_names, fname):
+    """
+    write image description vectors in pickle format.
+    """
+    vectors = np.ascontiguousarray(vectors, dtype='float32')
+    fw = open(fname, 'wb')
+    pickle.dump(image_names, fw)
+    pickle.dump(vectors, fw)
+    fw.close()
 
 
 def read_descriptors(filenames):
