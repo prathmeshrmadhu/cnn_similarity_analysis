@@ -15,7 +15,7 @@ from src.lib.siamese.args import siamese_args
 from src.lib.siamese.dataset import generate_extraction_dataset, generate_validation_dataset, get_transforms
 from src.lib.augmentations import *
 from src.data.siamese_dataloader import ImageList, ContrastiveValList
-from src.lib.siamese.model import ContrastiveSiameseNetwork, TripletSiameseNetwork
+from src.lib.siamese.model import TripletSiameseNetwork
 from lib.utils import imshow
 from lib.io import *
 
@@ -37,9 +37,10 @@ def generate_features(args, net, image_names, data_loader, query=True):
     # 02_create_archdata_retrieval by hdf5 descriptors.
     if query:
         write_pickle_descriptors(features, image_names, args.query_f)
+        print(f"writing descriptors to {args.query_f}")
     else:
         write_pickle_descriptors(features, image_names, args.db_f)
-    print(f"writing descriptors to {args.db_f}")
+        print(f"writing descriptors to {args.db_f}")
     print(f"image_description_time: {(t1 - t0) / len(image_names):.5f} s per image")
     return features
 
@@ -113,7 +114,7 @@ def extract_features(args, visualization=False):
     #     print('not matched mean distance: {:.4f}\n'.format(mean_distance_n))
     #     print('matched mean distance: {:.4f}\n'.format(mean_distance_p))
 
-    query_features = generate_features(args, net, query, query_loader)
+    query_features = generate_features(args, net, query, query_loader, query=True)
     database_features = generate_features(args, net, ref, db_loader)
 
     return query_features, database_features
