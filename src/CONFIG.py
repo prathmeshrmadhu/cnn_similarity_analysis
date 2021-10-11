@@ -15,7 +15,7 @@ if osuname == "prathmeshmadhu":
     experiments_path = "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/experiments"
     knn_path = "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/knn"
     pretrained_path = "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/resources"
-elif osuname == "lme242":
+else:
     data_path = "/cluster/shared_dataset/omniart"
     database_path = "/cluster/yinan/cnn_similarity_analysis/databases"
     visualization_path = "/cluster/yinan/cnn_similarity_analysis/visualizations"
