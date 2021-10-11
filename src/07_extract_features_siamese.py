@@ -115,7 +115,7 @@ def extract_features(args, visualization=False):
     #     print('matched mean distance: {:.4f}\n'.format(mean_distance_p))
 
     query_features = generate_features(args, net, query, query_loader, query=True)
-    database_features = generate_features(args, net, ref, db_loader)
+    database_features = generate_features(args, net, ref, db_loader, query=False)
 
     return query_features, database_features
 
