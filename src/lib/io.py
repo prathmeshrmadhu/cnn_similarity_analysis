@@ -210,7 +210,7 @@ def read_pickle_descriptors(fname):
     read image description vectors from pickle file.
     """
     fw = open(fname, 'rb')
-    image_names = pickle.load(fw)
+    image_names = np.asarray(pickle.load(fw))
     vectors = pickle.load(fw)
     fw.close()
     return image_names, vectors
