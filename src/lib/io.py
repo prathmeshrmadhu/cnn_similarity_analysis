@@ -205,6 +205,15 @@ def write_pickle_descriptors(vectors, image_names, fname):
     pickle.dump(vectors, fw)
     fw.close()
 
+def read_pickle_descriptors(fname):
+    """
+    read image description vectors from pickle file.
+    """
+    fw = open(fname, 'rb')
+    image_names = pickle.load(fw)
+    vectors = pickle.load(fw)
+    fw.close()
+    return image_names, vectors
 
 def read_descriptors(filenames):
     """ read descriptors from a set of HDF5 files """

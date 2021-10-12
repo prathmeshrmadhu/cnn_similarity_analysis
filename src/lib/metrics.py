@@ -217,3 +217,13 @@ def print_metrics(metrics: Metrics):
         print(f"Threshold at P90 : {metrics.threshold_at_p90:g}")
     print(f"Recall at rank 1:  {metrics.recall_at_rank1:.5f}")
     print(f"Recall at rank 10: {metrics.recall_at_rank10:.5f}")
+
+
+def generate_5_matched_names(q_vector, db_vectors, db_names):
+    diff = db_vectors - q_vector
+    l2_distance = np.linalg.norm(diff, axis=1)
+    matched_index = np.argsort(l2_distance)[:5]
+    matched_names = db_names[list(matched_index)]
+    return matched_names
+
+

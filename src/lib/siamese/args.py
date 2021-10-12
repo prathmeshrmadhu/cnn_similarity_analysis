@@ -46,6 +46,7 @@ def siamese_args():
     aa('--db_f', default="isc2021/data/db_siamese.hdf5", help="write query features to this file")
     aa('--train_f', default="isc2021/data/train_siamese.hdf5", help="write training features to this file")
     aa('--full_f', default="isc2021/data/full_siamese.hdf5", help="write full features to this file")
+    aa('--matched_f', default=None, help="save matched result to this folder")
     aa('--net', default="isc2021/checkpoints/Siamese/", help="save network parameters to this folder")
     aa('--images', default="isc2021/data/images/siamese/", help="save visualized test result to this folder")
 
