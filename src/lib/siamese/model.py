@@ -186,13 +186,13 @@ class TripletSiameseNetwork(nn.Module):
         #     nn.Linear(512, 256)
         # )
         #
-        # self.fc2 = nn.Sequential(
-        #     nn.Linear(1000, 512),
-        #     # nn.Dropout2d(p=0.5),
-        #     nn.ReLU(inplace=True),
-        #
-        #     nn.Linear(512, 256)
-        # )
+        self.fc2 = nn.Sequential(
+            nn.Linear(1000, 512),
+            # nn.Dropout2d(p=0.5),
+            nn.ReLU(inplace=True),
+
+            nn.Linear(512, 256)
+        )
 
         self.score = nn.PairwiseDistance(p=2)
 
@@ -212,7 +212,7 @@ class TripletSiameseNetwork(nn.Module):
             # output = self.fc1(x)
         else:
             output = self.head(x)
-            # output = self.fc2(x)
+            output = self.fc2(x)
         return output
 
     def calculate_distance(self, input1, input2):
