@@ -211,7 +211,7 @@ class TripletSiameseNetwork(nn.Module):
             output = self.flatten(x)
             # output = self.fc1(x)
         else:
-            output = self.head(x)
+            x = self.head(x)
             output = self.fc2(x)
         return output
 
