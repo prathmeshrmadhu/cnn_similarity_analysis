@@ -190,8 +190,9 @@ class TripletSiameseNetwork(nn.Module):
             nn.Linear(1000, 512),
             # nn.Dropout2d(p=0.5),
             nn.ReLU(inplace=True),
-
-            nn.Linear(512, 256)
+            nn.Linear(512, 256),
+            nn.ReLU(inplace=True),
+            nn.Linear(256, 128)
         )
 
         self.score = nn.PairwiseDistance(p=2)
