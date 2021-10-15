@@ -78,7 +78,7 @@ def train(args, augmentations_list):
         image_pairs = TripletValList(train_list, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
         train_dataloader = DataLoader(dataset=image_pairs, shuffle=True, num_workers=args.num_workers,
                                       batch_size=args.batch_size)
-
+        net.train()
         # Training over batches
         for i, batch in enumerate(train_dataloader, 0):
             query_img, rp_img, rn_img = batch
@@ -101,6 +101,7 @@ def train(args, augmentations_list):
 
         # Validating over batches
         val_loss = []
+        net.eval()
         with torch.no_grad():
             for j, batch in enumerate(val_dataloader, 0):
                 query_img, rp_img, rn_img = batch

@@ -75,6 +75,7 @@ def extract_features(args, visualization=False):
     net = TripletSiameseNetwork(args.model)
     state_dict = torch.load(args.net + args.checkpoint)
     net.load_state_dict(state_dict)
+    net.eval()
     net.to(args.device)
     print("checkpoint {} loaded\n".format(args.checkpoint))
     print("test model\n")
