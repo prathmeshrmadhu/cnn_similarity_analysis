@@ -175,17 +175,17 @@ class TripletSiameseNetwork(nn.Module):
             self.map = True
         else:
             self.map = False
-        # self.flatten = nn.Flatten()
-        # self.fc1 = nn.Sequential(
-        #     nn.Linear(2048, 1024),
-        #     # nn.Linear(2048 * 16 * 16, 1024),
-        #     nn.ReLU(inplace=True),
-        #     nn.Dropout2d(p=0.2),
-        #     nn.Linear(1024, 512),
-        #     nn.ReLU(inplace=True),
-        #     nn.Linear(512, 256)
-        # )
-        #
+        self.flatten = nn.Flatten()
+        self.fc1 = nn.Sequential(
+            nn.Linear(2048, 1024),
+            # nn.Linear(2048 * 16 * 16, 1024),
+            nn.ReLU(inplace=True),
+            nn.Dropout2d(p=0.2),
+            nn.Linear(1024, 512),
+            nn.ReLU(inplace=True),
+            nn.Linear(512, 256)
+        )
+
         self.fc2 = nn.Sequential(
             # nn.ReLU(inplace=True),
             nn.Linear(1000, 512),
@@ -210,8 +210,8 @@ class TripletSiameseNetwork(nn.Module):
             x = self.head.layer3(x)
             x = self.head.layer4(x)
             x = F.adaptive_avg_pool2d(x, (1, 1))
-            output = self.flatten(x)
-            # output = self.fc1(x)
+            x = self.flatten(x)
+            output = self.fc1(x)
         else:
             x = self.head(x)
             output = self.fc2(x)
