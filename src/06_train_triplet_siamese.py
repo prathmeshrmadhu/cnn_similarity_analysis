@@ -101,6 +101,8 @@ def train(args, augmentations_list):
 
         # Validating over batches
         val_loss = []
+        p_score_list = []
+        n_score_list = []
         net.eval()
         with torch.no_grad():
             for j, batch in enumerate(val_dataloader, 0):
@@ -111,6 +113,8 @@ def train(args, augmentations_list):
 
                 p_score, n_score = net(query_img, rp_img, rn_img)
                 val_loss.append(criterion(p_score, n_score, args.margin))
+                p_score_list.append(torch.mean(p_score))
+                n_score_list.append(torch.mean(n_score))
             val_loss = torch.mean(torch.Tensor(val_loss))
         print("Epoch:{},  Current validation loss {}\n".format(epoch, val_loss))
         epoch_losses.append(val_loss.cpu())
@@ -118,6 +122,8 @@ def train(args, augmentations_list):
         # This re-write the model if validation loss is lower
         if val_loss.cpu() <= best_val_loss:
             best_val_loss = val_loss.cpu()
+            avg_p_score = torch.mean(torch.Tensor(p_score_list)).cpu()
+            avg_n_score = torch.mean(torch.Tensor(n_score_list)).cup()
             best_model_name = 'Triplet_best.pth'
             model_full_path = args.net + best_model_name
             torch.save(net.state_dict(), model_full_path)
@@ -127,7 +133,9 @@ def train(args, augmentations_list):
         # model_full_path = args.net + trained_model_name
         # torch.save(net.state_dict(), model_full_path)
         # print('model saved as: {}\n'.format(trained_model_name))
-
+    print("Training finished")
+    print("Average Positive Score: {}\n".format(avg_p_score))
+    print("Average Negative Score: {}\n".format(avg_n_score))
     epoch_losses = np.asarray(epoch_losses)
     train_losses = np.asarray(train_losses)
     epochs = np.asarray(range(args.num_epochs))
