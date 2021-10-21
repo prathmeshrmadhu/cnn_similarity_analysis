@@ -123,7 +123,7 @@ def train(args, augmentations_list):
         if val_loss.cpu() <= best_val_loss:
             best_val_loss = val_loss.cpu()
             avg_p_score = torch.mean(torch.Tensor(p_score_list)).cpu()
-            avg_n_score = torch.mean(torch.Tensor(n_score_list)).cup()
+            avg_n_score = torch.mean(torch.Tensor(n_score_list)).cpu()
             best_model_name = 'Triplet_best.pth'
             model_full_path = args.net + best_model_name
             torch.save(net.state_dict(), model_full_path)
