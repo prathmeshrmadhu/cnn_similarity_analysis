@@ -227,3 +227,18 @@ def generate_5_matched_names(q_vector, db_vectors, db_names):
     return matched_names
 
 
+def confusion_matrix(q_vector, db_vectors, ind, threshold):
+    diff = db_vectors - q_vector
+    l2_distance = np.linalg.norm(diff, axis=1)
+    if l2_distance[ind] <= threshold:
+        tp = 1
+        fn = 0
+    else:
+        tp = 0
+        fn = 1
+    l2_distance_n = np.delete(l2_distance, ind)
+    tn = l2_distance_n[l2_distance_n > threshold].shape[0]
+    fp = l2_distance_n[l2_distance_n <= threshold].shape[0]
+    return tp, tn, fp, fn
+
+

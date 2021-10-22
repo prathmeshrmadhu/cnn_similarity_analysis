@@ -1,7 +1,7 @@
 import sys
 sys.path.append('/cluster/yinan/cnn_similarity_analysis/')
 from lib.io import *
-from lib.metrics import generate_5_matched_names
+from lib.metrics import generate_5_matched_names, confusion_matrix
 from src.lib.siamese.args import siamese_args
 
 
@@ -13,6 +13,7 @@ def evaluation(args):
     miss = 0
     hit_5 = 0
     miss_5 = 0
+    precision = []
 
     for i in range(len(q_names)):
         vec = q_vectors[i]
@@ -29,11 +30,14 @@ def evaluation(args):
             hit_5 += 1
         else:
             miss_5 += 1
-
+        tp, tn, fp, fn = confusion_matrix(vec, db_vectors, i, args.threshold)
+        precision.append(tp/(tp+fp))
+    mAP = np.mean(np.asarray(precision))
     accuracy = hit / (hit + miss)
     accuracy_5 = hit_5 / (hit_5 + miss_5)
     print('TOP_1 accuracy:{}'.format(accuracy))
     print('TOP_5 accuracy:{}'.format(accuracy_5))
+    print('mAP: {}'.format(mAP))
 
     fw = open(args.matched_f, 'wb')
     pickle.dump(matched_list, fw)

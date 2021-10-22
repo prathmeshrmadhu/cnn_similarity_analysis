@@ -30,6 +30,7 @@ def siamese_args():
        help="momentum for sgd")
     aa('--weight_decay', default=0.0, type=float, help="max image size at extraction time")
     aa('--margin', default=10.0, type=float, help="margin in loss function")
+    aa('--threshold', default=8.0, type=float, help="threshold for confusion_matrix")
 
     group = parser.add_argument_group('dataset options')
     aa('--query_list', default=None, help="file with query image filenames")
