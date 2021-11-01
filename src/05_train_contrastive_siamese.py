@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import sys
 sys.path.append('/cluster/yinan/cnn_similarity_analysis')
 
-from src.lib.loss import ContrastiveLoss, TripletLoss
+from src.lib.loss import ContrastiveLoss, TripletLoss, ContrastiveLossSimClr
 from src.lib.siamese.args import  siamese_args
 from src.lib.siamese.dataset import generate_extraction_dataset, get_transforms
 from src.lib.augmentations import *
@@ -46,7 +46,7 @@ def train(args, augmentations_list):
     net.to(args.device)
 
     # Defining the criteria for training
-    criterion = ContrastiveLoss()
+    criterion = ContrastiveLossSimClr(args.batch_size)
     criterion.to(args.device)
     optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, net.parameters()),
                                  lr=args.lr, weight_decay=args.weight_decay)
@@ -70,9 +70,9 @@ def train(args, augmentations_list):
             reference_img = reference_img.to(args.device)
             label = label.to(args.device)
 
-            output = net(query_img, reference_img)
+            output, emb_i, emb_j = net(query_img, reference_img)
             optimizer.zero_grad()
-            loss = criterion(output, label, args.margin)
+            loss = criterion(emb_i, emb_j)
             loss.backward()
             optimizer.step()
             loss_history.append(loss)
@@ -92,8 +92,8 @@ def train(args, augmentations_list):
                 reference_img = reference_img.to(args.device)
                 label = label.to(args.device)
 
-                output = net(query_img, reference_img)
-                val_loss.append(criterion(output, label, args.margin))
+                output, emb_i, emb_j = net(query_img, reference_img)
+                val_loss.append(criterion(emb_i, emb_j))
             val_loss = torch.mean(torch.Tensor(val_loss))
         print("Epoch:{},  Current validation loss {}\n".format(epoch, val_loss))
         epoch_losses.append(val_loss.cpu())
@@ -145,7 +145,7 @@ if __name__ == "__main__":
     augmentations_list = [
         VerticalFlip(probability=0.25),
         HorizontalFlip(probability=0.25),
-        AuglyRotate(1.0),
+        AuglyRotate(0.25),
     ]
 
     train(siamese_args, augmentations_list)

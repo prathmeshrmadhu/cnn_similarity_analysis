@@ -162,7 +162,7 @@ class ContrastiveSiameseNetwork(nn.Module):
         output1 = self.forward_once(input1)
         output2 = self.forward_once(input2)
         score = self.score(output1, output2)
-        return score
+        return score, output1, output2
 
 
 class TripletSiameseNetwork(nn.Module):
