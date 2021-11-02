@@ -17,6 +17,14 @@ def read_config(cfg_path):
 
     return params
 
+
+def read_names(path):
+    with open(path, 'r') as f:
+        params = json.load(f)
+    file_names = [i.split('.jpg')[0] + '.jpg' for i in params['_via_image_id_list']]
+    return file_names
+
+
 def read_ground_truth(filename: str) -> List[GroundTruthMatch]:
     """
     Read groundtruth csv file.
