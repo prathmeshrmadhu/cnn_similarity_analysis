@@ -33,6 +33,12 @@ def siamese_args():
     aa('--threshold', default=8.0, type=float, help="threshold for confusion_matrix")
 
     group = parser.add_argument_group('dataset options')
+    aa('--d1', default='/cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/D1/', help="folder for d1 subset")
+    aa('--d2', default='/cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/D2/', help="folder for d2 subset")
+    aa('--d3', default='/cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/D3/', help="folder for d3 subset")
+    aa('--p1', default='/cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/P1/', help="folder for p1 subset")
+    aa('--p2', default='/cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/P2/', help="folder for p2 subset")
+    aa('--p3', default='/cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/P3/', help="folder for p3 subset")
     aa('--query_list', default=None, help="file with query image filenames")
     aa('--gt_list', default=None, help="file with ground truth image filenames")
     aa('--train_list', default=None, help="file with training image filenames")
