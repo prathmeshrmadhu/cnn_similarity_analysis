@@ -40,7 +40,7 @@ def siamese_args():
     aa('--p2', default='/cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/P2/', help="folder for p2 subset")
     aa('--p3', default='/cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/P3/', help="folder for p3 subset")
     aa('--query_list', default=None, help="file with query image filenames")
-    aa('--gt_list', default=None, help="file with ground truth image filenames")
+    aa('--gt_list', default=None, help="file or folder with ground truth image filenames")
     aa('--train_list', default=None, help="file with training image filenames")
     aa('--db_list', default=None, help="file with training image filenames")
     aa('--len', default=1000, type=int, help="nb of training vectors for the SiameseNetwork")

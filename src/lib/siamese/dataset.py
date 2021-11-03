@@ -90,3 +90,14 @@ def generate_train_dataset(query, p_list, n_list):
     p_images = [TRAIN + p + ".jpg" for p in p_list]
     n_images = [TRAIN + n + ".jpg" for n in n_list]
     return query_images, p_images, n_images
+
+
+def add_file_list(query, ref_p, ref_n, gt, data1, data2):
+    for i in len(gt):
+        query.append(data1[gt[i][0]])
+        ref_p.append(data2[gt[i][1]])
+        b = data2.copy()
+        b.remove(data2[gt[i][1]])
+        ref_n.append(random.choice(b))
+
+    return query, ref_p, ref_n

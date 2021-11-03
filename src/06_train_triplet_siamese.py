@@ -1,14 +1,16 @@
 import os
 import glob
+import json
 import torch
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
+from lib.io import read_config
 import sys
 sys.path.append('/cluster/yinan/cnn_similarity_analysis/')
 
 from src.lib.loss import TripletLoss
 from src.lib.siamese.args import  siamese_args
-from src.lib.siamese.dataset import generate_train_dataset, get_transforms
+from src.lib.siamese.dataset import generate_train_dataset, get_transforms, add_file_list
 from src.lib.augmentations import *
 from src.data.siamese_dataloader import TripletTrainList, TripletValList
 from src.lib.siamese.model import TripletSiameseNetwork
@@ -18,20 +20,35 @@ def train(args, augmentations_list):
     if args.device == "gpu":
         print("hardware_image_description:", torch.cuda.get_device_name(0))
 
-    query_ind = list(range(1000, 1300))
-    query = [str(l) + '00' for l in query_ind]
-    ref_positive = [str(l) + '01' for l in query_ind]
-    ref_negative = []
-    for i in range(len(query_ind)):
-        b = query_ind.copy()
-        b.remove(query_ind[i])
-        ref_negative.append(str(random.choice(b)) + '00')
+    # query_ind = list(range(1000, 1300))
+    # query = [str(l) + '00' for l in query_ind]
+    # ref_positive = [str(l) + '01' for l in query_ind]
+    # ref_negative = []
+    # for i in range(len(query_ind)):
+    #     b = query_ind.copy()
+    #     b.remove(query_ind[i])
+    #     ref_negative.append(str(random.choice(b)) + '00')
+
+    d1_images = [args.d1 + 'illustration/' + l.strip() for l in open(args.d1 + 'files.txt', "r")]
+    d2_images = [args.d2 + 'illustration/' + l.strip() for l in open(args.d2 + 'files.txt', "r")]
+    d3_images = [args.d3 + 'illustration/' + l.strip() for l in open(args.d3 + 'files.txt', "r")]
+    
+    gt_d1d2 = read_config(args.gt_list + 'D1-D2.json')
+    gt_d2d3 = read_config(args.gt_list + 'D2-D3.json')
+    gt_d1d3 = read_config(args.gt_list + 'D1-D3.json')
 
     # creating the dataset
-    query_images, positive_images, negative_images = generate_train_dataset(query, ref_positive, ref_negative)
-    query_train = query_images[0:250]
-    p_train = positive_images[0:250]
-    n_train = negative_images[0:250]
+    query_train = []
+    p_train = []
+    n_train = []
+
+    query_train, p_train, n_train = add_file_list(query_train, p_train, n_train, gt_d1d2, d1_images, d2_images)
+    query_train, p_train, n_train = add_file_list(query_train, p_train, n_train, gt_d2d3, d2_images, d3_images)
+
+    # query_images, positive_images, negative_images = generate_train_dataset(query, ref_positive, ref_negative)
+    # query_train = query_images[0:250]
+    # p_train = positive_images[0:250]
+    # n_train = negative_images[0:250]
     train_list = []
     for i in range(len(query_train)):
         train_list.append((query_train[i], p_train[i], n_train[i]))
@@ -40,9 +57,14 @@ def train(args, augmentations_list):
     transforms = get_transforms(args)
 
     # Defining the fixed validation dataloader for modular evaluation
-    query_val = query_images[250:300]
-    p_val = positive_images[250:300]
-    n_val = negative_images[250:300]
+    # query_val = query_images[250:300]
+    # p_val = positive_images[250:300]
+    # n_val = negative_images[250:300]
+    query_val = []
+    p_val = []
+    n_val = []
+    query_val, p_val, n_val = add_file_list(query_val, p_val, n_val, gt_d1d3, d1_images, d3_images)
+
     val_list = []
     for j in range(len(query_val)):
         val_list.append((query_val[j], p_val[j], n_val[j]))
