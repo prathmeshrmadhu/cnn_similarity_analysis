@@ -56,6 +56,9 @@ def siamese_args():
     aa('--matched_f', default=None, help="save matched result to this folder")
     aa('--net', default="isc2021/checkpoints/Siamese/", help="save network parameters to this folder")
     aa('--images', default="isc2021/data/images/siamese/", help="save visualized test result to this folder")
+    aa('--p1_f', default=None, help="write p1 features to this file")
+    aa('--p2_f', default=None, help="write p2 features to this file")
+    aa('--p3_f', default=None, help="write p3 features to this file")
 
     args = parser.parse_args()
     args.scales = [float(x) for x in args.scales.split(",")]

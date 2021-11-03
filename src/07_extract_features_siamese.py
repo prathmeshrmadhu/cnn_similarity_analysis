@@ -20,7 +20,7 @@ from lib.utils import imshow
 from lib.io import *
 
 
-def generate_features(args, net, image_names, data_loader, query=True):
+def generate_features(args, net, image_names, data_loader, save_path):
     features_list = list()
     images_list = list()
     t0 = time.time()
@@ -35,14 +35,9 @@ def generate_features(args, net, image_names, data_loader, query=True):
     features = np.vstack(features_list)
     # TODO: Maybe replace next line by dumping to pkl file/ or replace the pkl file dumping in
     # 02_create_archdata_retrieval by hdf5 descriptors.
-    if query:
-        write_pickle_descriptors(features, image_names, args.query_f)
-        print(f"writing descriptors to {args.query_f}")
-    else:
-        write_pickle_descriptors(features, image_names, args.db_f)
-        print(f"writing descriptors to {args.db_f}")
+    write_pickle_descriptors(features, image_names, save_path)
+    print(f"writing descriptors to {save_path}")
     print(f"image_description_time: {(t1 - t0) / len(image_names):.5f} s per image")
-    return features
 
 
 def extract_features(args, visualization=False):
@@ -51,25 +46,37 @@ def extract_features(args, visualization=False):
     # query_list = [l.strip() for l in open(args.query_list, "r")]
     # database_list = [l.strip() for l in open(args.db_list, "r")]
     # train_list = [l.strip() for l in open(args.train_list, "r")]
-    query_ind = list(range(1300, 1500))
-    query = [str(l) + '00' for l in query_ind]
-    ref = [str(l) + '01' for l in query_ind]
+    # query_ind = list(range(1300, 1500))
+    # query = [str(l) + '00' for l in query_ind]
+    # ref = [str(l) + '01' for l in query_ind]
+    p1_images = [args.p1 + 'illustration/' + l.strip() for l in open(args.p1 + 'files.txt', "r")]
+    p2_images = [args.p2 + 'illustration/' + l.strip() for l in open(args.p2 + 'files.txt', "r")]
+    p3_images = [args.p3 + 'illustration/' + l.strip() for l in open(args.p3 + 'files.txt', "r")]
 
     # creating the dataset
-    query_images, database_images, _ = generate_extraction_dataset(query, ref, ref)
+    #query_images, database_images, _ = generate_extraction_dataset(query, ref, ref)
 
     # defining the transforms
     transforms = get_transforms(args)
 
     print("computing features")
-    query_dataset = ImageList(query_images, transform=transforms)
-    database_dataset = ImageList(database_images, transform=transforms)
+    # query_dataset = ImageList(query_images, transform=transforms)
+    # database_dataset = ImageList(database_images, transform=transforms)
+    p1_dataset = ImageList(p1_images, transform=transforms)
+    p2_dataset = ImageList(p2_images, transform=transforms)
+    p3_dataset = ImageList(p3_images, transform=transforms)
 
     # Loading the loaders/dataset
-    query_loader = DataLoader(dataset=query_dataset, shuffle=False, num_workers=args.num_workers,
-                                          batch_size=args.batch_size)
-    db_loader = DataLoader(dataset=database_dataset, shuffle=False, num_workers=args.num_workers,
-                                          batch_size=args.batch_size)
+    # query_loader = DataLoader(dataset=query_dataset, shuffle=False, num_workers=args.num_workers,
+    #                                       batch_size=args.batch_size)
+    # db_loader = DataLoader(dataset=database_dataset, shuffle=False, num_workers=args.num_workers,
+    #                                       batch_size=args.batch_size)
+    p1_loader = DataLoader(dataset=p1_dataset, shuffle=False, num_workers=args.num_workers,
+                                            batch_size=args.batch_size)
+    p2_loader = DataLoader(dataset=p2_dataset, shuffle=False, num_workers=args.num_workers,
+                                            batch_size=args.batch_size)
+    p3_loader = DataLoader(dataset=p3_dataset, shuffle=False, num_workers=args.num_workers,
+                                            batch_size=args.batch_size)
 
     # Loading the pretrained siamese model
     net = TripletSiameseNetwork(args.model)
@@ -81,44 +88,11 @@ def extract_features(args, visualization=False):
     print("test model\n")
 
 
-    # if visualization:
-    #     test_list = generate_validation_dataset(query_images, groundtruth_list, train_images, 50)
-    #     test_data = ContrastiveValList(test_list, transform=transforms, imsize=args.imsize)
-    #     test_loader = DataLoader(dataset=test_data, shuffle=True, num_workers=args.num_workers,
-    #                              batch_size=1)
-    #     with torch.no_grad():
-    #         distance_p = []
-    #         distance_n = []
-    #         for i, data in enumerate(test_loader, 0):
-    #             img_name = 'test_{}.jpg'.format(i)
-    #             img_pth = args.images + img_name
-    #             query_img, reference_img, label = data
-    #             concatenated = torch.cat((query_img, reference_img), 0)
-    #             query_img = query_img.to(args.device)
-    #             reference_img = reference_img.to(args.device)
-    #             score = net(query_img, reference_img).cpu()
-    #
-    #             if label == 0:
-    #                 label = 'matched'
-    #                 distance_p.append(score.item())
-    #                 print('matched with distance: {:.4f}\n'.format(score.item()))
-    #             if label == 1:
-    #                 label = 'not matched'
-    #                 distance_n.append(score.item())
-    #                 print('not matched with distance: {:.4f}\n'.format(score.item()))
-    #
-    #             imshow(torchvision.utils.make_grid(concatenated),
-    #                    'Dissimilarity: {:.2f} Label: {}'.format(score.item(), label), should_save=True, pth=img_pth)
-    #     mean_distance_p = torch.mean(torch.Tensor(distance_p))
-    #     mean_distance_n = torch.mean(torch.Tensor(distance_n))
-    #     print('-------------------------------------------------------------')
-    #     print('not matched mean distance: {:.4f}\n'.format(mean_distance_n))
-    #     print('matched mean distance: {:.4f}\n'.format(mean_distance_p))
-
-    query_features = generate_features(args, net, query, query_loader, query=True)
-    database_features = generate_features(args, net, ref, db_loader, query=False)
-
-    return query_features, database_features
+    # query_features = generate_features(args, net, query, query_loader, args.query_f)
+    # database_features = generate_features(args, net, ref, db_loader, args.db_f)
+    generate_features(args, net, p1_images, p1_loader, args.p1_f)
+    generate_features(args, net, p2_images, p2_loader, args.p2_f)
+    generate_features(args, net, p3_images, p3_loader, args.p3_f)
 
 if __name__ == "__main__":
     
@@ -126,7 +100,7 @@ if __name__ == "__main__":
     if siamese_args.device == "cuda:0":
         print("hardware_image_description:", torch.cuda.get_device_name(0))
         
-    query_features, database_features = extract_features(siamese_args)
+    extract_features(siamese_args)
     
     
     
