@@ -93,7 +93,7 @@ def generate_train_dataset(query, p_list, n_list):
 
 
 def add_file_list(query, ref_p, ref_n, gt, data1, data2):
-    for i in len(gt):
+    for i in range(len(gt)):
         query.append(data1[gt[i][0]])
         ref_p.append(data2[gt[i][1]])
         b = data2.copy()

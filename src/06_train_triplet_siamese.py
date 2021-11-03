@@ -190,7 +190,7 @@ if __name__ == "__main__":
     augmentations_list = [
         VerticalFlip(probability=0.25),
         HorizontalFlip(probability=0.25),
-        AuglyRotate(1.0),
+        AuglyRotate(0.25),
     ]
 
     train(siamese_args, augmentations_list)
