@@ -23,6 +23,10 @@ def evaluation(args):
     miss_5 = 0
     precision = []
 
+    accuracy_p1p2, accuracy_5_p1p2 = calculate_top_accuracy(gt_p1p2, p1_vectors, p2_vectors)
+    accuracy_p2p3, accuracy_5_p2p3 = calculate_top_accuracy(gt_p2p3, p2_vectors, p3_vectors)
+    accuracy_p1p3, accuracy_5_p1p3 = calculate_top_accuracy(gt_p1p3, p1_vectors, p3_vectors)
+
     # for i in range(len(q_names)):
     #     vec = q_vectors[i]
     #     # diff = db_vectors - vec
@@ -44,9 +48,7 @@ def evaluation(args):
     # accuracy = hit / (hit + miss)
     # accuracy_5 = hit_5 / (hit_5 + miss_5)
 
-    accuracy_p1p2, accuracy_5_p1p2 = calculate_top_accuracy(gt_p1p2, p1_vectors, p2_vectors)
-    accuracy_p2p3, accuracy_5_p2p3 = calculate_top_accuracy(gt_p2p3, p2_vectors, p3_vectors)
-    accuracy_p1p3, accuracy_5_p1p3 = calculate_top_accuracy(gt_p1p3, p1_vectors, p3_vectors)
+
 
     # print('mAP: {}'.format(mAP))
     print('TOP_1 accuracy between P1 and P2:{}'.format(accuracy_p1p2))
