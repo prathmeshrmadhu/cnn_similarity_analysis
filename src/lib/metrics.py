@@ -242,3 +242,25 @@ def confusion_matrix(q_vector, db_vectors, ind, threshold):
     return tp, tn, fp, fn
 
 
+def calculate_top_accuracy(gt, query, database):
+    hit = 0
+    miss = 0
+    hit_5 = 0
+    miss_5 = 0
+    for pair in gt:
+        q_vector = query[pair[0]]
+        diff = database - q_vector
+        l2_distance = np.linalg.norm(diff, axis=1)
+        matched_index = np.argsort(l2_distance)[:5]
+        if pair[1] in matched_index:
+            hit_5 += 1
+        else:
+            miss_5 += 1
+        if pair[1] == matched_index[0]:
+            hit += 1
+        else:
+            miss += 1
+    accuracy = hit / (hit + miss)
+    accuracy_5 = hit_5 / (hit_5 + miss_5)
+    return accuracy, accuracy_5
+
