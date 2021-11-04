@@ -6,8 +6,16 @@ from src.lib.siamese.args import siamese_args
 
 
 def evaluation(args):
-    q_names, q_vectors = read_pickle_descriptors(args.query_f)
-    db_names, db_vectors = read_pickle_descriptors(args.db_f)
+    # q_names, q_vectors = read_pickle_descriptors(args.query_f)
+    # db_names, db_vectors = read_pickle_descriptors(args.db_f)
+
+    p1_names, p1_vectors = read_pickle_descriptors(args.p1_f)
+    p2_names, p2_vectors = read_pickle_descriptors(args.p2_f)
+    p3_names, p3_vectors = read_pickle_descriptors(args.p3_f)
+    gt_p1p2 = read_config(args.gt_list + 'P1-P2.json')
+    gt_p2p3 = read_config(args.gt_list + 'P2-P3.json')
+    gt_p1p3 = read_config(args.gt_list + 'P1-P3.json')
+
     matched_list = []
     hit = 0
     miss = 0
