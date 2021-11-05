@@ -29,12 +29,6 @@ def generate_features(args, net, image_names, data_loader):
     return features
 
 
-# def generate_pca_features(features, estimator, image_names, save_path):
-#     pca_features = estimator.transform(features)
-#     write_pickle_descriptors(features, image_names, save_path)
-#     print(f"writing descriptors to {save_path}")
-
-
 def train(args):
     if args.device == "gpu":
         print("hardware_image_description:", torch.cuda.get_device_name(0))
