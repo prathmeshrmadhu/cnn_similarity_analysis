@@ -20,7 +20,7 @@ def generate_features(args, net, image_names, data_loader):
         for no, data in enumerate(data_loader):
             images = data
             images = images.to(args.device)
-            feats = net.forward_once(images)
+            feats = net(images)
             features_list.append(feats.cpu().numpy())
             images_list.append(images.cpu().numpy())
     t1 = time.time()
