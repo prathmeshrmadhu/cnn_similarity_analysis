@@ -53,7 +53,7 @@ def train(args):
 
     estimator = PCA(n_components=256)
     estimator.fit(train_features)
-    joblib.dump(estimator, args.pca)
+    joblib.dump(estimator, args.pca_file)
 
 
 
