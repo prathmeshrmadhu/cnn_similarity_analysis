@@ -40,7 +40,7 @@ def generate_features(args, net, image_names, data_loader, save_path):
     print(f"image_description_time: {(t1 - t0) / len(image_names):.5f} s per image")
 
 
-def extract_features(args, visualization=False):
+def extract_features(args):
     # TODO: Returning the ground truth labels for a given dataset
     # groundtruth_list = read_ground_truth(args.gt_list)
     # query_list = [l.strip() for l in open(args.query_list, "r")]
