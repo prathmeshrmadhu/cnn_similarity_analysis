@@ -1,3 +1,5 @@
+import sys
+sys.path.append('/cluster/yinan/cnn_similarity_analysis/')
 import numpy as np
 import torch
 import time
