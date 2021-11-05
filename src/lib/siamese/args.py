@@ -33,6 +33,7 @@ def siamese_args():
     aa('--threshold', default=8.0, type=float, help="threshold for confusion_matrix")
 
     group = parser.add_argument_group('dataset options')
+    aa('--dataset', default=None, help="dataset name")
     aa('--d1', default='/cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/D1/', help="folder for d1 subset")
     aa('--d2', default='/cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/D2/', help="folder for d2 subset")
     aa('--d3', default='/cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/D3/', help="folder for d3 subset")
