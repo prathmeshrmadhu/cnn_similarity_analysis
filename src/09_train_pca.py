@@ -47,7 +47,7 @@ def train(args):
         train_images = d1_images + d2_images + d3_images
 
     transforms = get_transforms(args)
-    train_dataset = ImageList(dataset=train_images, transform=transforms)
+    train_dataset = ImageList(train_images, transform=transforms)
     train_loader = DataLoader(dataset=train_dataset, shuffle=False, num_workers=args.num_workers,
                               batch_size=args.batch_size)
 
