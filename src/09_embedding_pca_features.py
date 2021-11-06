@@ -11,10 +11,12 @@ from src.lib.siamese.dataset import get_transforms
 from sklearn.decomposition import PCA
 from lib.io import *
 import joblib
+import faiss
 
 
 def generate_pca_features(features, estimator, image_names, save_path):
-    pca_features = estimator.transform(features)
+    print(f"Apply PCA {estimator.d_in} -> {estimator.d_out}")
+    pca_features = estimator.apply_py(features)
     write_pickle_descriptors(pca_features, image_names, save_path)
     print(f"writing descriptors to {save_path}")
 
@@ -44,7 +46,9 @@ def embedding_features(args):
     net.to(args.device)
     net.eval()
 
-    estimator = joblib.load(args.pca_file)
+    print("Load PCA matrix", args.pca_file)
+    pca = faiss.read_VectorTransform(args.pca_file)
+
 
     if args.dataset == "image_collation":
         p1_images = [args.p1 + 'illustration/' + l.strip() for l in open(args.p1 + 'files.txt', "r")]
@@ -66,9 +70,9 @@ def embedding_features(args):
         p2_features = generate_features(args, net, p2_images, p2_loader)
         p3_features = generate_features(args, net, p3_images, p3_loader)
 
-        generate_pca_features(p1_features, estimator, p1_images, args.p1_f)
-        generate_pca_features(p2_features, estimator, p2_images, args.p2_f)
-        generate_pca_features(p3_features, estimator, p3_images, args.p3_f)
+        generate_pca_features(p1_features, pca, p1_images, args.p1_f)
+        generate_pca_features(p2_features, pca, p2_images, args.p2_f)
+        generate_pca_features(p3_features, pca, p3_images, args.p3_f)
 
 
 if __name__ == "__main__":
