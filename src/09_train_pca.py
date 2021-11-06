@@ -9,6 +9,7 @@ from src.lib.siamese.model import load_siamese_checkpoint
 from src.data.siamese_dataloader import ImageList
 from src.lib.siamese.dataset import get_transforms
 from sklearn.decomposition import PCA
+import faiss
 import joblib
 
 
@@ -51,10 +52,15 @@ def train(args):
 
     train_features = generate_features(args, net, train_images, train_loader)
 
-    estimator = PCA(n_components=256)
-    estimator.fit(train_features)
-    joblib.dump(estimator, args.pca_file)
-
+    # estimator = PCA(n_components=256)
+    # estimator.fit(train_features)
+    # joblib.dump(estimator, args.pca_file)
+    d = train_features.shape[1]
+    pca = faiss.PCAMatrix(d, 256, -0.5)
+    print(f"Train PCA {pca.d_in} -> {pca.d_out}")
+    pca.train(train_features)
+    print(f"Storing PCA to {args.pca_file}")
+    faiss.write_VectorTransform(pca, args.pca_file)
 
 
 if __name__ == "__main__":
