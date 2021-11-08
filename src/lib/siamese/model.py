@@ -166,7 +166,7 @@ class ContrastiveSiameseNetwork(nn.Module):
 
 
 class TripletSiameseNetwork(nn.Module):
-    def __init__(self, model, checkpoint='vgg'):
+    def __init__(self, model, checkpoint='/cluster/yinan/isc2021/data/multigrain_joint_3B_0.5.pth'):
         super(TripletSiameseNetwork, self).__init__()
         self.head = load_siamese_checkpoint(model, checkpoint)
         # for p in self.parameters():
@@ -217,7 +217,7 @@ class TripletSiameseNetwork(nn.Module):
             x = self.head.layer4(x)
             x = self.gem(x)
             x = self.flatten(x)
-            x = self.fc1(x)
+            # x = self.fc1(x)
         else:
             x = self.head(x)
             x = self.fc2(x)
