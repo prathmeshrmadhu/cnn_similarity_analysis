@@ -201,7 +201,7 @@ class TripletSiameseNetwork(nn.Module):
     def gem(self, x, p=3, eps=1e-6):
         x = torch.clamp(x, eps, torch.inf)
         x = x ** p
-        x = x.mean(axis=0)
+        x = F.adaptive_avg_pool2d(x, (1, 1))
         return x ** (1. / p)
 
     def forward_once(self, x):
