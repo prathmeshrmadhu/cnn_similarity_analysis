@@ -198,6 +198,12 @@ class TripletSiameseNetwork(nn.Module):
 
         self.score = nn.PairwiseDistance(p=2)
 
+    def gem(self, x, p=3, eps=1e-6):
+        x = torch.clamp(x, eps, torch.inf)
+        x = x ** p
+        x = x.mean(axis=0)
+        return x ** (1. / p)
+
     def forward_once(self, x):
         if self.map:
             x = self.head.conv1(x)
@@ -209,13 +215,13 @@ class TripletSiameseNetwork(nn.Module):
             x = self.head.layer2(x)
             x = self.head.layer3(x)
             x = self.head.layer4(x)
-            x = F.adaptive_avg_pool2d(x, (1, 1))
+            x = self.gem(x)
             x = self.flatten(x)
-            output = self.fc1(x)
+            x = self.fc1(x)
         else:
             x = self.head(x)
-            output = self.fc2(x)
-        return output
+            x = self.fc2(x)
+        return x
 
     def calculate_distance(self, input1, input2):
         output1 = self.forward_once(input1)
