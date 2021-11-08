@@ -55,7 +55,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         print('used model: VGG16')
         print('--------------------------------------------------------------')
         model = torchvision.models.vgg16(pretrained=True)
-        model.eval()
+        # model.eval()
         return model
 
     elif name == "resnet152":
