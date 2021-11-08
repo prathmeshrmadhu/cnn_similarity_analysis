@@ -5,7 +5,7 @@ import torch
 import time
 from torch.utils.data import DataLoader
 from src.lib.siamese.args import siamese_args
-from src.lib.siamese.model import load_siamese_checkpoint
+from src.lib.siamese.model import load_siamese_checkpoint, TripletSiameseNetwork
 from src.data.siamese_dataloader import ImageList
 from src.lib.siamese.dataset import get_transforms
 from sklearn.decomposition import PCA
@@ -29,7 +29,7 @@ def generate_features(args, net, image_names, data_loader):
         for no, data in enumerate(data_loader):
             images = data
             images = images.to(args.device)
-            feats = net(images)
+            feats = net.forward_once(images)
             features_list.append(feats.cpu().numpy())
             images_list.append(images.cpu().numpy())
     t1 = time.time()
@@ -42,7 +42,7 @@ def embedding_features(args):
     # defining the transforms
     transforms = get_transforms(args)
 
-    net = load_siamese_checkpoint(args.model, args.checkpoint)
+    net = TripletSiameseNetwork(args.model)
     net.to(args.device)
     net.eval()
 
