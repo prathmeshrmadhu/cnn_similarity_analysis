@@ -246,14 +246,19 @@ def confusion_matrix(q_vector, db_vectors, ind, threshold):
 
 def calculate_top_accuracy(gt, query, database):
     hit = 0
+    hit_cos= 0
     miss = 0
+    miss_cos = 0
     hit_5 = 0
+    hit_5_cos = 0
     miss_5 = 0
+    miss_5_cos = 0
     for pair in gt:
-        q_vector = query[pair[0]]
-        diff = database - q_vector
-        l2_distance = np.linalg.norm(diff, axis=1)
+        q_vector = query[pair[0]].reshape(1, -1)
+        l2_distance = euclidean_distances(q_vector, database)
+        cos_similarity = cos_similarity(q_vector, database)
         matched_index = np.argsort(l2_distance)[:5]
+        matched_cos_index = np.argsort(-cos_similarity)[:5]
         if pair[1] in matched_index:
             hit_5 += 1
         else:
@@ -262,9 +267,19 @@ def calculate_top_accuracy(gt, query, database):
             hit += 1
         else:
             miss += 1
+        if pair[1] in matched_cos_index:
+            hit_5_cos += 1
+        else:
+            miss_5_cos += 1
+        if pair[1] == matched_cos_index[0]:
+            hit_cos += 1
+        else:
+            miss_cos += 1
     accuracy = hit / (hit + miss)
+    accuracy_cos = hit_cos / (hit_cos + miss_cos)
     accuracy_5 = hit_5 / (hit_5 + miss_5)
-    return accuracy, accuracy_5
+    accuracy_5_cos = hit_5_cos / (hit_5_cos + miss_5_cos)
+    return accuracy, accuracy_5, accuracy_cos, accuracy_5_cos
 
 
 def calculate_distance(ground_truth, data1, data2):
