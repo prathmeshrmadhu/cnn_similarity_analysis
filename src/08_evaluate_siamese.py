@@ -23,9 +23,12 @@ def evaluation(args):
     miss_5 = 0
     precision = []
 
-    accuracy_p1p2, accuracy_5_p1p2 = calculate_top_accuracy(gt_p1p2, p1_vectors, p2_vectors)
-    accuracy_p2p3, accuracy_5_p2p3 = calculate_top_accuracy(gt_p2p3, p2_vectors, p3_vectors)
-    accuracy_p1p3, accuracy_5_p1p3 = calculate_top_accuracy(gt_p1p3, p1_vectors, p3_vectors)
+    accuracy_p1p2, accuracy_5_p1p2, accuracy_p1p2_cos, accuracy_5_p1p2_cos = calculate_top_accuracy(gt_p1p2, p1_vectors,
+                                                                                                    p2_vectors)
+    accuracy_p2p3, accuracy_5_p2p3, accuracy_p2p3_cos, accuracy_5_p2p3_cos = calculate_top_accuracy(gt_p2p3, p2_vectors,
+                                                                                                    p3_vectors)
+    accuracy_p1p3, accuracy_5_p1p3, accuracy_p1p3_cos, accuracy_5_p1p3_cos = calculate_top_accuracy(gt_p1p3, p1_vectors,
+                                                                                                    p3_vectors)
 
     # for i in range(len(q_names)):
     #     vec = q_vectors[i]
@@ -57,6 +60,13 @@ def evaluation(args):
     print('TOP_5 accuracy between P1 and P2:{}'.format(accuracy_5_p1p2))
     print('TOP_5 accuracy between P2 and P3:{}'.format(accuracy_5_p2p3))
     print('TOP_5 accuracy between P1 and P3:{}'.format(accuracy_5_p1p3))
+    print('\n')
+    print('TOP_1 accuracy between P1 and P2 with cosine similarity:{}'.format(accuracy_5_p1p2_cos))
+    print('TOP_1 accuracy between P2 and P3 with cosine similarity:{}'.format(accuracy_5_p2p3_cos))
+    print('TOP_1 accuracy between P1 and P3 with cosine similarity:{}'.format(accuracy_5_p1p3_cos))
+    print('TOP_5 accuracy between P1 and P2 with cosine similarity:{}'.format(accuracy_5_p1p2_cos))
+    print('TOP_5 accuracy between P2 and P3 with cosine similarity:{}'.format(accuracy_5_p2p3_cos))
+    print('TOP_5 accuracy between P1 and P3 with cosine similarity:{}'.format(accuracy_5_p1p3_cos))
 
     # fw = open(args.matched_f, 'wb')
     # pickle.dump(matched_list, fw)
