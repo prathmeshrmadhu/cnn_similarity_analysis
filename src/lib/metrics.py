@@ -258,6 +258,7 @@ def calculate_top_accuracy(gt, query, database):
         l2_distance = euclidean_distances(q_vector, database)
         cos_similarity = cosine_similarity(q_vector, database)
         matched_index = np.argsort(l2_distance)[:5]
+        print(matched_index)
         matched_cos_index = np.argsort(-cos_similarity)[:5]
         if pair[1] in matched_index:
             hit_5 += 1
