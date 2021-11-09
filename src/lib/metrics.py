@@ -273,7 +273,7 @@ def calculate_distance(ground_truth, data1, data2):
     s_positive = []
     s_negative = []
     for item in ground_truth:
-        d_positive.append(euclidean_distances(data1[item[0]].reshape(1, -1), data2[item[1].reshape(1, -1)]))
+        d_positive.append(euclidean_distances(data1[item[0]].reshape(1, -1), data2[item[1]].reshape(1, -1)))
         s_positive.append(cosine_similarity(data1[item[0]].reshape(1, -1), data2[item[1]].reshape(1, -1)))
         ind_list = list(range(len(data2)))
         ind_list.remove(item[1])
