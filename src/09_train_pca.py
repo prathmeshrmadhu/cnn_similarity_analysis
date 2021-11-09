@@ -80,10 +80,11 @@ def train(args):
         s_negative = []
         for item in gt_d1d2:
             d_positive.append(torch.dist(d1_features[item[0]], d2_features[item[1]], 2))
-            s_positive.append(F.cosine_similarity(d1_features[item[0]], d2_features[item[1]]))
+            s_positive.append(F.cosine_similarity(d1_features[item[0]], d2_features[item[1]], dim=-1))
             d2_c = d2_features.copy()
             d_negative.append(torch.dist(d1_features[item[0]], random.choice(d2_c.remove(d2_features[item[1]])), 2))
-            s_negative.append(F.cosine_similarity(d1_features[item[0]], random.choice(d2_c.remove(d2_features[item[1]]))))
+            s_negative.append(F.cosine_similarity(d1_features[item[0]], random.choice(d2_c.remove(d2_features[item[1]]))
+                                                  , dim=-1))
         mean_p_diff = np.mean(np.array(d_positive))
         mean_n_diff = np.mean(np.array(d_negative))
         mean_p_similarity = np.mean(np.array(s_positive))
