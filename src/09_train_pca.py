@@ -76,11 +76,23 @@ def train(args):
         gt_d1d3 = read_config(args.gt_list + 'D1-D3.json')
 
         dp_d1d2, dn_d1d2, sp_d1d2, sn_d1d2 = calculate_distance(gt_d1d2, d1_features, d2_features)
+        dp_d2d3, dn_d2d3, sp_d2d3, sn_d2d3 = calculate_distance(gt_d2d3, d2_features, d3_features)
+        dp_d1d3, dn_d1d3, sp_d1d3, sn_d1d3 = calculate_distance(gt_d1d3, d1_features, d3_features)
 
         print('average positive distance for d1 d2: {}'.format(dp_d1d2))
         print('average negative distance for d1 d2: {}'.format(dn_d1d2))
         print('average positive similarity for d1 d2: {}'.format(sp_d1d2))
         print('average negative similarity for d1 d2: {}'.format(sn_d1d2))
+        print('\n')
+        print('average positive distance for d2 d3: {}'.format(dp_d2d3))
+        print('average negative distance for d2 d3: {}'.format(dn_d2d3))
+        print('average positive similarity for d2 d3: {}'.format(sp_d2d3))
+        print('average negative similarity for d2 d3: {}'.format(sn_d2d3))
+        print('\n')
+        print('average positive distance for d1 d2: {}'.format(dp_d1d3))
+        print('average negative distance for d1 d2: {}'.format(dn_d1d3))
+        print('average positive similarity for d1 d2: {}'.format(sp_d1d3))
+        print('average negative similarity for d1 d2: {}'.format(sn_d1d3))
 
 
 
