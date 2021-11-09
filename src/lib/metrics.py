@@ -254,7 +254,6 @@ def calculate_top_accuracy(gt, query, database):
     miss_5 = 0
     miss_5_cos = 0
     for pair in gt:
-        np.squeeze()
         q_vector = query[pair[0]].reshape(1, -1)
         l2_distance = np.squeeze(euclidean_distances(q_vector, database))
         cos_similarity = np.squeeze(cosine_similarity(q_vector, database))
