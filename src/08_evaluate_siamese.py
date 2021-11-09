@@ -33,6 +33,7 @@ def evaluation(args):
     # print('mAP: {}'.format(mAP))
     print('TOP_1 accuracy :{}'.format(accuracy))
     print('TOP_5 accuracy :{}'.format(accuracy_5))
+    print('\n')
     print('TOP_1 accuracy with cosine similarity:{}'.format(accuracy_cos))
     print('TOP_5 accuracy with cosine similarity:{}'.format(accuracy_5_cos))
 
