@@ -10,6 +10,7 @@ from src.lib.siamese.model import load_siamese_checkpoint, TripletSiameseNetwork
 from src.data.siamese_dataloader import ImageList
 from src.lib.siamese.dataset import get_transforms
 from lib.io import read_config
+from lib.metrics import calculate_distance
 import faiss
 import random
 
@@ -66,36 +67,20 @@ def train(args):
 
     if args.val_dataset == 'image_collation':
 
-        d1_features = torch.from_numpy(pca.apply_py(train_features[:len(d1_images)]))
-        d2_features = torch.from_numpy(pca.apply_py(train_features[len(d1_images): len(d1_images)+len(d2_images)]))
-        d3_features = torch.from_numpy(pca.apply_py(train_features[len(d1_images)+len(d2_images): len(train_features)]))
+        d1_features = pca.apply_py(train_features[:len(d1_images)])
+        d2_features = pca.apply_py(train_features[len(d1_images): len(d1_images)+len(d2_images)])
+        d3_features = pca.apply_py(train_features[len(d1_images)+len(d2_images): len(train_features)])
 
         gt_d1d2 = read_config(args.gt_list + 'D1-D2.json')
         gt_d2d3 = read_config(args.gt_list + 'D2-D3.json')
         gt_d1d3 = read_config(args.gt_list + 'D1-D3.json')
 
-        d_positive = []
-        d_negative = []
-        s_positive = []
-        s_negative = []
-        for item in gt_d1d2:
-            d_positive.append(torch.dist(d1_features[item[0]], d2_features[item[1]], 2))
-            s_positive.append(F.cosine_similarity(d1_features[item[0]], d2_features[item[1]], dim=-1))
-            ind_list = list(range(len(d2_features)))
-            n_ind = random.choice(ind_list)
-            d_negative.append(torch.dist(d1_features[item[0]], d2_features[n_ind], 2))
-            s_negative.append(F.cosine_similarity(d1_features[item[0]], d2_features[n_ind], dim=-1))
-        mean_p_diff = np.mean(np.array(d_positive))
-        mean_n_diff = np.mean(np.array(d_negative))
-        mean_p_similarity = np.mean(np.array(s_positive))
-        mean_n_similarity = np.mean(np.array(s_negative))
+        dp_d1d2, dn_d1d2, sp_d1d2, sn_d1d2 = calculate_distance(gt_d1d2, d1_features, d2_features)
 
-        print('average positive distance for d1 d2: {}'.format(mean_p_diff))
-        print('average negative distance for d1 d2: {}'.format(mean_n_diff))
-        print('average positive similarity for d1 d2: {}'.format(mean_p_similarity))
-        print('average negative similarity for d1 d2: {}'.format(mean_n_similarity))
-
-
+        print('average positive distance for d1 d2: {}'.format(dp_d1d2))
+        print('average negative distance for d1 d2: {}'.format(dn_d1d2))
+        print('average positive similarity for d1 d2: {}'.format(sp_d1d2))
+        print('average negative similarity for d1 d2: {}'.format(sn_d1d2))
 
 
 
