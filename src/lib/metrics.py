@@ -273,13 +273,13 @@ def calculate_distance(ground_truth, data1, data2):
     s_positive = []
     s_negative = []
     for item in ground_truth:
-        d_positive.append(euclidean_distances(data1[item[0]], data2[item[1]]))
-        s_positive.append(cosine_similarity(data1[item[0]], data2[item[1]]))
+        d_positive.append(euclidean_distances(data1[item[0]].reshape(1, -1), data2[item[1].reshape(1, -1)]))
+        s_positive.append(cosine_similarity(data1[item[0]].reshape(1, -1), data2[item[1]].reshape(1, -1)))
         ind_list = list(range(len(data2)))
         ind_list.remove(item[1])
         n_ind = random.choice(ind_list)
-        d_negative.append(euclidean_distances(data1[item[0]], data2[n_ind]))
-        s_negative.append(cosine_similarity(data1[item[0]], data2[n_ind]))
+        d_negative.append(euclidean_distances(data1[item[0]].reshape(1, -1), data2[n_ind].reshape(1, -1)))
+        s_negative.append(cosine_similarity(data1[item[0]].reshape(1, -1), data2[n_ind].reshape(1, -1)))
     mean_p_diff = np.mean(np.array(d_positive))
     mean_n_diff = np.mean(np.array(d_negative))
     mean_p_similarity = np.mean(np.array(s_positive))
