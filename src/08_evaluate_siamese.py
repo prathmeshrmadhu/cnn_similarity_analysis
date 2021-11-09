@@ -17,56 +17,25 @@ def evaluation(args):
     gt_p1p3 = read_config(args.gt_list + 'P1-P3.json')
 
     matched_list = []
-    hit = 0
-    miss = 0
-    hit_5 = 0
-    miss_5 = 0
     precision = []
 
-    accuracy_p1p2, accuracy_5_p1p2, accuracy_p1p2_cos, accuracy_5_p1p2_cos = calculate_top_accuracy(gt_p1p2, p1_vectors,
-                                                                                                    p2_vectors)
-    accuracy_p2p3, accuracy_5_p2p3, accuracy_p2p3_cos, accuracy_5_p2p3_cos = calculate_top_accuracy(gt_p2p3, p2_vectors,
-                                                                                                    p3_vectors)
-    accuracy_p1p3, accuracy_5_p1p3, accuracy_p1p3_cos, accuracy_5_p1p3_cos = calculate_top_accuracy(gt_p1p3, p1_vectors,
-                                                                                                    p3_vectors)
+    hit_p1p2, hit_5_p1p2, hit_p1p2_cos, hit_5_p1p2_cos = calculate_top_accuracy(gt_p1p2, p1_vectors, p2_vectors)
+    hit_p2p3, hit_5_p2p3, hit_p2p3_cos, hit_5_p2p3_cos = calculate_top_accuracy(gt_p2p3, p2_vectors, p3_vectors)
+    hit_p1p3, hit_5_p1p3, hit_p1p3_cos, hit_5_p1p3_cos = calculate_top_accuracy(gt_p1p3, p1_vectors, p3_vectors)
 
-    # for i in range(len(q_names)):
-    #     vec = q_vectors[i]
-    #     # diff = db_vectors - vec
-    #     # l2_distance = np.linalg.norm(diff, axis=1)
-    #     # matched_index = np.argsort(l2_distance)[:5]
-    #     matched_names = generate_5_matched_names(vec, db_vectors, db_names)
-    #     matched_list.append(matched_names)
-    #     if matched_names[0] == db_names[i]:
-    #         hit += 1
-    #     else:
-    #         miss += 1
-    #     if db_names[i] in matched_names:
-    #         hit_5 += 1
-    #     else:
-    #         miss_5 += 1
-    #     tp, tn, fp, fn = confusion_matrix(vec, db_vectors, i, args.threshold)
-    #     precision.append(tp/(tp+fp))
-    # mAP = np.mean(np.asarray(precision))
-    # accuracy = hit / (hit + miss)
-    # accuracy_5 = hit_5 / (hit_5 + miss_5)
+    accuracy = (hit_p1p2 + hit_p2p3 + hit_p1p3) / (len(gt_p1p2) + len(gt_p1p2) + len(gt_p1p2))
+    accuracy_5 = (hit_5_p1p2 + hit_5_p2p3 + hit_5_p1p3) / (len(gt_p1p2) + len(gt_p1p2) + len(gt_p1p2))
+    accuracy_cos = (hit_p1p2_cos + hit_p2p3_cos + hit_p1p3_cos) / (len(gt_p1p2) + len(gt_p1p2) + len(gt_p1p2))
+    accuracy_5_cos = (hit_5_p1p2_cos + hit_5_p2p3_cos + hit_5_p1p3_cos) / (len(gt_p1p2) + len(gt_p1p2) + len(gt_p1p2))
 
 
 
     # print('mAP: {}'.format(mAP))
-    print('TOP_1 accuracy between P1 and P2:{}'.format(accuracy_p1p2))
-    print('TOP_1 accuracy between P2 and P3:{}'.format(accuracy_p2p3))
-    print('TOP_1 accuracy between P1 and P3:{}'.format(accuracy_p1p3))
-    print('TOP_5 accuracy between P1 and P2:{}'.format(accuracy_5_p1p2))
-    print('TOP_5 accuracy between P2 and P3:{}'.format(accuracy_5_p2p3))
-    print('TOP_5 accuracy between P1 and P3:{}'.format(accuracy_5_p1p3))
-    print('\n')
-    print('TOP_1 accuracy between P1 and P2 with cosine similarity:{}'.format(accuracy_5_p1p2_cos))
-    print('TOP_1 accuracy between P2 and P3 with cosine similarity:{}'.format(accuracy_5_p2p3_cos))
-    print('TOP_1 accuracy between P1 and P3 with cosine similarity:{}'.format(accuracy_5_p1p3_cos))
-    print('TOP_5 accuracy between P1 and P2 with cosine similarity:{}'.format(accuracy_5_p1p2_cos))
-    print('TOP_5 accuracy between P2 and P3 with cosine similarity:{}'.format(accuracy_5_p2p3_cos))
-    print('TOP_5 accuracy between P1 and P3 with cosine similarity:{}'.format(accuracy_5_p1p3_cos))
+    print('TOP_1 accuracy :{}'.format(accuracy))
+    print('TOP_5 accuracy :{}'.format(accuracy_5))
+    print('TOP_1 accuracy with cosine similarity:{}'.format(accuracy_cos))
+    print('TOP_5 accuracy with cosine similarity:{}'.format(accuracy_5_cos))
+
 
     # fw = open(args.matched_f, 'wb')
     # pickle.dump(matched_list, fw)

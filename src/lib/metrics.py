@@ -275,11 +275,11 @@ def calculate_top_accuracy(gt, query, database):
             hit_cos += 1
         else:
             miss_cos += 1
-    accuracy = hit / (hit + miss)
-    accuracy_cos = hit_cos / (hit_cos + miss_cos)
-    accuracy_5 = hit_5 / (hit_5 + miss_5)
-    accuracy_5_cos = hit_5_cos / (hit_5_cos + miss_5_cos)
-    return accuracy, accuracy_5, accuracy_cos, accuracy_5_cos
+    # accuracy = hit / (hit + miss)
+    # accuracy_cos = hit_cos / (hit_cos + miss_cos)
+    # accuracy_5 = hit_5 / (hit_5 + miss_5)
+    # accuracy_5_cos = hit_5_cos / (hit_5_cos + miss_5_cos)
+    return hit, hit_5, hit_cos, hit_5_cos
 
 
 def calculate_distance(ground_truth, data1, data2):
