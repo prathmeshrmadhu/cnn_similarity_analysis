@@ -5,6 +5,8 @@ from dataclasses import astuple, dataclass
 from typing import List, Optional, Tuple
 from collections import defaultdict
 import numpy as np
+from sklearn.metrics.pairwise import euclidean_distances, cosine_similarity
+import random
 
 
 @dataclass
@@ -263,4 +265,24 @@ def calculate_top_accuracy(gt, query, database):
     accuracy = hit / (hit + miss)
     accuracy_5 = hit_5 / (hit_5 + miss_5)
     return accuracy, accuracy_5
+
+
+def calculate_distance(ground_truth, data1, data2):
+    d_positive = []
+    d_negative = []
+    s_positive = []
+    s_negative = []
+    for item in ground_truth:
+        d_positive.append(euclidean_distances(data1[item[0]], data2[item[1]], 2))
+        s_positive.append(cosine_similarity(data1[item[0]], data2[item[1]]))
+        ind_list = list(range(len(data2)))
+        ind_list.remove(item[1])
+        n_ind = random.choice(ind_list)
+        d_negative.append(euclidean_distances(data1[item[0]], data2[n_ind], 2))
+        s_negative.append(cosine_similarity(data1[item[0]], data2[n_ind]))
+    mean_p_diff = np.mean(np.array(d_positive))
+    mean_n_diff = np.mean(np.array(d_negative))
+    mean_p_similarity = np.mean(np.array(s_positive))
+    mean_n_similarity = np.mean(np.array(s_negative))
+    return mean_p_diff, mean_n_diff, mean_p_similarity, mean_n_similarity
 
