@@ -254,11 +254,11 @@ def calculate_top_accuracy(gt, query, database):
     miss_5 = 0
     miss_5_cos = 0
     for pair in gt:
+        np.squeeze()
         q_vector = query[pair[0]].reshape(1, -1)
-        l2_distance = euclidean_distances(q_vector, database)
-        cos_similarity = cosine_similarity(q_vector, database)
+        l2_distance = np.squeeze(euclidean_distances(q_vector, database))
+        cos_similarity = np.squeeze(cosine_similarity(q_vector, database))
         matched_index = np.argsort(l2_distance)[:5]
-        print(matched_index)
         matched_cos_index = np.argsort(-cos_similarity)[:5]
         if pair[1] in matched_index:
             hit_5 += 1
