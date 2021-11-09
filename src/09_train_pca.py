@@ -35,14 +35,14 @@ def train(args):
     if args.device == "gpu":
         print("hardware_image_description:", torch.cuda.get_device_name(0))
 
-    if args.dataset == "image_collation":
+    if args.train_dataset == "image_collation":
         d1_images = [args.d1 + 'illustration/' + l.strip() for l in open(args.d1 + 'files.txt', "r")]
         d2_images = [args.d2 + 'illustration/' + l.strip() for l in open(args.d2 + 'files.txt', "r")]
         d3_images = [args.d3 + 'illustration/' + l.strip() for l in open(args.d3 + 'files.txt', "r")]
 
         train_images = d1_images + d2_images + d3_images
 
-    if args.dataset == 'isc2021':
+    if args.train_dataset == 'isc2021':
         TRAIN = '/cluster/shared_dataset/isc2021/training_images/training_images/'
         train_images = [TRAIN + l.strip() for l in open(args.train_list, "r")]
 
