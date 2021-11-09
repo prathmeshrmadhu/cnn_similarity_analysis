@@ -65,9 +65,10 @@ def train(args):
     faiss.write_VectorTransform(pca, args.pca_file)
 
     if args.val_dataset == 'image_collation':
-        d1_features = pca.apply_py(train_features[:len(d1_images)])
-        d2_features = pca.apply_py(train_features[len(d1_images): len(d1_images)+len(d2_images)])
-        d3_features = pca.apply_py(train_features[len(d1_images)+len(d2_images): len(train_features)])
+
+        d1_features = torch.from_numpy(pca.apply_py(train_features[:len(d1_images)]))
+        d2_features = torch.from_numpy(pca.apply_py(train_features[len(d1_images): len(d1_images)+len(d2_images)]))
+        d3_features = torch.from_numpy(pca.apply_py(train_features[len(d1_images)+len(d2_images): len(train_features)]))
 
         gt_d1d2 = read_config(args.gt_list + 'D1-D2.json')
         gt_d2d3 = read_config(args.gt_list + 'D2-D3.json')
