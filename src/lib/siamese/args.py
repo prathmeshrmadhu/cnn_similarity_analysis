@@ -31,7 +31,8 @@ def siamese_args():
        help="momentum for sgd")
     aa('--weight_decay', default=0.0, type=float, help="max image size at extraction time")
     aa('--margin', default=10.0, type=float, help="margin in loss function")
-    aa('--threshold', default=8.0, type=float, help="threshold for confusion_matrix")
+    aa('--threshold_d', default=8.0, type=float, help="threshold for confusion_matrix with euclidean distance")
+    aa('--threshold_s', default=8.0, type=float, help="threshold for confusion_matrix with cosine similarity")
 
     group = parser.add_argument_group('dataset options')
     aa('--train_dataset', default=None, help="training dataset name")
