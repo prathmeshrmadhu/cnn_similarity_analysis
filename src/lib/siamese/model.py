@@ -170,8 +170,8 @@ class TripletSiameseNetwork(nn.Module):
     def __init__(self, model, checkpoint='/cluster/yinan/isc2021/data/multigrain_joint_3B_0.5.pth'):
         super(TripletSiameseNetwork, self).__init__()
         self.head = load_siamese_checkpoint(model, checkpoint)
-        # for p in self.parameters():
-        #     p.requires_grad = False
+        for p in self.parameters():
+            p.requires_grad = False
         if model == "zoo_resnet50" or model == "multigrain_resnet50":
             self.map = True
         else:
