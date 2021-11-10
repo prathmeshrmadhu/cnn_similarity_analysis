@@ -53,7 +53,7 @@ def embedding_features(args):
     pca = faiss.read_VectorTransform(args.pca_file)
 
 
-    if args.dataset == "image_collation":
+    if args.val_dataset == "image_collation":
         p1_images = [args.p1 + 'illustration/' + l.strip() for l in open(args.p1 + 'files.txt', "r")]
         p2_images = [args.p2 + 'illustration/' + l.strip() for l in open(args.p2 + 'files.txt', "r")]
         p3_images = [args.p3 + 'illustration/' + l.strip() for l in open(args.p3 + 'files.txt', "r")]
