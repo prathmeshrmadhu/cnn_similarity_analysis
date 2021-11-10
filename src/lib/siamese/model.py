@@ -183,8 +183,8 @@ class TripletSiameseNetwork(nn.Module):
             nn.ReLU(inplace=True),
             nn.Dropout2d(p=0.2),
             nn.Linear(1024, 512),
-            # nn.ReLU(inplace=True),
-            # nn.Linear(512, 256)
+            nn.ReLU(inplace=True),
+            nn.Linear(512, 256)
         )
 
         self.fc2 = nn.Sequential(
