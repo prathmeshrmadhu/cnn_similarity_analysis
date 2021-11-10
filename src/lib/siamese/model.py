@@ -197,7 +197,7 @@ class TripletSiameseNetwork(nn.Module):
             # nn.Linear(256, 128)
         )
 
-        self.score = nn.PairwiseDistance(p=2)
+        self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
 
     def gem(self, x, p=3, eps=1e-6):
         x = torch.clamp(x, eps, np.inf)
@@ -227,13 +227,13 @@ class TripletSiameseNetwork(nn.Module):
     def calculate_distance(self, input1, input2):
         output1 = self.forward_once(input1)
         output2 = self.forward_once(input2)
-        score = self.score(output1, output2)
+        score = 1 - self.cos(output1, output2)
         return score
 
     def forward(self, input1, input2, input3):
         output1 = self.forward_once(input1)
         output2 = self.forward_once(input2)
         output3 = self.forward_once(input3)
-        score_positive = self.score(output1, output2)
-        score_negative = self.score(output1, output3)
+        score_positive = 1 - self.cos(output1, output2)
+        score_negative = 1 - self.cos(output1, output3)
         return score_positive, score_negative
