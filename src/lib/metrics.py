@@ -230,7 +230,10 @@ def generate_5_matched_names(q_vector, db_vectors, db_names):
 
 
 def confusion_matrix(data1, data2, gt, threshold, euclidean=True):
-    tp, tn, fp, fn = 0
+    tp = 0
+    tn = 0
+    fp = 0
+    fn = 0
     if euclidean:
         for item in gt:
             l2_distances = np.squeeze(euclidean_distances(data1[item[0]].reshape(1, -1), data2))
