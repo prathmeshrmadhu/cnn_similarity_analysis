@@ -43,6 +43,9 @@ def embedding_features(args):
     transforms = get_transforms(args)
 
     net = TripletSiameseNetwork(args.model)
+    if args.net:
+        state_dict = torch.load(args.net + args.checkpoint)
+        net.load_state_dict(state_dict)
     net.to(args.device)
     net.eval()
 
