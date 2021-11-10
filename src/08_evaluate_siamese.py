@@ -32,14 +32,14 @@ def evaluation(args):
     tp_d2d3, tn_d2d3, fp_d2d3, fn_d2d3 = confusion_matrix(p2_vectors, p3_vectors, gt_p2p3, args.threshold_d)
     tp_d1d3, tn_d1d3, fp_d1d3, fn_d1d3 = confusion_matrix(p1_vectors, p3_vectors, gt_p1p3, args.threshold_d)
     print('total TP:{}'.format(tp_d1d2 + tp_d2d3 + tp_d1d3))
-    print('total FP:{}'.format(tp_d1d2 + tp_d2d3 + tp_d1d3))
+    print('total FP:{}'.format(fp_d1d2 + fp_d2d3 + fp_d1d3))
     mAP = (tp_d1d2 + tp_d2d3 + tp_d1d3) / (tp_d1d2 + tp_d2d3 + tp_d1d3 + fp_d1d2 + fp_d2d3 + fp_d1d3)
 
     tp_d1d2, tn_d1d2, fp_d1d2, fn_d1d2 = confusion_matrix(p1_vectors, p2_vectors, gt_p1p2, args.threshold_s, 'cosine')
     tp_d2d3, tn_d2d3, fp_d2d3, fn_d2d3 = confusion_matrix(p2_vectors, p3_vectors, gt_p2p3, args.threshold_s, 'cosine')
     tp_d1d3, tn_d1d3, fp_d1d3, fn_d1d3 = confusion_matrix(p1_vectors, p3_vectors, gt_p1p3, args.threshold_s, 'cosine')
     print('total TP with cosine similarity:{}'.format(tp_d1d2 + tp_d2d3 + tp_d1d3))
-    print('total FP with cosine similarity:{}'.format(tp_d1d2 + tp_d2d3 + tp_d1d3))
+    print('total FP with cosine similarity:{}'.format(fp_d1d2 + fp_d2d3 + fp_d1d3))
     mAP_cos = (tp_d1d2 + tp_d2d3 + tp_d1d3) / (tp_d1d2 + tp_d2d3 + tp_d1d3 + fp_d1d2 + fp_d2d3 + fp_d1d3)
 
 
