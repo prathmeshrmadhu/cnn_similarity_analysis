@@ -229,12 +229,12 @@ def generate_5_matched_names(q_vector, db_vectors, db_names):
     return matched_names
 
 
-def confusion_matrix(data1, data2, gt, threshold, euclidean=True):
+def confusion_matrix(data1, data2, gt, threshold, mode='euclidean'):
     tp = 0
     tn = 0
     fp = 0
     fn = 0
-    if euclidean:
+    if mode == 'euclidean':
         for item in gt:
             l2_distances = np.squeeze(euclidean_distances(data1[item[0]].reshape(1, -1), data2))
             if l2_distances[item[1]] <= threshold:
@@ -246,7 +246,7 @@ def confusion_matrix(data1, data2, gt, threshold, euclidean=True):
             l2_distance_n = np.delete(l2_distances, item[1])
             tn += l2_distance_n[l2_distance_n > threshold].shape[0]
             fp += l2_distance_n[l2_distance_n <= threshold].shape[0]
-    else:
+    elif mode == 'cosine':
         for item in gt:
             cos_similarity = np.squeeze(cosine_similarity(data1[item[0]].reshape(1, -1), data2))
             if cos_similarity[item[1]] >= threshold:
