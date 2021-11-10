@@ -13,6 +13,7 @@ def siamese_args():
     group = parser.add_argument_group('feature extraction options')
     aa('--transpose', default=-1, type=int, help="one of the 7 PIL transpose options ")
     aa('--train', default=False, action="store_true", help="run Siamese training")
+    aa('--pca', default=False, action="store_true", help="use pca or not")
     aa('--start', default=False, action="store_true", help="run Siamese training without lodading checkpoint")
     aa('--track2', default=False, action="store_true", help="run feature extraction for track2")
     aa('--device', default="cuda:0", help='pytroch device')
