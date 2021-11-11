@@ -44,8 +44,10 @@ def train(args):
         train_images = d1_images + d2_images + d3_images
 
     if args.train_dataset == 'isc2021':
+        rs = np.random.RandomState()
         TRAIN = '/cluster/shared_dataset/isc2021/training_images/training_images/'
         train_images = [TRAIN + l.strip() + '.jpg' for l in open(args.train_list, "r")]
+        train_images = [train_images[i] for i in rs.choice(len(train_images), size=10000, replace=False)]
 
     transforms = get_transforms(args)
     train_dataset = ImageList(train_images, transform=transforms)
