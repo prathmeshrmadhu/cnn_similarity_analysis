@@ -218,7 +218,7 @@ class TripletSiameseNetwork(nn.Module):
             x = self.head.layer4(x)
             x = self.gem(x)
             x = self.flatten(x)
-            x = self.fc1(x)
+            # x = self.fc1(x)
         else:
             x = self.head(x)
             x = self.fc2(x)
