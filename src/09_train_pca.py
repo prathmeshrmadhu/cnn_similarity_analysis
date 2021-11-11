@@ -69,15 +69,24 @@ def train(args):
     faiss.write_VectorTransform(pca, args.pca_file)
 
     if args.val_dataset == 'image_collation':
+        d1_images = [args.d1 + 'illustration/' + l.strip() for l in open(args.d1 + 'files.txt', "r")]
+        d2_images = [args.d2 + 'illustration/' + l.strip() for l in open(args.d2 + 'files.txt', "r")]
+        d3_images = [args.d3 + 'illustration/' + l.strip() for l in open(args.d3 + 'files.txt', "r")]
+
+        val_images = d1_images + d2_images + d3_images
+        val_dataset = ImageList(val_images, transform=transforms)
+        val_loader = DataLoader(dataset=val_dataset, shuffle=False, num_workers=args.num_workers,
+                                batch_size=args.batch_size)
+        val_features = generate_features(args, net, val_images, val_loader)
 
         if args.pca:
-            d1_features = pca.apply_py(train_features[:len(d1_images)])
-            d2_features = pca.apply_py(train_features[len(d1_images): len(d1_images)+len(d2_images)])
-            d3_features = pca.apply_py(train_features[len(d1_images)+len(d2_images): len(train_features)])
+            d1_features = pca.apply_py(val_features[:len(d1_images)])
+            d2_features = pca.apply_py(val_features[len(d1_images): len(d1_images)+len(d2_images)])
+            d3_features = pca.apply_py(val_features[len(d1_images)+len(d2_images): len(train_features)])
         else:
-            d1_features = train_features[:len(d1_images)]
-            d2_features = train_features[len(d1_images): len(d1_images)+len(d2_images)]
-            d3_features = train_features[len(d1_images)+len(d2_images): len(train_features)]
+            d1_features = val_features[:len(d1_images)]
+            d2_features = val_features[len(d1_images): len(d1_images)+len(d2_images)]
+            d3_features = val_features[len(d1_images)+len(d2_images): len(train_features)]
 
         gt_d1d2 = read_config(args.gt_list + 'D1-D2.json')
         gt_d2d3 = read_config(args.gt_list + 'D2-D3.json')
