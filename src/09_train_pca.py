@@ -45,7 +45,7 @@ def train(args):
 
     if args.train_dataset == 'isc2021':
         TRAIN = '/cluster/shared_dataset/isc2021/training_images/training_images/'
-        train_images = [TRAIN + l.strip() for l in open(args.train_list, "r")]
+        train_images = [TRAIN + l.strip() + '.jpg' for l in open(args.train_list, "r")]
 
     transforms = get_transforms(args)
     train_dataset = ImageList(train_images, transform=transforms)
