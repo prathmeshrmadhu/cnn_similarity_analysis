@@ -15,8 +15,8 @@ import joblib
 import faiss
 
 
-def generate_pca_features(features, estimator, image_names, save_path, pca=True):
-    if pca:
+def generate_pca_features(features, image_names, save_path, estimator=None):
+    if estimator:
         print(f"Apply PCA {estimator.d_in} -> {estimator.d_out}")
         pca_features = estimator.apply_py(features)
     else:
@@ -80,9 +80,9 @@ def embedding_features(args):
         p2_features = generate_features(args, net, p2_images, p2_loader)
         p3_features = generate_features(args, net, p3_images, p3_loader)
 
-        generate_pca_features(p1_features, pca, p1_images, args.p1_f, args.pca)
-        generate_pca_features(p2_features, pca, p2_images, args.p2_f, args.pca)
-        generate_pca_features(p3_features, pca, p3_images, args.p3_f, args.pca)
+        generate_pca_features(p1_features, p1_images, args.p1_f)
+        generate_pca_features(p2_features, p2_images, args.p2_f)
+        generate_pca_features(p3_features, p3_images, args.p3_f)
 
 
 if __name__ == "__main__":
