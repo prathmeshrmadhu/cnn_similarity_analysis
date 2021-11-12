@@ -5,7 +5,7 @@ import torch
 import time
 from torch.utils.data import DataLoader
 from src.lib.siamese.args import siamese_args
-from src.lib.siamese.model import load_siamese_checkpoint, TripletSiameseNetwork
+from src.lib.siamese.model import load_siamese_checkpoint, TripletSiameseNetwork, ResNet50Conv4
 from src.data.siamese_dataloader import ImageList
 from src.lib.siamese.dataset import get_transforms
 from sklearn.decomposition import PCA
@@ -14,24 +14,27 @@ import joblib
 import faiss
 
 
-def generate_pca_features(features, estimator, image_names, save_path):
-    print(f"Apply PCA {estimator.d_in} -> {estimator.d_out}")
-    pca_features = estimator.apply_py(features)
+def generate_pca_features(features, estimator, image_names, save_path, pca=True):
+    if pca:
+        print(f"Apply PCA {estimator.d_in} -> {estimator.d_out}")
+        pca_features = estimator.apply_py(features)
+    else:
+        pca_features = features
     write_pickle_descriptors(pca_features, image_names, save_path)
     print(f"writing descriptors to {save_path}")
 
 
 def generate_features(args, net, image_names, data_loader):
     features_list = list()
-    images_list = list()
+    # images_list = list()
     t0 = time.time()
     with torch.no_grad():
         for no, data in enumerate(data_loader):
             images = data
             images = images.to(args.device)
-            feats = net.forward_once(images)
+            feats = net.forward(images)
             features_list.append(feats.cpu().numpy())
-            images_list.append(images.cpu().numpy())
+            # images_list.append(images.cpu().numpy())
     t1 = time.time()
     features = np.vstack(features_list)
     print(f"image_description_time: {(t1 - t0) / len(image_names):.5f} s per image")
@@ -42,15 +45,18 @@ def embedding_features(args):
     # defining the transforms
     transforms = get_transforms(args)
 
-    net = TripletSiameseNetwork(args.model)
+    resnet_50 = torch.hub.load('pytorch/vision:v0.6.0', 'resnet50', pretrained=True)
+    net = ResNet50Conv4(resnet_50)
+    # net = TripletSiameseNetwork(args.model)
     if args.net:
         state_dict = torch.load(args.net + args.checkpoint)
         net.load_state_dict(state_dict)
     net.to(args.device)
     net.eval()
 
-    print("Load PCA matrix", args.pca_file)
-    pca = faiss.read_VectorTransform(args.pca_file)
+    if args.pca:
+        print("Load PCA matrix", args.pca_file)
+        pca = faiss.read_VectorTransform(args.pca_file)
 
 
     if args.val_dataset == "image_collation":
@@ -73,9 +79,9 @@ def embedding_features(args):
         p2_features = generate_features(args, net, p2_images, p2_loader)
         p3_features = generate_features(args, net, p3_images, p3_loader)
 
-        generate_pca_features(p1_features, pca, p1_images, args.p1_f)
-        generate_pca_features(p2_features, pca, p2_images, args.p2_f)
-        generate_pca_features(p3_features, pca, p3_images, args.p3_f)
+        generate_pca_features(p1_features, pca, p1_images, args.p1_f, args.pca)
+        generate_pca_features(p2_features, pca, p2_images, args.p2_f, args.pca)
+        generate_pca_features(p3_features, pca, p3_images, args.p3_f, args.pca)
 
 
 if __name__ == "__main__":
