@@ -3,6 +3,7 @@ sys.path.append('/cluster/yinan/cnn_similarity_analysis/')
 import numpy as np
 import torch
 import time
+import torchvision
 from torch.utils.data import DataLoader
 from src.lib.siamese.args import siamese_args
 from src.lib.siamese.model import load_siamese_checkpoint, TripletSiameseNetwork, ResNet50Conv4
@@ -45,7 +46,7 @@ def embedding_features(args):
     # defining the transforms
     transforms = get_transforms(args)
 
-    resnet_50 = torch.hub.load('pytorch/vision:v0.6.0', 'resnet50', pretrained=True)
+    resnet_50 = torchvision.models.resnet50(pretrained=True)
     net = ResNet50Conv4(resnet_50)
     # net = TripletSiameseNetwork(args.model)
     if args.net:
