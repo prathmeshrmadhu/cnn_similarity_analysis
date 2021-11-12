@@ -98,7 +98,15 @@ def load_siamese_checkpoint(name, checkpoint_file):
         model = timm.create_model('vit_large_patch16_384', pretrained=True)
         model.eval()
         return model
-    
+
+    elif name == "resnet50_conv4":
+        print('--------------------------------------------------------------')
+        print('used model: resnet50_conv4')
+        print('--------------------------------------------------------------')
+        model = torch.hub.load('pytorch/vision:v0.6.0', 'resnet50', pretrained=True)
+        model.eval()
+        return model
+
     # TODO: Train from scratch if the network weights are not available
     else:
         print('--------------------------------------------------------------')
@@ -237,3 +245,14 @@ class TripletSiameseNetwork(nn.Module):
         score_positive = 1 - self.cos(output1, output2)
         score_negative = 1 - self.cos(output1, output3)
         return score_positive, score_negative
+
+
+class ResNet50Conv4(nn.Module):
+    def __init__(self, original_model):
+        super(ResNet50Conv4, self).__init__()
+        self.features = nn.Sequential(*list(original_model.children())[:-3])
+
+    def forward(self, x):
+        x = self.features(x)
+        return x
+
