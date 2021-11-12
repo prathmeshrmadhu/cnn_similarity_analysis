@@ -321,7 +321,7 @@ def calculate_distance(ground_truth, data1, data2):
 
 
 def global_average_precision(ground_truth, data1, data2, dataset=None):
-    if dataset == 'image collation'
+    if dataset == 'image collation':
         distance_m = euclidean_distances(data1, data2)
         similarity_m = cosine_similarity(data1, data2)
         predictions = np.argsort(distance_m, axis=1)[:, 0]
