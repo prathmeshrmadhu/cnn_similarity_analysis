@@ -1,7 +1,7 @@
 import sys
 sys.path.append('/cluster/yinan/cnn_similarity_analysis/')
 from lib.io import *
-from lib.metrics import generate_5_matched_names, confusion_matrix, calculate_top_accuracy
+from lib.metrics import generate_5_matched_names, confusion_matrix, calculate_top_accuracy, global_average_precision
 from src.lib.siamese.args import siamese_args
 
 
@@ -42,6 +42,11 @@ def evaluation(args):
     print('total FP with cosine similarity:{}'.format(fp_d1d2 + fp_d2d3 + fp_d1d3))
     mAP_cos = (tp_d1d2 + tp_d2d3 + tp_d1d3) / (tp_d1d2 + tp_d2d3 + tp_d1d3 + fp_d1d2 + fp_d2d3 + fp_d1d3)
 
+    gap_p1p2, gap_p1p2_cos = global_average_precision(gt_p1p2, p1_vectors, p2_vectors, dataset='image collation')
+    gap_p2p3, gap_p2p3_cos = global_average_precision(gt_p2p3, p2_vectors, p3_vectors, dataset='image collation')
+    gap_p1p3, gap_p1p3_cos = global_average_precision(gt_p1p3, p1_vectors, p3_vectors, dataset='image collation')
+
+
 
     # print('mAP: {}'.format(mAP))
     print('TOP_1 accuracy :{}'.format(accuracy))
@@ -52,6 +57,14 @@ def evaluation(args):
     print('\n')
     print('mAP: {}'.format(mAP))
     print('mAP with cosine similarity: {}'.format(mAP_cos))
+
+    print('GAP between p1 and p2:{}'.format(gap_p1p2))
+    print('GAP between p2 and p3:{}'.format(gap_p2p3))
+    print('GAP between p1 and p3:{}'.format(gap_p1p3))
+
+    print('GAP between p1 and p2 with cosine similarity:{}'.format(gap_p1p2_cos))
+    print('GAP between p2 and p3 with cosine similarity:{}'.format(gap_p2p3_cos))
+    print('GAP between p1 and p3 with cosine similarity:{}'.format(gap_p1p3_cos))
 
 
     # fw = open(args.matched_f, 'wb')
