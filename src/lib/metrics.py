@@ -5,6 +5,7 @@ from dataclasses import astuple, dataclass
 from typing import List, Optional, Tuple
 from collections import defaultdict
 import numpy as np
+import pandas as pd
 from sklearn.metrics.pairwise import euclidean_distances, cosine_similarity
 import random
 
@@ -318,3 +319,32 @@ def calculate_distance(ground_truth, data1, data2):
     # mean_n_similarity = np.mean(np.array(s_negative))
     return d_positive, d_negative, s_positive, s_negative
 
+
+def global_average_precision(ground_truth, data1, data2, dataset=None):
+    if dataset == 'image collation'
+        distance_m = euclidean_distances(data1, data2)
+        similarity_m = cosine_similarity(data1, data2)
+        predictions = np.argsort(distance_m, axis=1)[:, 0]
+        confidences = np.sort(distance_m, axis=1)[:, 0]
+        predictions_s = np.argsort(-similarity_m, axis=1)[:, 0]
+        confidences_s = np.sort(-similarity_m, axis=1)[:, 0]
+        correct = np.zeros(predictions.shape[0])
+        correct_s = np.zeros(predictions.shape[0])
+        for item in ground_truth:
+            if predictions[item[0]] == item[1]:
+                correct[item[0]] = 1
+            if predictions_s[item[0]] == item[1]:
+                correct_s[item[0]] = 1
+
+        x = pd.DataFrame({'conf': confidences, 'corre': correct})
+        x_s = pd.DataFrame({'conf': confidences_s, 'corre': correct_s})
+        x.sort_values('conf', ascending=True, inplace=True, na_position='last')
+        x_s.sort_values('conf', ascending=False, inplace=True, na_position='last')
+        x['prec_k'] = x.corre.cumsum() / (np.arange(len(x)) + 1)
+        x_s['prec_k'] = x_s.corre.cumsum() / (np.arange(len(x_s)) + 1)
+        x['term'] = x.prec_k * x.corre
+        x_s['term'] = x_s.prec_k * x_s.corre
+        gap = x.term.sum() / len(ground_truth)
+        gap_s = x_s.term.sum() / len(ground_truth)
+
+    return gap, gap_s
