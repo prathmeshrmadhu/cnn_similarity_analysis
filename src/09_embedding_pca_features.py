@@ -92,9 +92,9 @@ def embedding_features(args):
         p1_features = generate_features(args, net, p1_images, p1_loader)
         p2_features = generate_features(args, net, p2_images, p2_loader)
         p3_features = generate_features(args, net, p3_images, p3_loader)
-        d1_features = generate_features(args, net, p1_images, p1_loader)
-        d2_features = generate_features(args, net, p2_images, p2_loader)
-        d3_features = generate_features(args, net, p3_images, p3_loader)
+        d1_features = generate_features(args, net, p1_images, d1_loader)
+        d2_features = generate_features(args, net, p2_images, d2_loader)
+        d3_features = generate_features(args, net, p3_images, d3_loader)
 
         generate_pca_features(p1_features, p1_images, args.p1_f)
         generate_pca_features(p2_features, p2_images, args.p2_f)
