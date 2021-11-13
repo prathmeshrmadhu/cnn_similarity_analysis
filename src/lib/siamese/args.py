@@ -64,6 +64,9 @@ def siamese_args():
     aa('--p1_f', default=None, help="write p1 features to this file")
     aa('--p2_f', default=None, help="write p2 features to this file")
     aa('--p3_f', default=None, help="write p3 features to this file")
+    aa('--d1_f', default=None, help="write d1 features to this file")
+    aa('--d2_f', default=None, help="write d2 features to this file")
+    aa('--d3_f', default=None, help="write d3 features to this file")
 
     args = parser.parse_args()
     args.scales = [float(x) for x in args.scales.split(",")]
