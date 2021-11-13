@@ -5,6 +5,12 @@ from lib.metrics import feature_map_matching, calculate_gap
 from src.lib.siamese.args import siamese_args
 
 
+def reshape_feature_map(input_map):
+    output = input_map.transpose((0, 2, 3, 1))
+    output_map = output.reshape((output.shape[0], output.shape[1]*output.shape[2], output.shape[3]))
+    return output_map
+
+
 def evaluation(args):
     # q_names, q_vectors = read_pickle_descriptors(args.query_f)
     # db_names, db_vectors = read_pickle_descriptors(args.db_f)
@@ -13,9 +19,9 @@ def evaluation(args):
         p1_names, p1_vectors = read_pickle_descriptors(args.p1_f)
         p2_names, p2_vectors = read_pickle_descriptors(args.p2_f)
         p3_names, p3_vectors = read_pickle_descriptors(args.p3_f)
-        p1_vectors = p1_vectors.transpose((0, 2, 3, 1))
-        p2_vectors = p2_vectors.transpose((0, 2, 3, 1))
-        p3_vectors = p3_vectors.transpose((0, 2, 3, 1))
+        p1_vectors = reshape_feature_map(p1_vectors)
+        p2_vectors = reshape_feature_map(p2_vectors)
+        p3_vectors = reshape_feature_map(p3_vectors)
         gt_p1p2 = read_config(args.gt_list + 'P1-P2.json')
         gt_p2p3 = read_config(args.gt_list + 'P2-P3.json')
         gt_p1p3 = read_config(args.gt_list + 'P1-P3.json')
