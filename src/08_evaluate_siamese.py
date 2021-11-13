@@ -50,18 +50,19 @@ def evaluation(args):
 
         print('Evaluation results:\n')
         print('Accuracy p1-p2: {}'.format(accuracy_p1p2))
-        print('Accuracy p2-p3: {}'.format(accuracy_p2p3))
         print('Accuracy p1-p3: {}'.format(accuracy_p1p3))
+        print('Accuracy p2-p3: {}'.format(accuracy_p2p3))
         print('Accuracy d1-d2: {}'.format(accuracy_d1d2))
-        print('Accuracy d2-d3: {}'.format(accuracy_d2d3))
         print('Accuracy d1-d3: {}'.format(accuracy_d1d3))
+        print('Accuracy d2-d3: {}'.format(accuracy_d2d3))
         print("\n")
         print('GAP p1-p2: {}'.format(gap_p1p2))
-        print('GAP p2-p3: {}'.format(gap_p2p3))
         print('GAP p1-p3: {}'.format(gap_p1p3))
+        print('GAP p2-p3: {}'.format(gap_p2p3))
         print('GAP d1-d2: {}'.format(gap_d1d2))
-        print('GAP d2-d3: {}'.format(gap_d2d3))
         print('GAP d1-d3: {}'.format(gap_d1d3))
+        print('GAP d2-d3: {}'.format(gap_d2d3))
+
 
 
 
