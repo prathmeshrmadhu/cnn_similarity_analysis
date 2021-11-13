@@ -9,7 +9,7 @@ def evaluation(args):
     # q_names, q_vectors = read_pickle_descriptors(args.query_f)
     # db_names, db_vectors = read_pickle_descriptors(args.db_f)
 
-    if args.val_dataset == 'image collation':
+    if args.val_dataset == 'image_collation':
         p1_names, p1_vectors = read_pickle_descriptors(args.p1_f)
         p2_names, p2_vectors = read_pickle_descriptors(args.p2_f)
         p3_names, p3_vectors = read_pickle_descriptors(args.p3_f)
