@@ -348,3 +348,38 @@ def global_average_precision(ground_truth, data1, data2, dataset=None):
         gap_s = x_s.term.sum() / len(ground_truth)
 
     return gap, gap_s
+
+
+def feature_map_matching(gt, data1, data2):
+    matched_list = []
+    confidence_list = []
+    hit = 0
+    correct_list = np.zeros(data1.shape[0])
+    for vecs_1 in data1:
+        similarity_list = []
+        for vecs_2 in data2:
+            cos = cosine_similarity(vecs_1, vecs_2)
+            similarity = np.sum(np.diag(cos)) / vecs_1.shape[0]
+            similarity_list.append(similarity)
+        sim = np.array(similarity_list)
+        matched_ind = np.argsort(-sim)[0]
+        matched_list.append(matched_ind)
+        confidence_list.append(sim[matched_ind])
+
+    for item in gt:
+        if matched_list[item[0]] == item[1]:
+            hit += 1
+            correct_list[item[0]] = 1
+
+    accuracy = hit / len(gt)
+    return np.array(confidence_list), np.array(correct_list), accuracy
+
+
+def calculate_gap(confidence, correct, gt):
+    x = pd.DataFrame({'conf': confidence, 'corre': correct})
+    x.sort_values('conf', ascending=True, inplace=True, na_position='last')
+    x['prec_k'] = x.corre.cumsum() / (np.arange(len(x)) + 1)
+    x['term'] = x.prec_k * x.corre
+    gap = x.term.sum() / len(gt)
+
+    return gap

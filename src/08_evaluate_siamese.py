@@ -1,7 +1,7 @@
 import sys
 sys.path.append('/cluster/yinan/cnn_similarity_analysis/')
 from lib.io import *
-from lib.metrics import generate_5_matched_names, confusion_matrix, calculate_top_accuracy, global_average_precision
+from lib.metrics import feature_map_matching, calculate_gap
 from src.lib.siamese.args import siamese_args
 
 
@@ -9,62 +9,33 @@ def evaluation(args):
     # q_names, q_vectors = read_pickle_descriptors(args.query_f)
     # db_names, db_vectors = read_pickle_descriptors(args.db_f)
 
-    p1_names, p1_vectors = read_pickle_descriptors(args.p1_f)
-    p2_names, p2_vectors = read_pickle_descriptors(args.p2_f)
-    p3_names, p3_vectors = read_pickle_descriptors(args.p3_f)
-    gt_p1p2 = read_config(args.gt_list + 'P1-P2.json')
-    gt_p2p3 = read_config(args.gt_list + 'P2-P3.json')
-    gt_p1p3 = read_config(args.gt_list + 'P1-P3.json')
+    if args.val_dataset == 'image collation':
+        p1_names, p1_vectors = read_pickle_descriptors(args.p1_f)
+        p2_names, p2_vectors = read_pickle_descriptors(args.p2_f)
+        p3_names, p3_vectors = read_pickle_descriptors(args.p3_f)
+        p1_vectors = p1_vectors.transpose((0, 2, 3, 1))
+        p2_vectors = p2_vectors.transpose((0, 2, 3, 1))
+        p3_vectors = p3_vectors.transpose((0, 2, 3, 1))
+        gt_p1p2 = read_config(args.gt_list + 'P1-P2.json')
+        gt_p2p3 = read_config(args.gt_list + 'P2-P3.json')
+        gt_p1p3 = read_config(args.gt_list + 'P1-P3.json')
 
-    matched_list = []
-    precision = []
+        confidence_p1p2, correct_p1p2, accuracy_p1p2 = feature_map_matching(gt_p1p2, p1_vectors, p2_vectors)
+        confidence_p2p3, correct_p2p3, accuracy_p2p3 = feature_map_matching(gt_p2p3, p2_vectors, p3_vectors)
+        confidence_p1p3, correct_p1p3, accuracy_p1p3 = feature_map_matching(gt_p1p3, p1_vectors, p3_vectors)
+        gap_p1p2 = calculate_gap(confidence_p1p2, correct_p1p2, gt_p1p2)
+        gap_p2p3 = calculate_gap(confidence_p2p3, correct_p2p3, gt_p2p3)
+        gap_p1p3 = calculate_gap(confidence_p1p3, correct_p1p3, gt_p1p3)
 
-    hit_p1p2, hit_5_p1p2, hit_p1p2_cos, hit_5_p1p2_cos = calculate_top_accuracy(gt_p1p2, p1_vectors, p2_vectors)
-    hit_p2p3, hit_5_p2p3, hit_p2p3_cos, hit_5_p2p3_cos = calculate_top_accuracy(gt_p2p3, p2_vectors, p3_vectors)
-    hit_p1p3, hit_5_p1p3, hit_p1p3_cos, hit_5_p1p3_cos = calculate_top_accuracy(gt_p1p3, p1_vectors, p3_vectors)
+        print('Evaluation results:\n')
+        print('Accuracy p1-p2: {}'.format(accuracy_p1p2))
+        print('Accuracy p2-p3: {}'.format(accuracy_p2p3))
+        print('Accuracy p1-p3: {}'.format(accuracy_p1p3))
+        print("\n")
+        print('GAP p1-p2: {}'.format(gap_p1p2))
+        print('GAP p2-p3: {}'.format(gap_p2p3))
+        print('GAP p1-p3: {}'.format(gap_p1p3))
 
-    accuracy = (hit_p1p2 + hit_p2p3 + hit_p1p3) / (len(gt_p1p2) + len(gt_p1p2) + len(gt_p1p2))
-    accuracy_5 = (hit_5_p1p2 + hit_5_p2p3 + hit_5_p1p3) / (len(gt_p1p2) + len(gt_p1p2) + len(gt_p1p2))
-    accuracy_cos = (hit_p1p2_cos + hit_p2p3_cos + hit_p1p3_cos) / (len(gt_p1p2) + len(gt_p1p2) + len(gt_p1p2))
-    accuracy_5_cos = (hit_5_p1p2_cos + hit_5_p2p3_cos + hit_5_p1p3_cos) / (len(gt_p1p2) + len(gt_p1p2) + len(gt_p1p2))
-
-    tp_d1d2, tn_d1d2, fp_d1d2, fn_d1d2 = confusion_matrix(p1_vectors, p2_vectors, gt_p1p2, args.threshold_d)
-    tp_d2d3, tn_d2d3, fp_d2d3, fn_d2d3 = confusion_matrix(p2_vectors, p3_vectors, gt_p2p3, args.threshold_d)
-    tp_d1d3, tn_d1d3, fp_d1d3, fn_d1d3 = confusion_matrix(p1_vectors, p3_vectors, gt_p1p3, args.threshold_d)
-    print('total TP:{}'.format(tp_d1d2 + tp_d2d3 + tp_d1d3))
-    print('total FP:{}'.format(fp_d1d2 + fp_d2d3 + fp_d1d3))
-    mAP = (tp_d1d2 + tp_d2d3 + tp_d1d3) / (tp_d1d2 + tp_d2d3 + tp_d1d3 + fp_d1d2 + fp_d2d3 + fp_d1d3)
-
-    tp_d1d2, tn_d1d2, fp_d1d2, fn_d1d2 = confusion_matrix(p1_vectors, p2_vectors, gt_p1p2, args.threshold_s, 'cosine')
-    tp_d2d3, tn_d2d3, fp_d2d3, fn_d2d3 = confusion_matrix(p2_vectors, p3_vectors, gt_p2p3, args.threshold_s, 'cosine')
-    tp_d1d3, tn_d1d3, fp_d1d3, fn_d1d3 = confusion_matrix(p1_vectors, p3_vectors, gt_p1p3, args.threshold_s, 'cosine')
-    print('total TP with cosine similarity:{}'.format(tp_d1d2 + tp_d2d3 + tp_d1d3))
-    print('total FP with cosine similarity:{}'.format(fp_d1d2 + fp_d2d3 + fp_d1d3))
-    mAP_cos = (tp_d1d2 + tp_d2d3 + tp_d1d3) / (tp_d1d2 + tp_d2d3 + tp_d1d3 + fp_d1d2 + fp_d2d3 + fp_d1d3)
-
-    gap_p1p2, gap_p1p2_cos = global_average_precision(gt_p1p2, p1_vectors, p2_vectors, dataset='image collation')
-    gap_p2p3, gap_p2p3_cos = global_average_precision(gt_p2p3, p2_vectors, p3_vectors, dataset='image collation')
-    gap_p1p3, gap_p1p3_cos = global_average_precision(gt_p1p3, p1_vectors, p3_vectors, dataset='image collation')
-
-
-
-    # print('mAP: {}'.format(mAP))
-    print('TOP_1 accuracy :{}'.format(accuracy))
-    print('TOP_5 accuracy :{}'.format(accuracy_5))
-    print('\n')
-    print('TOP_1 accuracy with cosine similarity:{}'.format(accuracy_cos))
-    print('TOP_5 accuracy with cosine similarity:{}'.format(accuracy_5_cos))
-    print('\n')
-    print('mAP: {}'.format(mAP))
-    print('mAP with cosine similarity: {}'.format(mAP_cos))
-
-    print('GAP between p1 and p2:{}'.format(gap_p1p2))
-    print('GAP between p2 and p3:{}'.format(gap_p2p3))
-    print('GAP between p1 and p3:{}'.format(gap_p1p3))
-
-    print('GAP between p1 and p2 with cosine similarity:{}'.format(gap_p1p2_cos))
-    print('GAP between p2 and p3 with cosine similarity:{}'.format(gap_p2p3_cos))
-    print('GAP between p1 and p3 with cosine similarity:{}'.format(gap_p1p3_cos))
 
 
     # fw = open(args.matched_f, 'wb')
