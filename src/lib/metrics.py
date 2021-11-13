@@ -6,6 +6,8 @@ from typing import List, Optional, Tuple
 from collections import defaultdict
 import numpy as np
 import pandas as pd
+import torch.nn.functional as F
+import torch
 from sklearn.metrics.pairwise import euclidean_distances, cosine_similarity
 import random
 
@@ -358,8 +360,14 @@ def feature_map_matching(gt, data1, data2):
     for vecs_1 in data1:
         similarity_list = []
         for vecs_2 in data2:
-            cos = cosine_similarity(vecs_1, vecs_2)
-            similarity = np.sum(np.diag(cos)) / vecs_1.shape[0]
+            map_1 = torch.from_numpy(vecs_1)
+            map_2 = torch.from_numpy(vecs_2)
+            map_1.cuda()
+            map_2.cuda()
+            cos = F.cosine_similarity(map_1, map_2)
+            similarity = torch.sum(cos).cpu().numpy() / vecs_1.shape[0]
+            # cos = cosine_similarity(vecs_1, vecs_2)
+            # similarity = np.sum(np.diag(cos)) / vecs_1.shape[0]
             similarity_list.append(similarity)
         sim = np.array(similarity_list)
         matched_ind = np.argsort(-sim)[0]
