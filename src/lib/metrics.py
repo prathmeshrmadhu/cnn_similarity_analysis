@@ -358,21 +358,17 @@ def feature_map_matching(gt, data1, data2):
     hit = 0
     correct_list = np.zeros(data1.shape[0])
     for vecs_1 in data1:
-        similarity_list = []
-        for vecs_2 in data2:
-            map_1 = torch.from_numpy(vecs_1)
-            map_2 = torch.from_numpy(vecs_2)
-            map_1.cuda()
-            map_2.cuda()
-            cos = F.cosine_similarity(map_1, map_2)
-            similarity = torch.sum(cos).cpu().numpy() / vecs_1.shape[0]
-            # cos = cosine_similarity(vecs_1, vecs_2)
-            # similarity = np.sum(np.diag(cos)) / vecs_1.shape[0]
-            similarity_list.append(similarity)
-        sim = np.array(similarity_list)
-        matched_ind = np.argsort(-sim)[0]
+        map_1 = torch.from_numpy(vecs_1)
+        map_2 = torch.from_numpy(data2)
+        map_1.cuda()
+        map_2.cuda()
+        cos = F.cosine_similarity(map_1, map_2)
+        similarity = torch.sum(cos, axis=(1, 2)).cpu().numpy() / vecs_1.shape[0]
+        # cos = cosine_similarity(vecs_1, vecs_2)
+        # similarity = np.sum(np.diag(cos)) / vecs_1.shape[0]
+        matched_ind = np.argsort(-similarity)[0]
         matched_list.append(matched_ind)
-        confidence_list.append(sim[matched_ind])
+        confidence_list.append(similarity[matched_ind])
 
     for item in gt:
         if matched_list[item[0]] == item[1]:
