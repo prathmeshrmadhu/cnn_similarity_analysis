@@ -359,14 +359,14 @@ def feature_map_matching(gt, data1, data2):
     correct_list = np.zeros(data1.shape[0])
     for vecs_1 in data1:
         map_1 = torch.from_numpy(vecs_1)
-        map_1 = torch.unsqueeze(map_1, 0)
         map_2 = torch.from_numpy(data2)
         map_1.cuda()
         map_2.cuda()
+        map_1 = torch.unsqueeze(map_1, 0)
         cos = F.cosine_similarity(map_1, map_2)
-        similarity = torch.sum(cos, axis=(1, 2)).cpu().numpy() / vecs_1.shape[0]
+        similarity = torch.sum(cos, axis=(1, 2)) / (map_1.shape[2] * map_1.shape[3])
         # cos = cosine_similarity(vecs_1, vecs_2)
-        # similarity = np.sum(np.diag(cos)) / vecs_1.shape[0]
+        similarity = similarity.cpu().numpy()
         matched_ind = np.argsort(-similarity)[0]
         matched_list.append(matched_ind)
         confidence_list.append(similarity[matched_ind])
