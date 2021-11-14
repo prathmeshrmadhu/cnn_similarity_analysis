@@ -359,6 +359,7 @@ def feature_map_matching(gt, data1, data2):
     correct_list = np.zeros(data1.shape[0])
     for vecs_1 in data1:
         map_1 = torch.from_numpy(vecs_1)
+        map_1 = torch.unsqueeze(map_1, 0)
         map_2 = torch.from_numpy(data2)
         map_1.cuda()
         map_2.cuda()
