@@ -33,7 +33,7 @@ def generate_features(args, net, image_names, data_loader):
         for no, data in enumerate(data_loader):
             images = data
             images = images.to(args.device)
-            feats = net.forward(images)
+            feats = net.forward_once(images)
             features_list.append(feats.cpu().numpy())
             # images_list.append(images.cpu().numpy())
     t1 = time.time()
@@ -46,9 +46,9 @@ def embedding_features(args):
     # defining the transforms
     transforms = get_transforms(args)
 
-    resnet_50 = torchvision.models.resnet50(pretrained=True)
-    net = ResNet50Conv4(resnet_50)
-    # net = TripletSiameseNetwork(args.model)
+    # resnet_50 = torchvision.models.resnet50(pretrained=True)
+    # net = ResNet50Conv4(resnet_50)
+    net = TripletSiameseNetwork(args.model)
     if args.net:
         state_dict = torch.load(args.net + args.checkpoint)
         net.load_state_dict(state_dict)
