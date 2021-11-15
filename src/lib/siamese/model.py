@@ -115,7 +115,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         print('--------------------------------------------------------------')
         resnet = torchvision.models.resnet50(pretrained=True)
         model = ResNet50Conv4(resnet)
-        model.eval()
+        # model.eval()
         return model
 
     # TODO: Train from scratch if the network weights are not available
