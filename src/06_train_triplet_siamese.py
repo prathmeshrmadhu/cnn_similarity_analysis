@@ -89,8 +89,8 @@ def train(args, augmentations_list):
     #                               {'params': net.fc1.parameters(), 'lr': args.lr},
     #                               {'params': net.fc2.parameters(), 'lr': args.lr}],
     #                              lr=args.lr, weight_decay=args.weight_decay)
-    # optimizer = torch.optim.SGD(net.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
-    optimizer = torch.optim.Adam(net.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+    optimizer = torch.optim.SGD(net.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
+    # optimizer = torch.optim.Adam(net.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 
     loss_history = list()
     epoch_losses = list()
