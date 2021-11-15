@@ -10,6 +10,16 @@ from pytorch_pretrained_vit import ViT
 import timm
 
 
+class ResNet50Conv4(nn.Module):
+    def __init__(self, original_model):
+        super(ResNet50Conv4, self).__init__()
+        self.features = nn.Sequential(*list(original_model.children())[:-3])
+
+    def forward(self, x):
+        x = self.features(x)
+        return x
+
+
 def load_siamese_checkpoint(name, checkpoint_file):
     if name == "resnet50":
         print('--------------------------------------------------------------')
@@ -103,7 +113,8 @@ def load_siamese_checkpoint(name, checkpoint_file):
         print('--------------------------------------------------------------')
         print('used model: resnet50_conv4')
         print('--------------------------------------------------------------')
-        model = torch.hub.load('pytorch/vision:v0.6.0', 'resnet50', pretrained=True)
+        resnet = torchvision.models.resnet50(pretrained=True)
+        model = ResNet50Conv4(resnet)
         model.eval()
         return model
 
@@ -247,12 +258,5 @@ class TripletSiameseNetwork(nn.Module):
         return score_positive, score_negative
 
 
-class ResNet50Conv4(nn.Module):
-    def __init__(self, original_model):
-        super(ResNet50Conv4, self).__init__()
-        self.features = nn.Sequential(*list(original_model.children())[:-3])
 
-    def forward(self, x):
-        x = self.features(x)
-        return x
 
