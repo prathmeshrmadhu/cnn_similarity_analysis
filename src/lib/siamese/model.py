@@ -189,8 +189,8 @@ class TripletSiameseNetwork(nn.Module):
     def __init__(self, model, checkpoint='/cluster/yinan/isc2021/data/multigrain_joint_3B_0.5.pth'):
         super(TripletSiameseNetwork, self).__init__()
         self.head = load_siamese_checkpoint(model, checkpoint)
-        for p in self.parameters():
-            p.requires_grad = False
+        # for p in self.parameters():
+        #     p.requires_grad = False
         if model == "zoo_resnet50" or model == "multigrain_resnet50":
             self.map = True
         else:
@@ -240,7 +240,7 @@ class TripletSiameseNetwork(nn.Module):
             # x = self.fc1(x)
         else:
             x = self.head(x)
-            x = self.fc2(x)
+            # x = self.fc2(x)
         return x
 
     def calculate_distance(self, input1, input2):
@@ -250,11 +250,13 @@ class TripletSiameseNetwork(nn.Module):
         return score
 
     def forward(self, input1, input2, input3):
-        output1 = self.forward_once(input1)
-        output2 = self.forward_once(input2)
-        output3 = self.forward_once(input3)
-        score_positive = 1 - self.cos(output1, output2)
-        score_negative = 1 - self.cos(output1, output3)
+        out1 = self.forward_once(input1)
+        out2 = self.forward_once(input2)
+        out3 = self.forward_once(input3)
+        score_positive = 1 - (torch.sum(self.cos(out1, out2), axis=(2, 3)) / (out1.shape[2] * out1.shape[3]))
+        score_negative = 1 - (torch.sum(self.cos(out1, out3), axis=(2, 3)) / (out1.shape[2] * out1.shape[3]))
+        # score_positive = 1 - self.cos(out1, out3)
+        # score_negative = 1 - self.cos(out1, out3)
         return score_positive, score_negative
 
 
