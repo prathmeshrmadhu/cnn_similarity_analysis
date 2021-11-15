@@ -52,6 +52,9 @@ def extract_features(args):
     p1_images = [args.p1 + 'illustration/' + l.strip() for l in open(args.p1 + 'files.txt', "r")]
     p2_images = [args.p2 + 'illustration/' + l.strip() for l in open(args.p2 + 'files.txt', "r")]
     p3_images = [args.p3 + 'illustration/' + l.strip() for l in open(args.p3 + 'files.txt', "r")]
+    d1_images = [args.d1 + 'illustration/' + l.strip() for l in open(args.d1 + 'files.txt', "r")]
+    d2_images = [args.d2 + 'illustration/' + l.strip() for l in open(args.d2 + 'files.txt', "r")]
+    d3_images = [args.d3 + 'illustration/' + l.strip() for l in open(args.d3 + 'files.txt', "r")]
 
     # creating the dataset
     #query_images, database_images, _ = generate_extraction_dataset(query, ref, ref)
@@ -65,6 +68,10 @@ def extract_features(args):
     p1_dataset = ImageList(p1_images, transform=transforms)
     p2_dataset = ImageList(p2_images, transform=transforms)
     p3_dataset = ImageList(p3_images, transform=transforms)
+    d1_dataset = ImageList(d1_images, transform=transforms)
+    d2_dataset = ImageList(d2_images, transform=transforms)
+    d3_dataset = ImageList(d3_images, transform=transforms)
+
 
     # Loading the loaders/dataset
     # query_loader = DataLoader(dataset=query_dataset, shuffle=False, num_workers=args.num_workers,
@@ -76,6 +83,12 @@ def extract_features(args):
     p2_loader = DataLoader(dataset=p2_dataset, shuffle=False, num_workers=args.num_workers,
                                             batch_size=args.batch_size)
     p3_loader = DataLoader(dataset=p3_dataset, shuffle=False, num_workers=args.num_workers,
+                                            batch_size=args.batch_size)
+    d1_loader = DataLoader(dataset=d1_dataset, shuffle=False, num_workers=args.num_workers,
+                                            batch_size=args.batch_size)
+    d2_loader = DataLoader(dataset=d2_dataset, shuffle=False, num_workers=args.num_workers,
+                                            batch_size=args.batch_size)
+    d3_loader = DataLoader(dataset=d3_dataset, shuffle=False, num_workers=args.num_workers,
                                             batch_size=args.batch_size)
 
     # Loading the pretrained siamese model
@@ -93,6 +106,9 @@ def extract_features(args):
     generate_features(args, net, p1_images, p1_loader, args.p1_f)
     generate_features(args, net, p2_images, p2_loader, args.p2_f)
     generate_features(args, net, p3_images, p3_loader, args.p3_f)
+    generate_features(args, net, d1_images, d1_loader, args.d1_f)
+    generate_features(args, net, d2_images, d2_loader, args.d2_f)
+    generate_features(args, net, d3_images, d3_loader, args.d3_f)
 
 if __name__ == "__main__":
     
