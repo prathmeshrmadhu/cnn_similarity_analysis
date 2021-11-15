@@ -253,6 +253,7 @@ class TripletSiameseNetwork(nn.Module):
         out1 = self.forward_once(input1)
         out2 = self.forward_once(input2)
         out3 = self.forward_once(input3)
+        print(out1.shape)
         score_positive = 1 - (torch.sum(self.cos(out1, out2), axis=(2, 3)) / (out1.shape[2] * out1.shape[3]))
         score_negative = 1 - (torch.sum(self.cos(out1, out3), axis=(2, 3)) / (out1.shape[2] * out1.shape[3]))
         # score_positive = 1 - self.cos(out1, out3)
