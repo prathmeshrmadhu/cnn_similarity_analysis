@@ -96,12 +96,20 @@ def embedding_features(args):
         d2_features = generate_features(args, net, p2_images, d2_loader)
         d3_features = generate_features(args, net, p3_images, d3_loader)
 
-        generate_pca_features(p1_features, p1_images, args.p1_f)
-        generate_pca_features(p2_features, p2_images, args.p2_f)
-        generate_pca_features(p3_features, p3_images, args.p3_f)
-        generate_pca_features(d1_features, d1_images, args.d1_f)
-        generate_pca_features(d2_features, d2_images, args.d2_f)
-        generate_pca_features(d3_features, d3_images, args.d3_f)
+        if args.pca:
+            generate_pca_features(p1_features, p1_images, args.p1_f, pca)
+            generate_pca_features(p2_features, p2_images, args.p2_f, pca)
+            generate_pca_features(p3_features, p3_images, args.p3_f, pca)
+            generate_pca_features(d1_features, d1_images, args.d1_f, pca)
+            generate_pca_features(d2_features, d2_images, args.d2_f, pca)
+            generate_pca_features(d3_features, d3_images, args.d3_f, pca)
+        else:
+            generate_pca_features(p1_features, p1_images, args.p1_f)
+            generate_pca_features(p2_features, p2_images, args.p2_f)
+            generate_pca_features(p3_features, p3_images, args.p3_f)
+            generate_pca_features(d1_features, d1_images, args.d1_f)
+            generate_pca_features(d2_features, d2_images, args.d2_f)
+            generate_pca_features(d3_features, d3_images, args.d3_f)
 
 
 if __name__ == "__main__":
