@@ -196,25 +196,25 @@ class TripletSiameseNetwork(nn.Module):
         else:
             self.map = False
         self.flatten = nn.Flatten()
-        self.fc1 = nn.Sequential(
-            nn.Linear(2048, 1024),
-            # nn.Linear(2048 * 16 * 16, 1024),
-            nn.ReLU(inplace=True),
-            nn.Dropout2d(p=0.2),
-            nn.Linear(1024, 512),
-            nn.ReLU(inplace=True),
-            nn.Linear(512, 256)
-        )
-
-        self.fc2 = nn.Sequential(
-            # nn.ReLU(inplace=True),
-            nn.Linear(1000, 512),
-            nn.Dropout2d(p=0.2),
-            nn.ReLU(inplace=True),
-            nn.Linear(512, 256),
-            # nn.ReLU(inplace=True),
-            # nn.Linear(256, 128)
-        )
+        # self.fc1 = nn.Sequential(
+        #     nn.Linear(2048, 1024),
+        #     # nn.Linear(2048 * 16 * 16, 1024),
+        #     nn.ReLU(inplace=True),
+        #     nn.Dropout2d(p=0.2),
+        #     nn.Linear(1024, 512),
+        #     nn.ReLU(inplace=True),
+        #     nn.Linear(512, 256)
+        # )
+        #
+        # self.fc2 = nn.Sequential(
+        #     # nn.ReLU(inplace=True),
+        #     nn.Linear(1000, 512),
+        #     nn.Dropout2d(p=0.2),
+        #     nn.ReLU(inplace=True),
+        #     nn.Linear(512, 256),
+        #     # nn.ReLU(inplace=True),
+        #     # nn.Linear(256, 128)
+        # )
 
         self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
 
@@ -240,6 +240,8 @@ class TripletSiameseNetwork(nn.Module):
             # x = self.fc1(x)
         else:
             x = self.head(x)
+            x = self.gem(x)
+            x = self.flatten(x)
             # x = self.fc2(x)
         return x
 
@@ -253,10 +255,10 @@ class TripletSiameseNetwork(nn.Module):
         out1 = self.forward_once(input1)
         out2 = self.forward_once(input2)
         out3 = self.forward_once(input3)
-        score_positive = 1 - (torch.sum(self.cos(out1, out2), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
-        score_negative = 1 - (torch.sum(self.cos(out1, out3), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
-        # score_positive = 1 - self.cos(out1, out3)
-        # score_negative = 1 - self.cos(out1, out3)
+        # score_positive = 1 - (torch.sum(self.cos(out1, out2), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
+        # score_negative = 1 - (torch.sum(self.cos(out1, out3), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
+        score_positive = 1 - self.cos(out1, out2)
+        score_negative = 1 - self.cos(out1, out3)
         return score_positive, score_negative
 
 

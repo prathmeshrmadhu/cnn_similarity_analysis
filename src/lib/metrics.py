@@ -329,7 +329,7 @@ def global_average_precision(ground_truth, data1, data2, dataset=None):
         predictions = np.argsort(distance_m, axis=1)[:, 0]
         confidences = np.sort(distance_m, axis=1)[:, 0]
         predictions_s = np.argsort(-similarity_m, axis=1)[:, 0]
-        confidences_s = np.sort(-similarity_m, axis=1)[:, 0]
+        confidences_s = -np.sort(-similarity_m, axis=1)[:, 0]
         correct = np.zeros(predictions.shape[0])
         correct_s = np.zeros(predictions.shape[0])
         for item in ground_truth:
@@ -375,9 +375,22 @@ def feature_map_matching(gt, data1, data2):
         if matched_list[item[0]] == item[1]:
             hit += 1
             correct_list[item[0]] = 1
-
     accuracy = hit / len(gt)
     return np.array(confidence_list), np.array(correct_list), accuracy
+
+
+def feature_vector_matching(gt, data1, data2):
+    hit = 0
+    correct_list = np.zeros(data1.shape[0])
+    similarity = cosine_similarity(data1, data2)
+    predictions = np.argsort(-similarity, axis=1)[:, 0]
+    confidences = -np.sort(-similarity, axis=1)[:, 0]
+    for item in gt:
+        if predictions[item[0]] == item[1]:
+            hit += 1
+            correct_list[item[0]] = 1
+    accuracy = hit / len(gt)
+    return confidences, correct_list, accuracy
 
 
 def calculate_gap(confidence, correct, gt):
@@ -386,5 +399,4 @@ def calculate_gap(confidence, correct, gt):
     x['prec_k'] = x.corre.cumsum() / (np.arange(len(x)) + 1)
     x['term'] = x.prec_k * x.corre
     gap = x.term.sum() / len(gt)
-
     return gap
