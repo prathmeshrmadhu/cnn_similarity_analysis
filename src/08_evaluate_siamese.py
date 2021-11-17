@@ -35,7 +35,7 @@ def evaluation(args):
         gt_d2d3 = read_config(args.gt_list + 'D2-D3.json')
         gt_d1d3 = read_config(args.gt_list + 'D1-D3.json')
 
-        if args.mpa:
+        if p1_vectors.ndim == 4:
             confidence_p1p2, correct_p1p2, accuracy_p1p2 = feature_map_matching(gt_p1p2, p1_vectors, p2_vectors)
             confidence_p2p3, correct_p2p3, accuracy_p2p3 = feature_map_matching(gt_p2p3, p2_vectors, p3_vectors)
             confidence_p1p3, correct_p1p3, accuracy_p1p3 = feature_map_matching(gt_p1p3, p1_vectors, p3_vectors)
