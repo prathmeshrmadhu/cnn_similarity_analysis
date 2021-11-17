@@ -240,8 +240,8 @@ class TripletSiameseNetwork(nn.Module):
             # x = self.fc1(x)
         else:
             x = self.head(x)
-            x = self.gem(x)
-            x = self.flatten(x)
+            # x = self.gem(x)
+            # x = self.flatten(x)
             # x = self.fc2(x)
         return x
 
