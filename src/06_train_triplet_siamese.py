@@ -38,20 +38,22 @@ def train(args, augmentations_list):
     gt_d1d3 = read_config(args.gt_list + 'D1-D3.json')
 
     # creating the dataset
-    query_train = []
-    p_train = []
-    n_train = []
-
-    query_train, p_train, n_train = add_file_list(query_train, p_train, n_train, gt_d1d2, d1_images, d2_images)
-    query_train, p_train, n_train = add_file_list(query_train, p_train, n_train, gt_d2d3, d2_images, d3_images)
+    # query_train = []
+    # p_train = []
+    # n_train = []
+    #
+    # query_train, p_train, n_train = add_file_list(query_train, p_train, n_train, gt_d1d2, d1_images, d2_images)
+    # query_train, p_train, n_train = add_file_list(query_train, p_train, n_train, gt_d2d3, d2_images, d3_images)
+    #
+    # train_list = []
+    # for i in range(len(query_train)):
+    #     train_list.append((query_train[i], p_train[i], n_train[i]))
 
     # query_images, positive_images, negative_images = generate_train_dataset(query, ref_positive, ref_negative)
     # query_train = query_images[0:250]
     # p_train = positive_images[0:250]
     # n_train = negative_images[0:250]
-    train_list = []
-    for i in range(len(query_train)):
-        train_list.append((query_train[i], p_train[i], n_train[i]))
+
 
     # defining the transforms
     transforms = get_transforms(args)
@@ -98,6 +100,17 @@ def train(args, augmentations_list):
     # epoch_size = int(len(train_list) / args.epoch)
     best_val_loss = np.inf
     for epoch in range(args.num_epochs):
+        query_train = []
+        p_train = []
+        n_train = []
+
+        query_train, p_train, n_train = add_file_list(query_train, p_train, n_train, gt_d1d2, d1_images, d2_images)
+        query_train, p_train, n_train = add_file_list(query_train, p_train, n_train, gt_d2d3, d2_images, d3_images)
+
+        train_list = []
+        for i in range(len(query_train)):
+            train_list.append((query_train[i], p_train[i], n_train[i]))
+
         image_pairs = TripletValList(train_list, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
         train_dataloader = DataLoader(dataset=image_pairs, shuffle=True, num_workers=args.num_workers,
                                       batch_size=args.batch_size)
