@@ -195,8 +195,6 @@ class TripletSiameseNetwork(nn.Module):
             self.map = True
         else:
             self.map = False
-        self.conv = nn.Conv2d(2048, 1, (3, 3))
-        self.sigmoid = nn.Sigmoid()
         self.flatten = nn.Flatten()
         # self.fc1 = nn.Sequential(
         #     nn.Linear(2048, 1024),
@@ -247,24 +245,12 @@ class TripletSiameseNetwork(nn.Module):
             # x = self.fc2(x)
         return x
 
-    def calculate_similarity(self, input1, input2):
-        # output1 = self.forward_once(input1)
-        # output2 = self.forward_once(input2)
-        output = torch.cat((input1, input2), dim=1)
-        output = self.conv(output)
-        output = self.flatten(output)
-        output = self.sigmoid(output)
-        score = torch.mean(output, dim=1)
-        return score
-
     def forward(self, input1, input2, input3):
         out1 = self.forward_once(input1)
         out2 = self.forward_once(input2)
         out3 = self.forward_once(input3)
-        score_positive = 1 - self.calculate_similarity(out1, out2)
-        score_negative = 1 - self.calculate_similarity(out1, out3)
-        # score_positive = 1 - (torch.sum(self.cos(out1, out2), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
-        # score_negative = 1 - (torch.sum(self.cos(out1, out3), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
+        score_positive = 1 - (torch.sum(self.cos(out1, out2), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
+        score_negative = 1 - (torch.sum(self.cos(out1, out3), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
         # score_positive = 1 - self.cos(out1, out2)
         # score_negative = 1 - self.cos(out1, out3)
         return score_positive, score_negative
