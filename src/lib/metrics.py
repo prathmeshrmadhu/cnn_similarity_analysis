@@ -379,10 +379,14 @@ def feature_map_matching(gt, data1, data2):
     return np.array(confidence_list), np.array(correct_list), accuracy
 
 
-def feature_vector_matching(gt, data1, data2):
+def feature_vector_matching(gt, data1_1, data2_1, data1_2, data2_2, data1_3, data2_3, data1_4, data2_4):
     hit = 0
-    correct_list = np.zeros(data1.shape[0])
-    similarity = cosine_similarity(data1, data2)
+    correct_list = np.zeros(data1_1.shape[0])
+    similarity1 = cosine_similarity(data1_1, data2_1)
+    similarity2 = cosine_similarity(data1_2, data2_2)
+    similarity3 = cosine_similarity(data1_3, data2_3)
+    similarity4 = cosine_similarity(data1_4, data2_4)
+    similarity = similarity1 + similarity2 + similarity3 + similarity4
     predictions = np.argsort(-similarity, axis=1)[:, 0]
     confidences = -np.sort(-similarity, axis=1)[:, 0]
     for item in gt:
