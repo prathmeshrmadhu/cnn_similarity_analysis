@@ -203,14 +203,20 @@ def write_hdf5_descriptors(vectors, image_names, fname):
         f.create_dataset("vectors", data=vectors)
         f.create_dataset("image_names", data=image_names)
 
-def write_pickle_descriptors(vectors, image_names, fname):
+def write_pickle_descriptors(vectors1, vectors2, vectors3, vectors4, image_names, fname):
     """
     write image description vectors in pickle format.
     """
-    vectors = np.ascontiguousarray(vectors, dtype='float32')
+    vectors1 = np.ascontiguousarray(vectors1, dtype='float32')
+    vectors2 = np.ascontiguousarray(vectors2, dtype='float32')
+    vectors3 = np.ascontiguousarray(vectors3, dtype='float32')
+    vectors4 = np.ascontiguousarray(vectors4, dtype='float32')
     fw = open(fname, 'wb')
     pickle.dump(image_names, fw)
-    pickle.dump(vectors, fw)
+    pickle.dump(vectors1, fw)
+    pickle.dump(vectors2, fw)
+    pickle.dump(vectors3, fw)
+    pickle.dump(vectors4, fw)
     fw.close()
 
 def read_pickle_descriptors(fname):
