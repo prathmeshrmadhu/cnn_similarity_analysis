@@ -225,9 +225,12 @@ def read_pickle_descriptors(fname):
     """
     fw = open(fname, 'rb')
     image_names = np.asarray(pickle.load(fw))
-    vectors = pickle.load(fw)
+    vectors1 = pickle.load(fw)
+    vectors2 = pickle.load(fw)
+    vectors3 = pickle.load(fw)
+    vectors4 = pickle.load(fw)
     fw.close()
-    return image_names, vectors
+    return image_names, vectors1, vectors2, vectors3, vectors4
 
 def read_descriptors(filenames):
     """ read descriptors from a set of HDF5 files """
