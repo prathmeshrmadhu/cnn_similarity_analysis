@@ -29,7 +29,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         # model.eval()
         return model
 
-    elif name == "resnet18"
+    elif name == "resnet18":
         print('--------------------------------------------------------------')
         print('used model: zoo_resnet18')
         print('--------------------------------------------------------------')
