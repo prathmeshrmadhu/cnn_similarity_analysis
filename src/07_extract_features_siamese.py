@@ -48,7 +48,8 @@ def generate_features(args, net, image_names, data_loader, save_path):
     features = np.vstack(features_list)
     # TODO: Maybe replace next line by dumping to pkl file/ or replace the pkl file dumping in
     # 02_create_archdata_retrieval by hdf5 descriptors.
-    write_pickle_descriptors(features1, features2, features3, features4, image_names, save_path)
+    # write_pickle_descriptors_mix(features1, features2, features3, features4, image_names, save_path)
+    write_pickle_descriptors(features, image_names, save_path)
     print(f"writing descriptors to {save_path}")
     print(f"image_description_time: {(t1 - t0) / len(image_names):.5f} s per image")
 
