@@ -1,7 +1,7 @@
 import sys
 sys.path.append('/cluster/yinan/cnn_similarity_analysis/')
 from lib.io import *
-from lib.metrics import feature_map_matching, feature_vector_matching, calculate_gap
+from lib.metrics import feature_map_matching, feature_vector_matching, calculate_gap, feature_vector_matching_mix
 from src.lib.siamese.args import siamese_args
 
 
@@ -42,32 +42,32 @@ def evaluation(args):
             confidence_d1d3, correct_d1d3, accuracy_d1d3 = feature_map_matching(gt_d1d3,
                                                                                 d1_vectors1, d3_vectors1)
         else:
-            confidence_p1p2, correct_p1p2, accuracy_p1p2 = feature_vector_matching(gt_p1p2,
+            confidence_p1p2, correct_p1p2, accuracy_p1p2 = feature_vector_matching_mix(gt_p1p2,
                                                                                    p1_vectors1, p2_vectors1,
                                                                                    p1_vectors2, p2_vectors2,
                                                                                    p1_vectors3, p2_vectors3,
                                                                                    p1_vectors4, p2_vectors4)
-            confidence_p2p3, correct_p2p3, accuracy_p2p3 = feature_vector_matching(gt_p2p3,
+            confidence_p2p3, correct_p2p3, accuracy_p2p3 = feature_vector_matching_mix(gt_p2p3,
                                                                                    p2_vectors1, p3_vectors1,
                                                                                    p2_vectors2, p3_vectors2,
                                                                                    p2_vectors3, p3_vectors3,
                                                                                    p2_vectors4, p3_vectors4)
-            confidence_p1p3, correct_p1p3, accuracy_p1p3 = feature_vector_matching(gt_p1p3,
+            confidence_p1p3, correct_p1p3, accuracy_p1p3 = feature_vector_matching_mix(gt_p1p3,
                                                                                    p1_vectors1, p3_vectors1,
                                                                                    p1_vectors2, p3_vectors2,
                                                                                    p1_vectors3, p3_vectors3,
                                                                                    p1_vectors4, p3_vectors4)
-            confidence_d1d2, correct_d1d2, accuracy_d1d2 = feature_vector_matching(gt_d1d2,
+            confidence_d1d2, correct_d1d2, accuracy_d1d2 = feature_vector_matching_mix(gt_d1d2,
                                                                                    d1_vectors1, d2_vectors1,
                                                                                    d1_vectors2, d2_vectors2,
                                                                                    d1_vectors3, d2_vectors3,
                                                                                    d1_vectors4, d2_vectors4)
-            confidence_d2d3, correct_d2d3, accuracy_d2d3 = feature_vector_matching(gt_d2d3,
+            confidence_d2d3, correct_d2d3, accuracy_d2d3 = feature_vector_matching_mix(gt_d2d3,
                                                                                    d2_vectors1, d3_vectors1,
                                                                                    d2_vectors2, d3_vectors2,
                                                                                    d2_vectors3, d3_vectors3,
                                                                                    d2_vectors4, d3_vectors4)
-            confidence_d1d3, correct_d1d3, accuracy_d1d3 = feature_vector_matching(gt_d1d3,
+            confidence_d1d3, correct_d1d3, accuracy_d1d3 = feature_vector_matching_mix(gt_d1d3,
                                                                                    d1_vectors1, d3_vectors1,
                                                                                    d1_vectors2, d3_vectors2,
                                                                                    d1_vectors3, d3_vectors3,
