@@ -191,6 +191,12 @@ class TripletSiameseNetwork(nn.Module):
         self.head = load_siamese_checkpoint(model, checkpoint)
         self.flatten = nn.Flatten()
         self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
+        self.fc = nn.Sequential(
+            nn.Linear(1000, 512),
+            nn.BatchNormalize(),
+            nn.ReLU(inplace=True),
+            nn.Linear(512, 256)
+        )
 
     def gem(self, x, p=3, eps=1e-6):
         x = torch.clamp(x, eps, np.inf)
@@ -199,41 +205,52 @@ class TripletSiameseNetwork(nn.Module):
         return x ** (1. / p)
 
     def forward_once(self, x):
-        x = self.head.conv1(x)
-        x = self.head.bn1(x)
-        x = self.head.relu(x)
-        x = self.head.maxpool(x)
+        # x = self.head.conv1(x)
+        # x = self.head.bn1(x)
+        # x = self.head.relu(x)
+        # x = self.head.maxpool(x)
+        #
+        # x1 = self.head.layer1(x)
+        # x2 = self.head.layer2(x1)
+        # x3 = self.head.layer3(x2)
+        # x4 = self.head.layer4(x3)
+        # x1 = self.gem(x1)
+        # x1 = self.flatten(x1)
+        # x2 = self.gem(x2)
+        # x2 = self.flatten(x2)
+        # x3 = self.gem(x3)
+        # x3 = self.flatten(x3)
+        # x4 = self.gem(x4)
+        # x4 = self.flatten(x4)
+        # return x1, x2, x3, x4
+        x = self.head(x)
+        x = self.fc(x)
+        return x
 
-        x1 = self.head.layer1(x)
-        x2 = self.head.layer2(x1)
-        x3 = self.head.layer3(x2)
-        x4 = self.head.layer4(x3)
-        x1 = self.gem(x1)
-        x1 = self.flatten(x1)
-        x2 = self.gem(x2)
-        x2 = self.flatten(x2)
-        x3 = self.gem(x3)
-        x3 = self.flatten(x3)
-        x4 = self.gem(x4)
-        x4 = self.flatten(x4)
-        return x1, x2, x3, x4
 
     def forward(self, input1, input2, input3):
-        x1_1, x1_2, x1_3, x1_4 = self.forward_once(input1)
-        x2_1, x2_2, x2_3, x2_4 = self.forward_once(input2)
-        x3_1, x3_2, x3_3, x3_4 = self.forward_once(input3)
         # score_positive_1 = 1 - (torch.sum(self.cos(out1, out2), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
         # score_negative_1 = 1 - (torch.sum(self.cos(out1, out3), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
-        score_p_1 = 1 - self.cos(x1_1, x2_1)
-        score_n_1 = 1 - self.cos(x1_1, x3_1)
-        score_p_2 = 1 - self.cos(x1_2, x2_2)
-        score_n_2 = 1 - self.cos(x1_2, x3_2)
-        score_p_3 = 1 - self.cos(x1_3, x2_3)
-        score_n_3 = 1 - self.cos(x1_3, x3_3)
-        score_p_4 = 1 - self.cos(x1_4, x2_4)
-        score_n_4 = 1 - self.cos(x1_4, x3_4)
-        score_positive = 0.25 * score_p_1 + 0.25 * score_p_2 + 0.25 * score_p_3 + 0.25 * score_p_4
-        score_negative = 0.25 * score_n_1 + 0.25 * score_n_2 + 0.25 * score_n_3 + 0.25 * score_n_4
+
+        # x1_1, x1_2, x1_3, x1_4 = self.forward_once(input1)
+        # x2_1, x2_2, x2_3, x2_4 = self.forward_once(input2)
+        # x3_1, x3_2, x3_3, x3_4 = self.forward_once(input3)
+        # score_p_1 = 1 - self.cos(x1_1, x2_1)
+        # score_n_1 = 1 - self.cos(x1_1, x3_1)
+        # score_p_2 = 1 - self.cos(x1_2, x2_2)
+        # score_n_2 = 1 - self.cos(x1_2, x3_2)
+        # score_p_3 = 1 - self.cos(x1_3, x2_3)
+        # score_n_3 = 1 - self.cos(x1_3, x3_3)
+        # score_p_4 = 1 - self.cos(x1_4, x2_4)
+        # score_n_4 = 1 - self.cos(x1_4, x3_4)
+        # score_positive = 0.25 * score_p_1 + 0.25 * score_p_2 + 0.25 * score_p_3 + 0.25 * score_p_4
+        # score_negative = 0.25 * score_n_1 + 0.25 * score_n_2 + 0.25 * score_n_3 + 0.25 * score_n_4
+        x1 = self.forward_once(input1)
+        x2 = self.forward_once(input2)
+        x3 = self.forward_once(input3)
+        score_positive = 1 - self.cos(x1, x2)
+        score_negative = 1 - self.cos(x1, x3)
+
         return score_positive, score_negative
 
 
