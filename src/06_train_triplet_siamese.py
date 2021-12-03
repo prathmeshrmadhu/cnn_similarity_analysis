@@ -91,13 +91,15 @@ def train(args, augmentations_list):
     #                               {'params': net.fc1.parameters(), 'lr': args.lr},
     #                               {'params': net.fc2.parameters(), 'lr': args.lr}],
     #                              lr=args.lr, weight_decay=args.weight_decay)
-    optimizer = torch.optim.SGD([{'params': net.head.conv1.parameters(), 'lr': args.lr * 0.25},
-                                 {'params': net.head.layer1.parameters(), 'lr': args.lr * 0.25},
-                                 {'params': net.head.layer2.parameters(), 'lr': args.lr * 0.5},
-                                 {'params': net.head.layer3.parameters(), 'lr': args.lr * 0.75},
-                                 {'params': net.head.layer4.parameters(), 'lr': args.lr}], lr=args.lr,
-                                   momentum=args.momentum,
-                                   weight_decay=args.weight_decay)
+    # optimizer = torch.optim.SGD([{'params': net.head.conv1.parameters(), 'lr': args.lr * 0.25},
+    #                              {'params': net.head.layer1.parameters(), 'lr': args.lr * 0.25},
+    #                              {'params': net.head.layer2.parameters(), 'lr': args.lr * 0.5},
+    #                              {'params': net.head.layer3.parameters(), 'lr': args.lr * 0.75},
+    #                              {'params': net.head.layer4.parameters(), 'lr': args.lr}], lr=args.lr,
+    #                                momentum=args.momentum,
+    #                                weight_decay=args.weight_decay)
+    optimizer = torch.optim.Adam(net.parameters(),
+                                 lr=args.lr, weight_decay=args.weight_decay)
 
     loss_history = list()
     epoch_losses = list()
