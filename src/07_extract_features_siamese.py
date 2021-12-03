@@ -21,6 +21,7 @@ from lib.io import *
 
 
 def generate_features(args, net, image_names, data_loader, save_path):
+    features_list = list()
     features_list1 = list()
     features_list2 = list()
     features_list3 = list()
@@ -31,17 +32,20 @@ def generate_features(args, net, image_names, data_loader, save_path):
         for no, data in enumerate(data_loader):
             images = data
             images = images.to(args.device)
-            feats1, feats2, feats3, feats4 = net.forward_once(images)
-            features_list1.append(feats1.cpu().numpy())
-            features_list2.append(feats2.cpu().numpy())
-            features_list3.append(feats3.cpu().numpy())
-            features_list4.append(feats4.cpu().numpy())
+            feats = net.forward_once(images)
+            features_list.append(feats.cpu().numpy())
+            # feats1, feats2, feats3, feats4 = net.forward_once(images)
+            # features_list1.append(feats1.cpu().numpy())
+            # features_list2.append(feats2.cpu().numpy())
+            # features_list3.append(feats3.cpu().numpy())
+            # features_list4.append(feats4.cpu().numpy())
             images_list.append(images.cpu().numpy())
     t1 = time.time()
-    features1 = np.vstack(features_list1)
-    features2 = np.vstack(features_list2)
-    features3 = np.vstack(features_list3)
-    features4 = np.vstack(features_list4)
+    # features1 = np.vstack(features_list1)
+    # features2 = np.vstack(features_list2)
+    # features3 = np.vstack(features_list3)
+    # features4 = np.vstack(features_list4)
+    features = np.vstack(features_list)
     # TODO: Maybe replace next line by dumping to pkl file/ or replace the pkl file dumping in
     # 02_create_archdata_retrieval by hdf5 descriptors.
     write_pickle_descriptors(features1, features2, features3, features4, image_names, save_path)
