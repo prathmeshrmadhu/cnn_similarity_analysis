@@ -29,7 +29,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         # model.eval()
         return model
 
-    elif name == "resnet18":
+    elif name == "resnet18"
         print('--------------------------------------------------------------')
         print('used model: zoo_resnet18')
         print('--------------------------------------------------------------')
@@ -193,7 +193,7 @@ class TripletSiameseNetwork(nn.Module):
         self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
         self.fc = nn.Sequential(
             nn.Linear(1000, 512),
-            nn.BatchNormalize(),
+            nn.BatchNorm1d(512),
             nn.ReLU(inplace=True),
             nn.Linear(512, 256)
         )
