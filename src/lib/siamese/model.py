@@ -191,12 +191,12 @@ class TripletSiameseNetwork(nn.Module):
         self.head = load_siamese_checkpoint(model, checkpoint)
         self.flatten = nn.Flatten()
         self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
-        self.fc = nn.Sequential(
-            nn.Linear(1000, 512),
-            nn.BatchNorm1d(512),
-            nn.ReLU(inplace=True),
-            nn.Linear(512, 256)
-        )
+        # self.fc = nn.Sequential(
+        #     nn.Linear(1000, 512),
+        #     nn.BatchNorm1d(512),
+        #     nn.ReLU(inplace=True),
+        #     nn.Linear(512, 256)
+        # )
 
     def gem(self, x, p=3, eps=1e-6):
         x = torch.clamp(x, eps, np.inf)
@@ -224,7 +224,6 @@ class TripletSiameseNetwork(nn.Module):
         # x4 = self.flatten(x4)
         # return x1, x2, x3, x4
         x = self.head(x)
-        x = self.fc(x)
         return x
 
 
