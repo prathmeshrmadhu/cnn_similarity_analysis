@@ -208,7 +208,6 @@ class TripletSiameseNetwork(nn.Module):
         x = self.head(x)
         return x
 
-
     def forward(self, input1, input2, input3):
         # score_positive_1 = 1 - (torch.sum(self.cos(out1, out2), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
         # score_negative_1 = 1 - (torch.sum(self.cos(out1, out3), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
@@ -227,7 +226,6 @@ class TripletSiameseNetwork_custom(nn.Module):
         self.head = load_siamese_checkpoint(model, checkpoint)
         self.flatten = nn.Flatten()
         self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
-
 
     def gem(self, x, p=3, eps=1e-6):
         x = torch.clamp(x, eps, np.inf)
@@ -254,8 +252,6 @@ class TripletSiameseNetwork_custom(nn.Module):
         x4 = self.gem(x4)
         x4 = self.flatten(x4)
         return x1, x2, x3, x4
-
-
 
     def forward(self, input1, input2, input3):
         # score_positive_1 = 1 - (torch.sum(self.cos(out1, out2), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
