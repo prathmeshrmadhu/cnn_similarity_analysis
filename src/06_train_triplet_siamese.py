@@ -13,7 +13,7 @@ from src.lib.siamese.args import  siamese_args
 from src.lib.siamese.dataset import generate_train_dataset, get_transforms, add_file_list
 from src.lib.augmentations import *
 from src.data.siamese_dataloader import TripletTrainList, TripletValList
-from src.lib.siamese.model import TripletSiameseNetwork
+from src.lib.siamese.model import TripletSiameseNetwork, TripletSiameseNetwork_custom
 
 
 def train(args, augmentations_list):
@@ -37,8 +37,6 @@ def train(args, augmentations_list):
     # defining the transforms
     transforms = get_transforms(args)
 
-
-
     val_list = []
     for j in range(len(query_val)):
         val_list.append((query_val[j], p_val[j], n_val[j]))
@@ -48,7 +46,10 @@ def train(args, augmentations_list):
                                 batch_size=args.batch_size)
 
     print("loading siamese model")
-    net = TripletSiameseNetwork(args.model)
+    if args.loss == "normal":
+        net = TripletSiameseNetwork(args.model)
+    elif args.loss == "custom":
+        net = TripletSiameseNetwork_custom(args.model)
     if not args.start:
         state_dict = torch.load(args.net + args.checkpoint)
         net.load_state_dict(state_dict)
@@ -59,22 +60,28 @@ def train(args, augmentations_list):
     criterion.to(args.device)
 
     if args.optimizer == "adam":
-        # optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, net.parameters()),
-        #                              lr=args.lr, weight_decay=args.weight_decay)
-        # optimizer = torch.optim.Adam([{'params': net.head.parameters(), 'lr': args.lr * 0.05},
-        #                               {'params': net.fc1.parameters(), 'lr': args.lr},
-        #                               {'params': net.fc2.parameters(), 'lr': args.lr}],
-        #                              lr=args.lr, weight_decay=args.weight_decay)
-        optimizer = torch.optim.Adam(net.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+        if args.loss == "normal":
+            optimizer = torch.optim.Adam(net.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+        elif args.loss == "custom":
+            optimizer = torch.optim.Adam([{'params': net.head.conv1.parameters(), 'lr': args.lr * 0.25},
+                                         {'params': net.head.layer1.parameters(), 'lr': args.lr * 0.25},
+                                         {'params': net.head.layer2.parameters(), 'lr': args.lr * 0.5},
+                                         {'params': net.head.layer3.parameters(), 'lr': args.lr * 0.75},
+                                         {'params': net.head.layer4.parameters(), 'lr': args.lr}], lr=args.lr,
+                                         weight_decay=args.weight_decay)
+
     elif args.optimizer == "sgd":
-        # optimizer = torch.optim.SGD([{'params': net.head.conv1.parameters(), 'lr': args.lr * 0.25},
-        #                              {'params': net.head.layer1.parameters(), 'lr': args.lr * 0.25},
-        #                              {'params': net.head.layer2.parameters(), 'lr': args.lr * 0.5},
-        #                              {'params': net.head.layer3.parameters(), 'lr': args.lr * 0.75},
-        #                              {'params': net.head.layer4.parameters(), 'lr': args.lr}], lr=args.lr,
-        #                                momentum=args.momentum,
-        #                                weight_decay=args.weight_decay)
-        optimizer = torch.optim.SGD(net.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
+        if args.loss == "normal":
+            optimizer = torch.optim.SGD(net.parameters(), lr=args.lr, momentum=args.momentum,
+                                        weight_decay=args.weight_decay)
+        elif args.loss == "custom":
+            optimizer = torch.optim.SGD([{'params': net.head.conv1.parameters(), 'lr': args.lr * 0.25},
+                                         {'params': net.head.layer1.parameters(), 'lr': args.lr * 0.25},
+                                         {'params': net.head.layer2.parameters(), 'lr': args.lr * 0.5},
+                                         {'params': net.head.layer3.parameters(), 'lr': args.lr * 0.75},
+                                         {'params': net.head.layer4.parameters(), 'lr': args.lr}], lr=args.lr,
+                                         momentum=args.momentum,
+                                         weight_decay=args.weight_decay)
 
     loss_history = list()
     epoch_losses = list()
