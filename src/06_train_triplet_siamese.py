@@ -20,52 +20,24 @@ def train(args, augmentations_list):
     if args.device == "gpu":
         print("hardware_image_description:", torch.cuda.get_device_name(0))
 
-    # query_ind = list(range(1000, 1300))
-    # query = [str(l) + '00' for l in query_ind]
-    # ref_positive = [str(l) + '01' for l in query_ind]
-    # ref_negative = []
-    # for i in range(len(query_ind)):
-    #     b = query_ind.copy()
-    #     b.remove(query_ind[i])
-    #     ref_negative.append(str(random.choice(b)) + '00')
+    if args.train_dataset == "image_collation":
+        d1_images = [args.d1 + 'illustration/' + l.strip() for l in open(args.d1 + 'files.txt', "r")]
+        d2_images = [args.d2 + 'illustration/' + l.strip() for l in open(args.d2 + 'files.txt', "r")]
+        d3_images = [args.d3 + 'illustration/' + l.strip() for l in open(args.d3 + 'files.txt', "r")]
 
-    d1_images = [args.d1 + 'illustration/' + l.strip() for l in open(args.d1 + 'files.txt', "r")]
-    d2_images = [args.d2 + 'illustration/' + l.strip() for l in open(args.d2 + 'files.txt', "r")]
-    d3_images = [args.d3 + 'illustration/' + l.strip() for l in open(args.d3 + 'files.txt', "r")]
-    
-    gt_d1d2 = read_config(args.gt_list + 'D1-D2.json')
-    gt_d2d3 = read_config(args.gt_list + 'D2-D3.json')
-    gt_d1d3 = read_config(args.gt_list + 'D1-D3.json')
+        gt_d1d2 = read_config(args.gt_list + 'D1-D2.json')
+        gt_d2d3 = read_config(args.gt_list + 'D2-D3.json')
+        gt_d1d3 = read_config(args.gt_list + 'D1-D3.json')
 
-    # creating the dataset
-    # query_train = []
-    # p_train = []
-    # n_train = []
-    #
-    # query_train, p_train, n_train = add_file_list(query_train, p_train, n_train, gt_d1d2, d1_images, d2_images)
-    # query_train, p_train, n_train = add_file_list(query_train, p_train, n_train, gt_d2d3, d2_images, d3_images)
-    #
-    # train_list = []
-    # for i in range(len(query_train)):
-    #     train_list.append((query_train[i], p_train[i], n_train[i]))
-
-    # query_images, positive_images, negative_images = generate_train_dataset(query, ref_positive, ref_negative)
-    # query_train = query_images[0:250]
-    # p_train = positive_images[0:250]
-    # n_train = negative_images[0:250]
-
+        query_val = []
+        p_val = []
+        n_val = []
+        query_val, p_val, n_val = add_file_list(query_val, p_val, n_val, gt_d1d3, d1_images, d3_images)
 
     # defining the transforms
     transforms = get_transforms(args)
 
-    # Defining the fixed validation dataloader for modular evaluation
-    # query_val = query_images[250:300]
-    # p_val = positive_images[250:300]
-    # n_val = negative_images[250:300]
-    query_val = []
-    p_val = []
-    n_val = []
-    query_val, p_val, n_val = add_file_list(query_val, p_val, n_val, gt_d1d3, d1_images, d3_images)
+
 
     val_list = []
     for j in range(len(query_val)):
@@ -85,21 +57,24 @@ def train(args, augmentations_list):
     # Defining the criteria for training
     criterion = TripletLoss()
     criterion.to(args.device)
-    # optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, net.parameters()),
-    #                              lr=args.lr, weight_decay=args.weight_decay)
-    # optimizer = torch.optim.Adam([{'params': net.head.parameters(), 'lr': args.lr * 0.05},
-    #                               {'params': net.fc1.parameters(), 'lr': args.lr},
-    #                               {'params': net.fc2.parameters(), 'lr': args.lr}],
-    #                              lr=args.lr, weight_decay=args.weight_decay)
-    # optimizer = torch.optim.SGD([{'params': net.head.conv1.parameters(), 'lr': args.lr * 0.25},
-    #                              {'params': net.head.layer1.parameters(), 'lr': args.lr * 0.25},
-    #                              {'params': net.head.layer2.parameters(), 'lr': args.lr * 0.5},
-    #                              {'params': net.head.layer3.parameters(), 'lr': args.lr * 0.75},
-    #                              {'params': net.head.layer4.parameters(), 'lr': args.lr}], lr=args.lr,
-    #                                momentum=args.momentum,
-    #                                weight_decay=args.weight_decay)
-    optimizer = torch.optim.Adam(net.parameters(),
-                                 lr=args.lr, weight_decay=args.weight_decay)
+
+    if args.optimizer == "adam":
+        # optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, net.parameters()),
+        #                              lr=args.lr, weight_decay=args.weight_decay)
+        # optimizer = torch.optim.Adam([{'params': net.head.parameters(), 'lr': args.lr * 0.05},
+        #                               {'params': net.fc1.parameters(), 'lr': args.lr},
+        #                               {'params': net.fc2.parameters(), 'lr': args.lr}],
+        #                              lr=args.lr, weight_decay=args.weight_decay)
+        optimizer = torch.optim.Adam(net.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+    elif args.optimizer == "sgd":
+        # optimizer = torch.optim.SGD([{'params': net.head.conv1.parameters(), 'lr': args.lr * 0.25},
+        #                              {'params': net.head.layer1.parameters(), 'lr': args.lr * 0.25},
+        #                              {'params': net.head.layer2.parameters(), 'lr': args.lr * 0.5},
+        #                              {'params': net.head.layer3.parameters(), 'lr': args.lr * 0.75},
+        #                              {'params': net.head.layer4.parameters(), 'lr': args.lr}], lr=args.lr,
+        #                                momentum=args.momentum,
+        #                                weight_decay=args.weight_decay)
+        optimizer = torch.optim.SGD(net.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
 
     loss_history = list()
     epoch_losses = list()
@@ -110,13 +85,12 @@ def train(args, augmentations_list):
         query_train = []
         p_train = []
         n_train = []
-
-        query_train, p_train, n_train = add_file_list(query_train, p_train, n_train, gt_d1d2, d1_images, d2_images)
-        query_train, p_train, n_train = add_file_list(query_train, p_train, n_train, gt_d2d3, d2_images, d3_images)
-
         train_list = []
-        for i in range(len(query_train)):
-            train_list.append((query_train[i], p_train[i], n_train[i]))
+        if args.train_dataset == "image_collation":
+            query_train, p_train, n_train = add_file_list(query_train, p_train, n_train, gt_d1d2, d1_images, d2_images)
+            query_train, p_train, n_train = add_file_list(query_train, p_train, n_train, gt_d2d3, d2_images, d3_images)
+            for i in range(len(query_train)):
+                train_list.append((query_train[i], p_train[i], n_train[i]))
 
         image_pairs = TripletValList(train_list, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
         train_dataloader = DataLoader(dataset=image_pairs, shuffle=True, num_workers=args.num_workers,
