@@ -21,6 +21,7 @@ def train(args, augmentations_list):
         print("hardware_image_description:", torch.cuda.get_device_name(0))
 
     if args.train_dataset == "image_collation":
+        print("Used dataset: Image Collation")
         d1_images = [args.d1 + 'illustration/' + l.strip() for l in open(args.d1 + 'files.txt', "r")]
         d2_images = [args.d2 + 'illustration/' + l.strip() for l in open(args.d2 + 'files.txt', "r")]
         d3_images = [args.d3 + 'illustration/' + l.strip() for l in open(args.d3 + 'files.txt', "r")]
