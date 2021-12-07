@@ -20,6 +20,7 @@ def siamese_args():
     aa('--batch_size', default=EXP_PARAMS['training']['batch_size'], type=int, help="max batch size to use for extraction")
     aa('--num_workers', default=EXP_PARAMS['num_workers'], type=int, help="nb of dataloader workers")
     aa('--optimizer', default="sgd", help='type of optimizer')
+    aa('--loss', default="normal", help='type of loss strcture')
 
     group = parser.add_argument_group('model options')
     aa('--model', default=EXP_PARAMS['model']['model_name'], help="model to use")
