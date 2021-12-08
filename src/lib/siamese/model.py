@@ -222,7 +222,7 @@ class TripletSiameseNetwork(nn.Module):
 
 class TripletSiameseNetwork_custom(nn.Module):
     def __init__(self, model, checkpoint='/cluster/yinan/isc2021/data/multigrain_joint_3B_0.5.pth'):
-        super(TripletSiameseNetwork, self).__init__()
+        super(TripletSiameseNetwork_custom, self).__init__()
         self.head = load_siamese_checkpoint(model, checkpoint)
         self.flatten = nn.Flatten()
         self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
