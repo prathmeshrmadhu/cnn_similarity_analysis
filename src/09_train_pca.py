@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import time
 from torch.utils.data import DataLoader
 from src.lib.siamese.args import siamese_args
-from src.lib.siamese.model import load_siamese_checkpoint, TripletSiameseNetwork
+from src.lib.siamese.model import load_siamese_checkpoint, TripletSiameseNetwork, TripletSiameseNetwork_custom
 from src.data.siamese_dataloader import ImageList
 from src.lib.siamese.dataset import get_transforms
 from lib.io import read_config
@@ -53,8 +53,10 @@ def train(args):
     train_dataset = ImageList(train_images, transform=transforms)
     train_loader = DataLoader(dataset=train_dataset, shuffle=False, num_workers=args.num_workers,
                               batch_size=args.batch_size)
-
-    net = TripletSiameseNetwork(args.model)
+    if args.loss == 'normal':
+        net = TripletSiameseNetwork(args.model)
+    elif args.loss == 'custom':
+        net = TripletSiameseNetwork_custom(args.model)
     if args.net:
         state_dict = torch.load(args.net + args.checkpoint)
         net.load_state_dict(state_dict)
