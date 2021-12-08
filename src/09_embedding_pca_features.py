@@ -6,7 +6,7 @@ import time
 import torchvision
 from torch.utils.data import DataLoader
 from src.lib.siamese.args import siamese_args
-from src.lib.siamese.model import load_siamese_checkpoint, TripletSiameseNetwork, ResNet50Conv4
+from src.lib.siamese.model import load_siamese_checkpoint, TripletSiameseNetwork, TripletSiameseNetwork_custom
 from src.data.siamese_dataloader import ImageList
 from src.lib.siamese.dataset import get_transforms
 from sklearn.decomposition import PCA
@@ -48,7 +48,11 @@ def embedding_features(args):
 
     # resnet_50 = torchvision.models.resnet50(pretrained=True)
     # net = ResNet50Conv4(resnet_50)
-    net = TripletSiameseNetwork(args.model)
+    if args.loss == 'normal':
+        net = TripletSiameseNetwork(args.model)
+    elif args.loss == 'custom':
+        net = TripletSiameseNetwork_custom(args.model)
+
     if args.net:
         state_dict = torch.load(args.net + args.checkpoint)
         net.load_state_dict(state_dict)
