@@ -1,6 +1,7 @@
 import os
 import glob
 import json
+import pandas as pd
 import torch
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
@@ -34,6 +35,22 @@ def train(args, augmentations_list):
         p_val = []
         n_val = []
         query_val, p_val, n_val = add_file_list(query_val, p_val, n_val, gt_d1d3, d1_images, d3_images)
+
+    if args.train_dataset == "artdl":
+        print("Used dataset: Image Collation")
+        train = pd.read_csv(args.train_list)
+        val = pd.read_csv(args.val_list)
+
+        query_val = list(val['anchor_query'])
+        p_val = list(val['ref_positive'])
+        n_val = list(val['ref_negative'])
+
+        query_train = list(train['anchor_query'])
+        p_train = list(train['ref_positive'])
+        n_train = list(train['ref_negative'])
+        train_list = []
+        for i in range(len(query_train)):
+            train_list.append((query_train[i], p_train[i], n_train[i]))
 
     # defining the transforms
     transforms = get_transforms(args)
@@ -93,10 +110,10 @@ def train(args, augmentations_list):
         query_train = []
         p_train = []
         n_train = []
-        train_list = []
         if args.train_dataset == "image_collation":
             query_train, p_train, n_train = add_file_list(query_train, p_train, n_train, gt_d1d2, d1_images, d2_images)
             query_train, p_train, n_train = add_file_list(query_train, p_train, n_train, gt_d2d3, d2_images, d3_images)
+            train_list = []
             for i in range(len(query_train)):
                 train_list.append((query_train[i], p_train[i], n_train[i]))
 

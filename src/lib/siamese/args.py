@@ -50,6 +50,7 @@ def siamese_args():
     aa('--gt_list', default=None, help="file or folder with ground truth image filenames")
     aa('--train_list', default=None, help="file with training image filenames")
     aa('--db_list', default=None, help="file with training image filenames")
+    aa('--val_list', default=None, help="file with validation image filenames")
     aa('--len', default=1000, type=int, help="nb of training vectors for the SiameseNetwork")
     aa('--num_epochs', default=EXP_PARAMS['training']['num_epochs'], type=int, help="nb of training epochs for the SiameseNetwork")
     aa('--i0', default=0, type=int, help="first image to process")
