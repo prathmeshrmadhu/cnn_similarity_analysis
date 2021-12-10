@@ -1,7 +1,7 @@
 import os
 import glob
 import time
-
+import pandas as pd
 import numpy as np
 import torch
 import torchvision
@@ -79,7 +79,7 @@ def extract_features(args):
     net.to(args.device)
     print("checkpoint {} loaded\n".format(args.checkpoint))
 
-    if args.val_dataset == "image_collation":
+    if args.test_dataset == "image_collation":
         p1_images = [args.p1 + 'illustration/' + l.strip() for l in open(args.p1 + 'files.txt', "r")]
         p2_images = [args.p2 + 'illustration/' + l.strip() for l in open(args.p2 + 'files.txt', "r")]
         p3_images = [args.p3 + 'illustration/' + l.strip() for l in open(args.p3 + 'files.txt', "r")]
@@ -113,6 +113,14 @@ def extract_features(args):
         generate_features(args, net, d1_images, d1_loader, args.d1_f)
         generate_features(args, net, d2_images, d2_loader, args.d2_f)
         generate_features(args, net, d3_images, d3_loader, args.d3_f)
+
+    elif args.test_dataset == "artdl":
+        test_set = pd.read(args.test_list)
+        test_paths = list(test_set['test_images'])
+        test_dataset = ImageList(test_paths, transform=transforms)
+        test_dataloader = DataLoader(dataset=test_dataset, shuffle=False, num_workers=args.num_workers,
+                               batch_size=args.batch_size)
+        generate_features(args, net, test_paths, test_dataloader, args.test_f)
 
     # creating the dataset
     #query_images, database_images, _ = generate_extraction_dataset(query, ref, ref)
