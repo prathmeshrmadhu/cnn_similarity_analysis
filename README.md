@@ -9,6 +9,6 @@ This is an example file with default selections.
 
 ## Usage
 
-```python 06_train_triplet_siamese.py --train_list --train
 ```
-
+```
+python 06_train_triplet_siamese.py --train_list --train
