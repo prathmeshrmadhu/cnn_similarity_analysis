@@ -171,10 +171,6 @@ def train(args, augmentations_list):
             torch.save(net.state_dict(), model_full_path)
             print('best model updated\n')
 
-        # trained_model_name = 'Siamese_Epoch_{}.pth'.format(epoch)
-        # model_full_path = args.net + trained_model_name
-        # torch.save(net.state_dict(), model_full_path)
-        # print('model saved as: {}\n'.format(trained_model_name))
     print("Training finished")
     print("Average Positive Score: {}\n".format(avg_p_score))
     print("Average Negative Score: {}\n".format(avg_n_score))
@@ -191,15 +187,6 @@ def train(args, augmentations_list):
     plt.ylabel('Loss')
     plt.savefig(args.images + 'loss.png')
     plt.show()
-
-    # # Saving model with best validation loss
-    # best_epoch = np.argmin(epoch_losses)
-    # best_model_name = 'Siamese_Epoch_{}.pth'.format(best_epoch)
-    # pth_files = glob.glob(args.net + '*.pth')
-    # pth_files.remove(args.net + best_model_name)
-    # for file in pth_files:
-    #     os.remove(file)
-    # print("best model is: {} with validation loss {}\n".format(best_model_name, epoch_losses[best_epoch]))
 
 
 if __name__ == "__main__":
