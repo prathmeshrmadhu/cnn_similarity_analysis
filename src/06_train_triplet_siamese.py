@@ -185,7 +185,7 @@ def train(args, augmentations_list):
     plt.legend()
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
-    plt.savefig(args.images + 'loss.png')
+    plt.savefig(args.plots + 'loss.png')
     plt.show()
 
 
