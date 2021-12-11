@@ -22,6 +22,7 @@ python3 cnn_similarity_analysis/src/01_create_experiment.py \
 
 ## Image collation dataset
 - Training process
+
 example:
 ```
 python3 cnn_similarity_analysis/src/06_train_triplet_siamese.py \
@@ -45,8 +46,11 @@ python3 cnn_similarity_analysis/src/06_train_triplet_siamese.py \
 --loss normal \
 ```
 '-- start': start training or continue from a checkpoint.
+
 '-- margin': margin in loss function.
+
 '-- loss': 'normal' means just use triplet loss, 'custom' means use custom defined regularized loss.
+
 '-- optimizer': choose 'sgd' or 'adam' optimizer.
 
 
