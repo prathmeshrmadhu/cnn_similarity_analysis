@@ -1,18 +1,40 @@
 
 # Usage
+## Creat Experiment
+```
+python3 cnn_similarity_analysis/src/01_create_experiment.py \
+--exp_directory test_exp \
+--dataset_name image_collation \
+--image_size 248 \
+--rot_factor 45 \
+--scale_factor 0.35 \
+--num_epochs 20 \
+--learning_rate 0.00001 \
+--learning_rate_factor 0.5 \
+--patience 20 \
+--batch_size 10 \
+--save_frequency 1 \
+--optimizer sgd \
+--momentum 0.9 \
+--gamma1 0.99 \
+--gamma2 0.9
+```
+
 ## Image collation dataset
 - Training process
 example:
 ```
 python3 cnn_similarity_analysis/src/06_train_triplet_siamese.py \
---train \
 --start \
 --gt_list /cluster/shared_dataset/ImageCollation/IllustrationMatcher/ground_truth/ \
---d1
---d2
---d3
+--d1 /cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/D1/
+--d2 /cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/D2/
+--d3 /cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/D3/
+--p1 /cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/P1/
+--p2 /cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/P2/
+--p3 /cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/P3/
 --net cnn_similarity_analysis/experiments/test_exp/experiment_2021-10-10_12-16-55/models/ \
---images cnn_similarity_analysis/experiments/test_exp/experiment_2021-10-10_12-16-55/plots/ \
+--plots cnn_similarity_analysis/experiments/test_exp/experiment_2021-10-10_12-16-55/plots/ \
 --num_epochs 10 \
 --model resnet50 \
 --margin 0.5 \
@@ -22,4 +44,9 @@ python3 cnn_similarity_analysis/src/06_train_triplet_siamese.py \
 --optimizer sgd \
 --loss normal \
 ```
+'-- start': start training or continue from a checkpoint
+'-- margin': margin in loss function
+'-- loss': 'normal' means just use triplet loss, 'custom' means use custom defined regularized loss
+'-- optimizer': choose 'sgd' or 'adam' optimizer
+
 
