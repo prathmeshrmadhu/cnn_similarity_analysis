@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 from lib.io import read_config
 import sys
-sys.path.append('/cluster/yinan/cnn_similarity_analysis/')
+sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 
 from src.lib.loss import TripletLoss
 from src.lib.siamese.args import  siamese_args
