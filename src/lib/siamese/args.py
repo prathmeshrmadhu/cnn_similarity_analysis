@@ -1,7 +1,7 @@
 import argparse
 from lib.io import read_config
 
-EXP_PATH = "/cluster/yinan/cnn_similarity_analysis/experiments/test_exp/experiment_2021-10-10_12-16-55/experiment_parameters.json"
+EXP_PATH = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/experiment_parameters.json"
 EXP_PARAMS = read_config(EXP_PATH)
 
 def siamese_args():
