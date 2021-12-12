@@ -1,10 +1,12 @@
 import sys
 sys.path.append('/cluster/yinan/cnn_similarity_analysis/')
 import numpy as np
+import pandas as pd
 import torch
 import torch.nn.functional as F
 import time
 from torch.utils.data import DataLoader
+from sklearn.metrics.pairwise import euclidean_distances, cosine_similarity
 from src.lib.siamese.args import siamese_args
 from src.lib.siamese.model import load_siamese_checkpoint, TripletSiameseNetwork, TripletSiameseNetwork_custom
 from src.data.siamese_dataloader import ImageList
@@ -49,9 +51,13 @@ def train(args):
         train_images = [TRAIN + l.strip() + '.jpg' for l in open(args.train_list, "r")]
         train_images = [train_images[i] for i in rs.choice(len(train_images), size=10000, replace=False)]
 
+    if args.train_dataset == 'artdl':
+        train = pd.read_csv(args.train_list)
+        train_images = list(train['anchor_query']) + list(train['ref_positive']) + list(train['ref_negative'])
+
     transforms = get_transforms(args)
     train_dataset = ImageList(train_images, transform=transforms)
-    train_loader = DataLoader(dataset=train_dataset, shuffle=False, num_workers=args.num_workers,
+    train_loader = DataLoader(dataset=train_dataset, shuffle=True, num_workers=args.num_workers,
                               batch_size=args.batch_size)
     if args.loss == 'normal':
         net = TripletSiameseNetwork(args.model)
@@ -105,15 +111,40 @@ def train(args):
         mean_sp = np.mean(np.array(sp_d1d2 + sp_d2d3 + sp_d1d3))
         mean_sn = np.mean(np.array(sn_d1d2 + sn_d2d3 + sn_d1d3))
 
-        print('average positive distance: {}'.format(mean_dp))
-        print('average negative distance: {}'.format(mean_dn))
-        print('\n')
-        print('average positive similarity: {}'.format(mean_sp))
-        print('average negative similarity: {}'.format(mean_sn))
 
+    if val_dataset == 'artdl':
+        val = pd.read_csv(args.val_list)
+        query_val = list(val['anchor_query'])
+        p_val = list(val['ref_positive'])
+        n_val = list(val['ref_negative'])
+        query_val_list = ImageList(query_val, transform=transforms)
+        p_val_list = ImageList(p_val, transform=transforms)
+        n_val_list = ImageList(n_val, transform=transforms)
+        query_val_loader = DataLoader(dataset=query_val_list, shuffle=False, num_workers=args.num_workers,
+                                      batch_size=args.batch_size)
+        p_val_loader = DataLoader(dataset=p_val_list, shuffle=False, num_workers=args.num_workers,
+                                  batch_size=args.batch_size)
+        n_val_loader = DataLoader(dataset=n_val_list, shuffle=False, num_workers=args.num_workers,
+                                  batch_size=args.batch_size)
+        query_val_features = generate_features(args, net, query_val, query_val_loader)
+        p_val_features = generate_features(args, net, p_val, p_val_loader)
+        n_val_features = generate_features(args, net, n_val, n_val_loader)
 
+        if args.pca:
+            query_val_features = pca.apply_py(query_val_features)
+            p_val_features = pca.apply_py(p_val_features)
+            n_val_features = pca.apply_py(n_val_features)
 
+        mean_dp = np.mean(np.diag(euclidean_distances(query_val_features, p_val_features)))
+        mean_dn = np.mean(np.diag(euclidean_distances(query_val_features, n_val_features)))
+        mean_sp = np.mean(np.diag(cosine_similarity(query_val_features, p_val_features)))
+        mean_sn = np.mean(np.diag(cosine_similarity(query_val_features, n_val_features)))
 
+    print('average positive distance: {}'.format(mean_dp))
+    print('average negative distance: {}'.format(mean_dn))
+    print('\n')
+    print('average positive similarity: {}'.format(mean_sp))
+    print('average negative similarity: {}'.format(mean_sn))
 
 if __name__ == "__main__":
 
