@@ -115,7 +115,7 @@ def extract_features(args):
         generate_features(args, net, d3_images, d3_loader, args.d3_f)
 
     elif args.test_dataset == "artdl":
-        test_set = pd.read(args.test_list)
+        test_set = pd.read_csv(args.test_list)
         test_paths = list(test_set['test_images'])
         test_dataset = ImageList(test_paths, transform=transforms)
         test_dataloader = DataLoader(dataset=test_dataset, shuffle=False, num_workers=args.num_workers,
