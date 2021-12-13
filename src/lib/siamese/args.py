@@ -50,7 +50,7 @@ def siamese_args():
     aa('--query_list', default=None, help="file with query image filenames")
     aa('--gt_list', default=None, help="file or folder with ground truth image filenames")
     aa('--train_list', default=None, help="file with training image filenames")
-    aa('--db_list', default=None, help="file with training image filenames")
+    aa('--db_list', default=None, help="file with reference image filenames")
     aa('--val_list', default=None, help="file with validation image filenames")
     aa('--test_list', default=None, help="file with test image filenames")
     aa('--image_data', default=None, help="path to images")

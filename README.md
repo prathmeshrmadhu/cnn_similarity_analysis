@@ -232,3 +232,9 @@ python3 yinan_cnn/cnn_similarity_analysis/src/09_embedding_pca_features.py \
 'test_list': generated test .csv file list with structure ['test_images', 'label']
 
 'test_f': path to save generated test features
+
+## Evaluation
+
+```
+
+```

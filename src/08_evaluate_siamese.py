@@ -1,5 +1,6 @@
 import sys
 sys.path.append('/cluster/yinan/cnn_similarity_analysis/')
+import pandas as pd
 from lib.io import *
 from lib.metrics import *
 from src.lib.siamese.args import siamese_args
@@ -114,6 +115,8 @@ def evaluation(args):
 
     elif args.test_dataset == 'artdl':
         test_names, test_vectors = read_pickle_descriptors(args.test_f)
+        test_file = pd.read_csv(args.test_list)
+        gt_labels = list(test_file['label'])
 
 
 
