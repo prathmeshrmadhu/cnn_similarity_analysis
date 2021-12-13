@@ -17,6 +17,9 @@ python3 cnn_similarity_analysis/src/01_create_experiment.py \
 --gamma1 0.99 \
 --gamma2 0.9
 ```
+this will creat an experiment path for example: 'cnn_similarity_analysis/experiments/test_exp/experiment_2021-10-10_12-16-55'
+you can change the EXP_PATH parameter in 'cnn_similarity_analysis/src/lib/siamese/args.py' to load saved parameter,
+later you can also change them when you run the experiments
 
 # Image collation dataset
 ## Network training
@@ -106,7 +109,7 @@ python3 cnn_similarity_analysis/src/07_extract_features_siamese.py \
 'p1_f' - 'd3_f': save extracted features to these paths
 
 ## PCA Feature embedding
-Use trained PCA to reduce dimensionality:
+Use trained PCA to reduce dimensionality (you do not need to run feature extraction first):
 ```
 python3 cnn_similarity_analysis/src/09_embedding_pca_features.py \
 --val_dataset image_collation \
@@ -172,9 +175,9 @@ python3 cnn_similarity_analysis/src/06_train_triplet_siamese.py \
 
 '-- optimizer': choose 'sgd' or 'adam' optimizer.
 
-'-- net': save or load checkpoint from this path
+'-- net': save or load checkpoint from this path.
 
-'--plots': path to save plot of losses
+'--plots': path to save plot of losses.
 
 ## Network training
 
@@ -186,18 +189,20 @@ python3 yinan_cnn/cnn_similarity_analysis/src/09_train_pca.py \
 --train_list /cluster/shared_dataset/DEVKitArtDL/artdl_train_list.csv \
 --val_list /cluster/shared_dataset/DEVKitArtDL/artdl_val_list.csv \
 --pca_file cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/models/pca.vt \
---gt_list /cluster/shared_dataset/ImageCollation/IllustrationMatcher/ground_truth/  \
 --model resnet50 \
 --pca \
 --imsize 256 \
 --net cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/models/ \
 --loss normal
 ```
-'--pca_file': save trained pca to this path
+'--pca_file': save trained pca to this path.
 
-'--pca': apply trained pca on validation data
+'--pca': apply trained pca on validation data.
+
+'--loss': 'normal' means just use triplet loss, 'custom' means use custom defined regularized loss.
 
 ## Feature Extraction
+You can direct use trained model to extract features from test dataset
 ```
 python3 cnn_similarity_analysis/src/07_extract_features_siamese.py \
 --net cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/models/ \
@@ -210,16 +215,18 @@ python3 cnn_similarity_analysis/src/07_extract_features_siamese.py \
 --loss normal \
 --test_dataset artdl
 ```
-'test_list': generated test .csv file list with structure ['test_images', 'label']
+'--net': path to loaded checkpoint.
 
-'test_f': path to save generated test features
+'test_list': generated test .csv file list with structure ['test_images', 'label'].
 
-'db_list': generated sample .csv file, (one image for one class) for evaluation
+'test_f': path to save generated test features.
 
-'db_f': path to save sample features
+'db_list': generated sample .csv file, (one image for one class) for evaluation.
+
+'db_f': path to save sample features.
 
 ## PCA Feature embedding
-
+Apply a PCA after feature extraction via (you do not need to run feature extraction first):
 ```
 python3 yinan_cnn/cnn_similarity_analysis/src/09_embedding_pca_features.py \
 --test_dataset artdl \
@@ -233,20 +240,28 @@ python3 yinan_cnn/cnn_similarity_analysis/src/09_embedding_pca_features.py \
 --db_list /cluster/shared_dataset/DEVKitArtDL/artdl_sample_list.csv \
 --db_f yinan_cnn/cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/db.pkl
 ```
-'--pca_file': pca file to be loaded
+'--pca_file': pca file to be loaded.
 
-'--net': loaded model check point
+'--net': loaded model check point.
 
-'test_list': generated test .csv file list with structure ['test_images', 'label']
+'test_list': generated test .csv file list with structure ['test_images', 'label'].
 
-'test_f': path to save generated test features
+'test_f': path to save generated test features.
 
-'db_list': generated sample .csv file, (one image for one class) for evaluation
+'db_list': generated sample .csv file, (one image represented one class) for evaluation.
 
-'db_f': path to save sample features
+'db_f': path to save sample features.
 
 ## Evaluation
-
 ```
-
+python3 yinan_cnn/cnn_similarity_analysis/src/08_evaluate_siamese.py \
+--test_dataset artdl \
+--test_list /cluster/shared_dataset/DEVKitArtDL/artdl_test_list.csv \
+--test_f yinan_cnn/cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/artdl_test.pkl \
+--db_f yinan_cnn/cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/db.pkl \
 ```
+'--test_list': .csv file with test ground truth labels.
+
+'--test_f': load test features from .pkl file.
+
+'--db_f': load sample features.
