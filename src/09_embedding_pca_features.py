@@ -112,7 +112,7 @@ def embedding_features(args):
         test_dataloader = DataLoader(dataset=test_dataset, shuffle=False, num_workers=args.num_workers,
                                      batch_size=args.batch_size)
         test_features = generate_features(args, net, test_paths, test_dataloader)
-        generate_pca_features(test_features, test_paths, args.d3_f, pca)
+        generate_pca_features(test_features, test_paths, args.test_f, pca)
 
 
 if __name__ == "__main__":
