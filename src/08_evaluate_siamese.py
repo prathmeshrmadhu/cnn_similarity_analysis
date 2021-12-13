@@ -1,6 +1,9 @@
 import sys
-sys.path.append('/cluster/yinan/cnn_similarity_analysis/')
+import torch
+import numpy as np
+sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 import pandas as pd
+import torch.nn.functional as F
 from lib.io import *
 from lib.metrics import *
 from src.lib.siamese.args import siamese_args
@@ -116,7 +119,20 @@ def evaluation(args):
     elif args.test_dataset == 'artdl':
         test_names, test_vectors = read_pickle_descriptors(args.test_f)
         test_file = pd.read_csv(args.test_list)
-        gt_labels = list(test_file['label'])
+        labels = list(test_file['label'])
+        sample_names, sample_vectors = read_pickle_descriptors(args.db_f)
+        test_vectors = torch.Tensor(test_vectors).to(args.device)
+        sample_vectors = torch.tensor(sample_vectors).to(args.device)
+        hit = 0
+        for i in range(len(labels)):
+            cos_similarity = F.cosine_similarity(test_vectors[i], sample_vectors).cpu().numpy()
+            prediction = np.argsort(-cos_similarity)[0]
+            if prediction == labels[i]:
+                hit += 1
+
+        accuracy = hit/len(labels)
+        print('Accuracy: {}'.format(accuracy))
+
 
 
 
