@@ -15,7 +15,7 @@ def evaluation(args):
     # q_names, q_vectors = read_pickle_descriptors(args.query_f)
     # db_names, db_vectors = read_pickle_descriptors(args.db_f)
 
-    if args.val_dataset == 'image_collation':
+    if args.test_dataset == 'image_collation':
         gt_p1p2 = read_config(args.gt_list + 'P1-P2.json')
         gt_p2p3 = read_config(args.gt_list + 'P2-P3.json')
         gt_p1p3 = read_config(args.gt_list + 'P1-P3.json')

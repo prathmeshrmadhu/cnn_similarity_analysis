@@ -125,6 +125,22 @@ python3 cnn_similarity_analysis/src/09_embedding_pca_features.py \
 ```
 '--pca_file': load pca from this path
 
+## Evaluate results
+
+```
+python3 cnn_similarity_analysis/src/08_evaluate_siamese.py \
+--test_dataset image_collation \
+--p1_f cnn_similarity_analysis/experiments/test_exp/experiment_2021-10-10_12-16-55/p1.pkl \
+--p2_f cnn_similarity_analysis/experiments/test_exp/experiment_2021-10-10_12-16-55/p2.pkl \
+--p3_f cnn_similarity_analysis/experiments/test_exp/experiment_2021-10-10_12-16-55/p3.pkl \
+--d1_f cnn_similarity_analysis/experiments/test_exp/experiment_2021-10-10_12-16-55/d1.pkl \
+--d2_f cnn_similarity_analysis/experiments/test_exp/experiment_2021-10-10_12-16-55/d2.pkl \
+--d3_f cnn_similarity_analysis/experiments/test_exp/experiment_2021-10-10_12-16-55/d3.pkl \
+--gt_list /cluster/shared_dataset/ImageCollation/IllustrationMatcher/ground_truth/ \
+--loss normal
+```
+'--gt_list': path to ground truth files
+
 # ArtDL dataset
 ## Network training
 
@@ -147,3 +163,37 @@ python3 cnn_similarity_analysis/src/06_train_triplet_siamese.py \
 --val_list /cluster/shared_dataset/DEVKitArtDL/artdl_val_list.csv
 ```
 '-- train_list', '--val_list': generated .csv file with strcture ['anchor_query', 'ref_positive', 'ref_negative']
+
+'-- start': start training or continue from a checkpoint.
+
+'-- margin': margin in loss function.
+
+'-- loss': 'normal' means just use triplet loss, 'custom' means use custom defined regularized loss.
+
+'-- optimizer': choose 'sgd' or 'adam' optimizer.
+
+'-- net': save or load checkpoint from this path
+
+'--plots': path to save plot of losses
+
+## Network training
+
+You can train a PCA on ArtDL dataset via:
+```
+python3 yinan_cnn/cnn_similarity_analysis/src/09_train_pca.py \
+--train_dataset artdl \
+--val_dataset artdl \
+--train_list /cluster/shared_dataset/DEVKitArtDL/artdl_train_list.csv \
+--val_list /cluster/shared_dataset/DEVKitArtDL/artdl_val_list.csv \
+--pca_file cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/models/pca.vt \
+--gt_list /cluster/shared_dataset/ImageCollation/IllustrationMatcher/ground_truth/  \
+--model resnet50 \
+--pca \
+--imsize 256 \
+--net cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/models/ \
+--imsize 256 \
+--loss normal
+```
+'--pca_file': save trained pca to this path
+
+'--pca': apply trained pca on validation data

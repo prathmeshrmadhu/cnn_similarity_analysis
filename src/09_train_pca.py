@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/cluster/yinan/cnn_similarity_analysis/')
+sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 import numpy as np
 import pandas as pd
 import torch
