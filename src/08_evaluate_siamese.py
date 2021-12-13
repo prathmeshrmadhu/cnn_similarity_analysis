@@ -126,7 +126,7 @@ def evaluation(args):
         sample_vectors = torch.tensor(sample_vectors).to(args.device)
         hit = 0
         for i in range(len(labels)):
-            cos_similarity = F.cosine_similarity(test_vectors[i], sample_vectors).cpu().numpy()
+            cos_similarity = F.cosine_similarity(test_vectors[i], sample_vectors, dim=-1).cpu().numpy()
             prediction = np.argsort(-cos_similarity)[0]
             if prediction == labels[i]:
                 hit += 1
