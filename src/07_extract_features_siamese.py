@@ -8,7 +8,7 @@ import torchvision
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 import sys
-sys.path.append('/cluster/yinan/cnn_similarity_analysis/')
+sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 
 from src.lib.loss import ContrastiveLoss, TripletLoss
 from src.lib.siamese.args import siamese_args
