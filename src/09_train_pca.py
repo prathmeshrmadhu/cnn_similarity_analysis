@@ -112,7 +112,7 @@ def train(args):
         mean_sn = np.mean(np.array(sn_d1d2 + sn_d2d3 + sn_d1d3))
 
 
-    if args.val_dataset == 'artdl':
+    elif args.val_dataset == 'artdl':
         val = pd.read_csv(args.val_list)
         query_val = list(val['anchor_query'])
         p_val = list(val['ref_positive'])
