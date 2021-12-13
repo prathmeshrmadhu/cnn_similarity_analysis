@@ -114,6 +114,13 @@ def embedding_features(args):
         test_features = generate_features(args, net, test_paths, test_dataloader)
         generate_pca_features(test_features, test_paths, args.test_f, pca)
 
+        sample_set = pd.read_csv(args.db_list)
+        sample_paths = list(sample_set['samples'])
+        sample_dataset = ImageList(sample_paths, transform=transforms)
+        sample_dataloader = DataLoader(dataset=sample_dataset, shuffle=False, num_workers=args.num_workers,
+                                       batch_size=args.batch_size)
+        sample_features = generate_features(args, net, sample_paths, sample_dataloader)
+        generate_pca_features(sample_features, sample_paths, args.db_f, pca)
 
 if __name__ == "__main__":
 

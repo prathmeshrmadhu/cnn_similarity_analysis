@@ -203,6 +203,8 @@ python3 cnn_similarity_analysis/src/07_extract_features_siamese.py \
 --net cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/models/ \
 --test_list /cluster/shared_dataset/DEVKitArtDL/artdl_test_list.csv \
 --test_f cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/artdl_test.pkl \
+--db_list /cluster/shared_dataset/DEVKitArtDL/artdl_sample_list.csv\
+--db_f yinan_cnn/cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/db.pkl\
 --model resnet50 \
 --imsize 256 \
 --loss normal \
@@ -211,6 +213,10 @@ python3 cnn_similarity_analysis/src/07_extract_features_siamese.py \
 'test_list': generated test .csv file list with structure ['test_images', 'label']
 
 'test_f': path to save generated test features
+
+'db_list': generated sample .csv file, (one image for one class) for evaluation
+
+'db_f': path to save sample features
 
 ## PCA Feature embedding
 
@@ -223,7 +229,9 @@ python3 yinan_cnn/cnn_similarity_analysis/src/09_embedding_pca_features.py \
 --net yinan_cnn/cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/models/ \
 --loss normal \
 --test_list /cluster/shared_dataset/DEVKitArtDL/artdl_test_list.csv \
---test_f yinan_cnn/cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/artdl_test.pkl
+--test_f yinan_cnn/cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/artdl_test.pkl \
+--db_list /cluster/shared_dataset/DEVKitArtDL/artdl_sample_list.csv \
+--db_f yinan_cnn/cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/db.pkl
 ```
 '--pca_file': pca file to be loaded
 
@@ -232,6 +240,10 @@ python3 yinan_cnn/cnn_similarity_analysis/src/09_embedding_pca_features.py \
 'test_list': generated test .csv file list with structure ['test_images', 'label']
 
 'test_f': path to save generated test features
+
+'db_list': generated sample .csv file, (one image for one class) for evaluation
+
+'db_f': path to save sample features
 
 ## Evaluation
 
