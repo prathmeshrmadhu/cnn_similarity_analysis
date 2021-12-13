@@ -117,6 +117,7 @@ def evaluation(args):
         print('GAP d2-d3: {}'.format(gap_d2d3))
 
     elif args.test_dataset == 'artdl':
+        print('Dataset to be evaluate: ArtDL')
         test_names, test_vectors = read_pickle_descriptors(args.test_f)
         test_file = pd.read_csv(args.test_list)
         labels = list(test_file['label'])

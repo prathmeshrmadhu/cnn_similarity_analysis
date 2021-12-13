@@ -204,7 +204,7 @@ python3 cnn_similarity_analysis/src/07_extract_features_siamese.py \
 --test_list /cluster/shared_dataset/DEVKitArtDL/artdl_test_list.csv \
 --test_f cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/artdl_test.pkl \
 --db_list /cluster/shared_dataset/DEVKitArtDL/artdl_sample_list.csv\
---db_f yinan_cnn/cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/db.pkl\
+--db_f cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/db.pkl \
 --model resnet50 \
 --imsize 256 \
 --loss normal \
