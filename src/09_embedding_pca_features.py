@@ -1,6 +1,7 @@
 import sys
 sys.path.append('/cluster/yinan/cnn_similarity_analysis/')
 import numpy as np
+import pandas as pd
 import torch
 import time
 import torchvision
@@ -15,12 +16,9 @@ import joblib
 import faiss
 
 
-def generate_pca_features(features, image_names, save_path, estimator=None):
-    if estimator:
-        print(f"Apply PCA {estimator.d_in} -> {estimator.d_out}")
-        pca_features = estimator.apply_py(features)
-    else:
-        pca_features = features
+def generate_pca_features(features, image_names, save_path, estimator):
+    print(f"Apply PCA {estimator.d_in} -> {estimator.d_out}")
+    pca_features = estimator.apply_py(features)
     write_pickle_descriptors(pca_features, image_names, save_path)
     print(f"writing descriptors to {save_path}")
 
@@ -59,12 +57,12 @@ def embedding_features(args):
     net.to(args.device)
     net.eval()
 
-    if args.pca:
-        print("Load PCA matrix", args.pca_file)
-        pca = faiss.read_VectorTransform(args.pca_file)
+
+    print("Load PCA matrix", args.pca_file)
+    pca = faiss.read_VectorTransform(args.pca_file)
 
 
-    if args.val_dataset == "image_collation":
+    if args.test_dataset == "image_collation":
         p1_images = [args.p1 + 'illustration/' + l.strip() for l in open(args.p1 + 'files.txt', "r")]
         p2_images = [args.p2 + 'illustration/' + l.strip() for l in open(args.p2 + 'files.txt', "r")]
         p3_images = [args.p3 + 'illustration/' + l.strip() for l in open(args.p3 + 'files.txt', "r")]
@@ -100,20 +98,21 @@ def embedding_features(args):
         d2_features = generate_features(args, net, p2_images, d2_loader)
         d3_features = generate_features(args, net, p3_images, d3_loader)
 
-        if args.pca:
-            generate_pca_features(p1_features, p1_images, args.p1_f, pca)
-            generate_pca_features(p2_features, p2_images, args.p2_f, pca)
-            generate_pca_features(p3_features, p3_images, args.p3_f, pca)
-            generate_pca_features(d1_features, d1_images, args.d1_f, pca)
-            generate_pca_features(d2_features, d2_images, args.d2_f, pca)
-            generate_pca_features(d3_features, d3_images, args.d3_f, pca)
-        else:
-            generate_pca_features(p1_features, p1_images, args.p1_f)
-            generate_pca_features(p2_features, p2_images, args.p2_f)
-            generate_pca_features(p3_features, p3_images, args.p3_f)
-            generate_pca_features(d1_features, d1_images, args.d1_f)
-            generate_pca_features(d2_features, d2_images, args.d2_f)
-            generate_pca_features(d3_features, d3_images, args.d3_f)
+        generate_pca_features(p1_features, p1_images, args.p1_f, pca)
+        generate_pca_features(p2_features, p2_images, args.p2_f, pca)
+        generate_pca_features(p3_features, p3_images, args.p3_f, pca)
+        generate_pca_features(d1_features, d1_images, args.d1_f, pca)
+        generate_pca_features(d2_features, d2_images, args.d2_f, pca)
+        generate_pca_features(d3_features, d3_images, args.d3_f, pca)
+
+    if args.test_dataset == 'artdl':
+        test_set = pd.read_csv(args.test_list)
+        test_paths = list(test_set['test_images'])
+        test_dataset = ImageList(test_paths, transform=transforms)
+        test_dataloader = DataLoader(dataset=test_dataset, shuffle=False, num_workers=args.num_workers,
+                                     batch_size=args.batch_size)
+        test_features = generate_features(args, net, test_paths, test_dataloader)
+        generate_pca_features(test_features, test_paths, args.d3_f, pca)
 
 
 if __name__ == "__main__":

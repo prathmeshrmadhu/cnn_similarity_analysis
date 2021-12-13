@@ -197,3 +197,18 @@ python3 yinan_cnn/cnn_similarity_analysis/src/09_train_pca.py \
 '--pca_file': save trained pca to this path
 
 '--pca': apply trained pca on validation data
+
+## Feature Extraction
+```
+python3 yinan_cnn/cnn_similarity_analysis/src/07_extract_features_siamese.py \
+--net yinan_cnn/cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/models/ \
+--test_list /cluster/shared_dataset/DEVKitArtDL/artdl_test_list.csv \
+--test_f yinan_cnn/cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/artdl_test.pkl \
+--model resnet50 \
+--imsize 256 \
+--loss normal \
+--test_dataset artdl
+```
+'test_list': generated test .csv file list with structure ['test_images', 'label']
+
+'test_f': path to save generated test features
