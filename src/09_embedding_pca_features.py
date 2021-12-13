@@ -105,7 +105,7 @@ def embedding_features(args):
         generate_pca_features(d2_features, d2_images, args.d2_f, pca)
         generate_pca_features(d3_features, d3_images, args.d3_f, pca)
 
-    if args.test_dataset == 'artdl':
+    elif args.test_dataset == 'artdl':
         test_set = pd.read_csv(args.test_list)
         test_paths = list(test_set['test_images'])
         test_dataset = ImageList(test_paths, transform=transforms)

@@ -112,6 +112,9 @@ def evaluation(args):
         print('GAP d1-d3: {}'.format(gap_d1d3))
         print('GAP d2-d3: {}'.format(gap_d2d3))
 
+    elif args.test_dataset == 'artdl':
+        test_names, test_vectors = read_pickle_descriptors(args.test_f)
+
 
 
 
