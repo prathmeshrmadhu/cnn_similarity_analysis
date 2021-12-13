@@ -53,6 +53,10 @@ python3 cnn_similarity_analysis/src/06_train_triplet_siamese.py \
 
 '-- net': save or load checkpoint from this path
 
+‘--d1', '--d2'...'--p3': path to images and generated file lists
+
+'--plots': path to save plot of losses
+
 ## PCA training
 You can train a pca via:
 ```
