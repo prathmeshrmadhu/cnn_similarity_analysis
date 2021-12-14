@@ -3,13 +3,14 @@ import glob
 import json
 import pandas as pd
 import torch
+import torch.nn.functional as F
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 from lib.io import read_config
 import sys
 sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 
-from src.lib.loss import TripletLoss
+from src.lib.loss import TripletLoss, CustomLoss
 from src.lib.siamese.args import  siamese_args
 from src.lib.siamese.dataset import generate_train_dataset, get_transforms, add_file_list
 from src.lib.augmentations import *
@@ -66,16 +67,20 @@ def train(args, augmentations_list):
     print("loading siamese model")
     if args.loss == "normal":
         net = TripletSiameseNetwork(args.model)
+        # Defining the criteria for training
+        criterion = TripletLoss()
+        criterion.to(args.device)
     elif args.loss == "custom":
         net = TripletSiameseNetwork_custom(args.model)
+        # Defining the criteria for training
+        criterion = CustomLoss()
+        criterion.to(args.device)
     if not args.start:
         state_dict = torch.load(args.net + args.checkpoint)
         net.load_state_dict(state_dict)
     net.to(args.device)
 
-    # Defining the criteria for training
-    criterion = TripletLoss()
-    criterion.to(args.device)
+
 
     if args.optimizer == "adam":
         if args.loss == "normal":
@@ -127,10 +132,14 @@ def train(args, augmentations_list):
             query_img = query_img.to(args.device)
             rp_img = rp_img.to(args.device)
             rn_img = rn_img.to(args.device)
-
-            p_score, n_score = net(query_img, rp_img, rn_img)
-            optimizer.zero_grad()
-            loss = criterion(p_score, n_score, args.margin)
+            if args.loss == 'normal':
+                p_score, n_score = net(query_img, rp_img, rn_img)
+                optimizer.zero_grad()
+                loss = criterion(p_score, n_score, args.margin)
+            elif args.loss == 'custom':
+                q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4 = net(query_img, rp_img, rn_img)
+                optimizer.zero_grad()
+                loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, args.regular)
             loss.backward()
             optimizer.step()
             loss_history.append(loss)
@@ -152,11 +161,19 @@ def train(args, augmentations_list):
                 query_img = query_img.to(args.device)
                 rp_img = rp_img.to(args.device)
                 rn_img = rn_img.to(args.device)
-
-                p_score, n_score = net(query_img, rp_img, rn_img)
-                val_loss.append(criterion(p_score, n_score, args.margin))
-                p_score_list.append(torch.mean(p_score))
-                n_score_list.append(torch.mean(n_score))
+                if args.loss == 'normal':
+                    p_score, n_score = net(query_img, rp_img, rn_img)
+                    val_loss.append(criterion(p_score, n_score, args.margin))
+                    p_score_list.append(torch.mean(p_score))
+                    n_score_list.append(torch.mean(n_score))
+                elif args.loss == 'custom':
+                    q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4 = net(query_img, rp_img, rn_img)
+                    loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, args.regular)
+                    val_loss.append(loss)
+                    p_score = F.cosine_similarity(q3, p3)
+                    n_score = F.cosine_similarity(q3, n3)
+                    p_score_list.append(torch.mean(p_score))
+                    n_score_list.append(torch.mean(n_score))
             val_loss = torch.mean(torch.Tensor(val_loss))
         print("Epoch:{},  Current validation loss {}\n".format(epoch, val_loss))
         epoch_losses.append(val_loss.cpu())

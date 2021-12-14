@@ -254,23 +254,11 @@ class TripletSiameseNetwork_custom(nn.Module):
         return x1, x2, x3, x4
 
     def forward(self, input1, input2, input3):
-        # score_positive_1 = 1 - (torch.sum(self.cos(out1, out2), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
-        # score_negative_1 = 1 - (torch.sum(self.cos(out1, out3), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
         x1_1, x1_2, x1_3, x1_4 = self.forward_once(input1)
         x2_1, x2_2, x2_3, x2_4 = self.forward_once(input2)
         x3_1, x3_2, x3_3, x3_4 = self.forward_once(input3)
-        score_p_1 = 1 - self.cos(x1_1, x2_1)
-        score_n_1 = 1 - self.cos(x1_1, x3_1)
-        score_p_2 = 1 - self.cos(x1_2, x2_2)
-        score_n_2 = 1 - self.cos(x1_2, x3_2)
-        score_p_3 = 1 - self.cos(x1_3, x2_3)
-        score_n_3 = 1 - self.cos(x1_3, x3_3)
-        score_p_4 = 1 - self.cos(x1_4, x2_4)
-        score_n_4 = 1 - self.cos(x1_4, x3_4)
-        score_positive = 0.25 * score_p_1 + 0.25 * score_p_2 + 0.25 * score_p_3 + 0.25 * score_p_4
-        score_negative = 0.25 * score_n_1 + 0.25 * score_n_2 + 0.25 * score_n_3 + 0.25 * score_n_4
 
-        return score_positive, score_negative
+        return x1_1, x1_2, x1_3, x1_4, x2_1, x2_2, x2_3, x2_4, x3_1, x3_2, x3_3, x3_4
 
 
 

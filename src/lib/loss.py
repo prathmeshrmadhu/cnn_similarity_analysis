@@ -21,6 +21,20 @@ class TripletLoss(torch.nn.Module):
         return loss
 
 
+class CustomLoss(torch.nn.Module):
+    def __int__(self):
+        super(CustomLoss, self).__init__()
+
+    def forward(self, q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, margin, lam):
+        score_positive = 1 - F.cosine_similarity(q3, p3)
+        score_negative = 1 - F.cosine_similarity(q3, n3)
+        triplet_loss = torch.mean(
+            torch.clamp(torch.pow(score_positive, 2) - torch.pow(score_negative, 2) + margin, min=0.0))
+        regular = lam * (F.l1_loss(q1, p1) + F.l1_loss(p2, q2) + F.l1_loss(q4, p4))
+        loss = triplet_loss + regular
+        return loss
+
+
 class ContrastiveLossSimClr(torch.nn.Module):
     def __int__(self, batch_size, temperature=0.5):
         super().__init__()
