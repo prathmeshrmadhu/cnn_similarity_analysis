@@ -18,13 +18,25 @@ def get_transforms(args):
             torchvision.transforms.ToTensor(),
             torchvision.transforms.Normalize(mean, std)
         ]
-    else:
+    elif args.method == 'warp_extraction':
         transforms = [
             torchvision.transforms.Resize((args.imsize, args.imsize)),
             torchvision.transforms.ToTensor(),
             torchvision.transforms.Normalize(mean, std)
         ]
-
+    elif args.method == 'center_extraction':
+        transforms = [
+            torchvision.transforms.CenterCrop(args.imsize),
+            torchvision.transforms.ToTensor(),
+            torchvision.transforms.Normalize(mean, std)
+        ]
+    else:
+        print('please choose a transform method')
+        transforms = [
+            torchvision.transforms.Resize((args.imsize, args.imsize)),
+            torchvision.transforms.ToTensor(),
+            torchvision.transforms.Normalize(mean, std)
+        ]
     # if args.transpose != -1:
     #     transforms.insert(TransposeTransform(args.transpose), 0)
 

@@ -21,6 +21,7 @@ def siamese_args():
     aa('--num_workers', default=EXP_PARAMS['num_workers'], type=int, help="nb of dataloader workers")
     aa('--optimizer', default="sgd", help='type of optimizer')
     aa('--loss', default="normal", help='type of loss strcture')
+    aa('--method', default=None, help='type of experiment method')
 
     group = parser.add_argument_group('model options')
     aa('--model', default=EXP_PARAMS['model']['model_name'], help="model to use")

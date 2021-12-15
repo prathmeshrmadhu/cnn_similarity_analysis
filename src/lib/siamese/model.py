@@ -26,7 +26,7 @@ class VGG16Pool5(nn.Module):
         self.net = torchvision.models.vgg16(pretrained=True).features
 
     def forward(self, x):
-        x = self.net.features(x)
+        x = self.net(x)
         return x
 
 

@@ -11,7 +11,7 @@ import sys
 sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 
 from src.lib.loss import TripletLoss, CustomLoss
-from src.lib.siamese.args import  siamese_args
+from src.lib.siamese.args import siamese_args
 from src.lib.siamese.dataset import generate_train_dataset, get_transforms, add_file_list
 from src.lib.augmentations import *
 from src.data.siamese_dataloader import TripletTrainList, TripletValList
