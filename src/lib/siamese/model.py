@@ -23,7 +23,7 @@ class ResNet50Conv4(nn.Module):
 class VGG16Pool5(nn.Module):
     def __init__(self):
         super(VGG16Pool5, self).__init__()
-        self.net = torchvision.models.vgg16(pretrained=True)
+        self.net = torchvision.models.vgg16(pretrained=True).features
 
     def forward(self, x):
         x = self.net.features(x)
@@ -33,28 +33,32 @@ class VGG16Pool5(nn.Module):
 class VGG16FC6(nn.Module):
     def __init__(self):
         super(VGG16FC6, self).__init__()
-        self.net = torchvision.models.vgg16(pretrained=True)
+        self.features = torchvision.models.vgg16(pretrained=True).features
+        self.avgpool = torchvision.models.vgg16(pretrained=True).avgpool
+        self.classifier = torchvision.models.vgg16(pretrained=True).classifier[0]
         self.flatten = torch.nn.Flatten()
 
     def forward(self, x):
-        x = self.net.features(x)
-        x = self.net.avgpool(x)
+        x = self.features(x)
+        x = self.avgpool(x)
         x = self.flatten(x)
-        x = self.net.classifier[0](x)
+        x = self.classifier(x)
         return x
 
 
 class VGG16FC7(nn.Module):
     def __init__(self):
         super(VGG16FC7, self).__init__()
-        self.net = torchvision.models.vgg16(pretrained=True)
+        self.features = torchvision.models.vgg16(pretrained=True).features
+        self.avgpool = torchvision.models.vgg16(pretrained=True).avgpool
+        self.classifier = torchvision.models.vgg16(pretrained=True).classifier[:4]
         self.flatten = torch.nn.Flatten()
 
     def forward(self, x):
-        x = self.net.features(x)
-        x = self.net.avgpool(x)
+        x = self.features(x)
+        x = self.avgpool(x)
         x = self.flatten(x)
-        x = self.net.classifier[:4](x)
+        x = self.classifier(x)
         return x
 
 
@@ -104,6 +108,30 @@ def load_siamese_checkpoint(name, checkpoint_file):
         print('used model: VGG16')
         print('--------------------------------------------------------------')
         model = torchvision.models.vgg16(pretrained=True)
+        # model.eval()
+        return model
+
+    elif name == "vgg_pool5":
+        print('--------------------------------------------------------------')
+        print('used model: VGG16')
+        print('--------------------------------------------------------------')
+        model = VGG16Pool5()
+        # model.eval()
+        return model
+
+    elif name == "vgg_fc6":
+        print('--------------------------------------------------------------')
+        print('used model: VGG16')
+        print('--------------------------------------------------------------')
+        model = VGG16FC6()
+        # model.eval()
+        return model
+
+    elif name == "vgg_fc7":
+        print('--------------------------------------------------------------')
+        print('used model: VGG16')
+        print('--------------------------------------------------------------')
+        model = VGG16FC7()
         # model.eval()
         return model
 
@@ -243,14 +271,7 @@ class TripletSiameseNetwork(nn.Module):
         return x ** (1. / p)
 
     def forward_once(self, x):
-        x = self.head.conv1(x)
-        x = self.head.bn1(x)
-        x = self.head.relu(x)
-        x = self.head.maxpool(x)
-
-        x = self.head.layer1(x)
-        x = self.head.layer2(x)
-        x = self.head.layer3(x)
+        x = self.head(x)
         x = self.gem(x)
         x = self.flatten(x)
         return x
