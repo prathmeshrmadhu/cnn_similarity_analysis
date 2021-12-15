@@ -205,7 +205,16 @@ class TripletSiameseNetwork(nn.Module):
         return x ** (1. / p)
 
     def forward_once(self, x):
-        x = self.head(x)
+        x = self.head.conv1(x)
+        x = self.head.bn1(x)
+        x = self.head.relu(x)
+        x = self.head.maxpool(x)
+
+        x = self.head.layer1(x)
+        x = self.head.layer2(x)
+        x = self.head.layer3(x)
+        x = self.gem(x)
+        x = self.flatten(x)
         return x
 
     def forward(self, input1, input2, input3):
