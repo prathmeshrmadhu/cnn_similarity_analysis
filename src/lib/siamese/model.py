@@ -20,6 +20,44 @@ class ResNet50Conv4(nn.Module):
         return x
 
 
+class VGG16Pool5(nn.Module):
+    def __init__(self):
+        super(VGG16Pool5, self).__init__()
+        self.net = torchvision.models.vgg16(pretrained=True)
+
+    def forward(self, x):
+        x = self.net.features(x)
+        return x
+
+
+class VGG16FC6(nn.Module):
+    def __init__(self):
+        super(VGG16FC6, self).__init__()
+        self.net = torchvision.models.vgg16(pretrained=True)
+        self.flatten = torch.nn.Flatten()
+
+    def forward(self, x):
+        x = self.net.features(x)
+        x = self.net.avgpool(x)
+        x = self.flatten(x)
+        x = self.net.classifier[0](x)
+        return x
+
+
+class VGG16FC7(nn.Module):
+    def __init__(self):
+        super(VGG16FC7, self).__init__()
+        self.net = torchvision.models.vgg16(pretrained=True)
+        self.flatten = torch.nn.Flatten()
+
+    def forward(self, x):
+        x = self.net.features(x)
+        x = self.net.avgpool(x)
+        x = self.flatten(x)
+        x = self.net.classifier[:4](x)
+        return x
+
+
 def load_siamese_checkpoint(name, checkpoint_file):
     if name == "resnet50":
         print('--------------------------------------------------------------')
