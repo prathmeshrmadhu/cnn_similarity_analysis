@@ -38,6 +38,7 @@ def siamese_args():
     aa('--regular', default=0.01, type=float, help="regularization factor in custom loss function")
     aa('--threshold_d', default=8.0, type=float, help="threshold for confusion_matrix with euclidean distance")
     aa('--threshold_s', default=8.0, type=float, help="threshold for confusion_matrix with cosine similarity")
+    aa('--pca_dim', default=256, type=int, help="output dimensionality of pca")
 
     group = parser.add_argument_group('dataset options')
     aa('--train_dataset', default=None, help="training dataset name")

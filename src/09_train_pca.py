@@ -83,7 +83,7 @@ def train(args):
     train_features = generate_features(args, net, train_images, train_loader)
 
     d = train_features.shape[1]
-    pca = faiss.PCAMatrix(d, 256, -0.5)
+    pca = faiss.PCAMatrix(d, args.pca_dim, -0.5)
     print(f"Train PCA {pca.d_in} -> {pca.d_out}")
     pca.train(train_features)
     print(f"Storing PCA to {args.pca_file}")
