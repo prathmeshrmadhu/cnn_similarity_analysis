@@ -21,7 +21,7 @@ from lib.io import *
 
 
 def generate_features(args, net, image_names, data_loader, save_path):
-    images_list = list()
+    # images_list = list()
     if args.loss == "normal":
         features_list = list()
         t0 = time.time()
@@ -31,7 +31,7 @@ def generate_features(args, net, image_names, data_loader, save_path):
                 images = images.to(args.device)
                 feats = net.forward_once(images)
                 features_list.append(feats.cpu().numpy())
-                images_list.append(images.cpu().numpy())
+                # images_list.append(images.cpu().numpy())
         t1 = time.time()
         features = np.vstack(features_list)
         write_pickle_descriptors(features, image_names, save_path)
@@ -45,7 +45,7 @@ def generate_features(args, net, image_names, data_loader, save_path):
                 images = images.to(args.device)
                 feats1, feats2, feats3, feats4 = net.forward_once(images)
                 features_list.append(feats3.cpu().numpy())
-                images_list.append(images.cpu().numpy())
+                # images_list.append(images.cpu().numpy())
         t1 = time.time()
         features = np.vstack(features_list)
         write_pickle_descriptors(features, image_names, save_path)
