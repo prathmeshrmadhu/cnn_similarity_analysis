@@ -37,27 +37,18 @@ def generate_features(args, net, image_names, data_loader, save_path):
         write_pickle_descriptors(features, image_names, save_path)
 
     elif args.loss == "custom":
-        features_list1 = list()
-        features_list2 = list()
-        features_list3 = list()
-        features_list4 = list()
+        features_list = list()
         t0 = time.time()
         with torch.no_grad():
             for no, data in enumerate(data_loader):
                 images = data
                 images = images.to(args.device)
                 feats1, feats2, feats3, feats4 = net.forward_once(images)
-                features_list1.append(feats1.cpu().numpy())
-                features_list2.append(feats2.cpu().numpy())
-                features_list3.append(feats3.cpu().numpy())
-                features_list4.append(feats4.cpu().numpy())
+                features_list.append(feats3.cpu().numpy())
                 images_list.append(images.cpu().numpy())
         t1 = time.time()
-        features1 = np.vstack(features_list1)
-        features2 = np.vstack(features_list2)
-        features3 = np.vstack(features_list3)
-        features4 = np.vstack(features_list4)
-        write_pickle_descriptors_mix(features1, features2, features3, features4, image_names, save_path)
+        features = np.vstack(features_list)
+        write_pickle_descriptors(features, image_names, save_path)
 
     print(f"writing descriptors to {save_path}")
     print(f"image_description_time: {(t1 - t0) / len(image_names):.5f} s per image")
