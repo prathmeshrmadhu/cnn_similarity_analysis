@@ -66,7 +66,7 @@ def train(args, augmentations_list):
 
     print("loading siamese model")
     if args.loss == "normal":
-        net = TripletSiameseNetwork(args.model)
+        net = TripletSiameseNetwork(args.model, args.method)
         # Defining the criteria for training
         criterion = TripletLoss()
         criterion.to(args.device)

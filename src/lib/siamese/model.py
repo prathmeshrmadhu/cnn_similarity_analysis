@@ -252,11 +252,13 @@ class ContrastiveSiameseNetwork(nn.Module):
 
 
 class TripletSiameseNetwork(nn.Module):
-    def __init__(self, model, checkpoint='/cluster/yinan/isc2021/data/multigrain_joint_3B_0.5.pth'):
+    def __init__(self, model, method, checkpoint='/cluster/yinan/isc2021/data/multigrain_joint_3B_0.5.pth'):
         super(TripletSiameseNetwork, self).__init__()
         self.head = load_siamese_checkpoint(model, checkpoint)
         self.flatten = nn.Flatten()
         self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
+        self.method = method
+
         # self.fc = nn.Sequential(
         #     nn.Linear(1000, 512),
         #     nn.BatchNorm1d(512),
@@ -272,8 +274,20 @@ class TripletSiameseNetwork(nn.Module):
 
     def forward_once(self, x):
         x = self.head(x)
-        x = self.gem(x)
-        x = self.flatten(x)
+        if self.method == 'center_extraction' or self.method == 'warp_extraction':
+            x = F.normalize(x)
+        elif self.method == 'max_pool':
+            x = F.adaptive_max_pool2d(x, (1, 1))
+            x = self.flatten(x)
+        elif self.method == 'sum_pool':
+            x = x.size()[2] * x.size()[3] * F.adaptive_avg_pool2d(x, (1, 1))
+            x = self.flatten(x)
+        elif self.method == 'sum_pool_2x2':
+            x = x.size()[2] * x.size()[3] * 0.25 * F.adaptive_avg_pool2d(x, (2, 2))
+            x = self.flatten(x)
+        else:
+            x = self.gem(x)
+            x = self.flatten(x)
         return x
 
     def forward(self, input1, input2, input3):
