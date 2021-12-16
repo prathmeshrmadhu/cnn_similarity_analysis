@@ -35,7 +35,7 @@ def siamese_args():
        help="momentum for sgd")
     aa('--weight_decay', default=0.0, type=float, help="max image size at extraction time")
     aa('--margin', default=10.0, type=float, help="margin in loss function")
-    aa('--regular', default=10.0, type=float, help="regularization factor in custom loss function")
+    aa('--regular', default=0.01, type=float, help="regularization factor in custom loss function")
     aa('--threshold_d', default=8.0, type=float, help="threshold for confusion_matrix with euclidean distance")
     aa('--threshold_s', default=8.0, type=float, help="threshold for confusion_matrix with cosine similarity")
 
