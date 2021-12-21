@@ -424,7 +424,7 @@ def ranked_recall(gt_array, vectors, rank):
     recall = 0
     for i in range(gt_array.shape[0]):
         label = gt_array[i]
-        class_num = gt_array.count(label)
+        class_num = gt_array[gt_array == label].shape[0]
         weight = np.sqrt(class_num / (class_num + 1))
         cos = F.cosine_similarity(vectors[i], vectors).numpy()
         label_match = gt_array[np.argsort(-cos)]
