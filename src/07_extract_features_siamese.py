@@ -63,7 +63,7 @@ def extract_features(args):
     if args.loss == "custom":
         net = TripletSiameseNetwork_custom(args.model)
     elif args.loss == "normal":
-        net = TripletSiameseNetwork(args.model)
+        net = TripletSiameseNetwork(args.model, args.method)
     state_dict = torch.load(args.net + args.checkpoint)
     net.load_state_dict(state_dict)
     net.eval()
