@@ -418,3 +418,17 @@ def calculate_gap(confidence, correct, gt):
     x['term'] = x.prec_k * x.corre
     gap = x.term.sum() / len(gt)
     return gap
+
+
+def ranked_recall(gt_array, vectors, rank):
+    recall = 0
+    for i in range(gt_array.shape[0]):
+        label = gt_array[i]
+        class_num = gt_array.count(label)
+        weight = np.sqrt(class_num / (class_num + 1))
+        cos = F.cosine_similarity(vectors[i], vectors).numpy()
+        label_match = gt_array[np.argsort(-cos)]
+        label_predict = list(label_match[:rank])
+        tp = label_predict.count(label) - 1
+        recall += weight * (tp / class_num)
+    return recall
