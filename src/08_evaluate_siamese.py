@@ -89,8 +89,15 @@ def evaluation(args):
         accuracy = hit/len(labels)
         print('Accuracy: {}'.format(accuracy))
 
-
-
+        gt_array = np.array(labels)
+        r_20 = ranked_recall(gt_array, test_vectors, 20)
+        r_50 = ranked_recall(gt_array, test_vectors, 50)
+        r_100 = ranked_recall(gt_array, test_vectors, 100)
+        r_200 = ranked_recall(gt_array, test_vectors, 200)
+        print('r[20]: {}'.format(r_20))
+        print('r[50]: {}'.format(r_50))
+        print('r[100]: {}'.format(r_100))
+        print('r[200]: {}'.format(r_200))
 
 
     # fw = open(args.matched_f, 'wb')
