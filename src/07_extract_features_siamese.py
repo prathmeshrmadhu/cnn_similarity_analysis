@@ -35,7 +35,7 @@ def generate_features(args, net, image_names, data_loader, save_path):
         t1 = time.time()
         features = np.vstack(features_list)
         write_pickle_descriptors(features, image_names, save_path)
-        
+
     else:
         features_list = list()
         t0 = time.time()
