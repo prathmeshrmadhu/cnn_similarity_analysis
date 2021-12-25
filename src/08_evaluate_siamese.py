@@ -93,9 +93,15 @@ def evaluation(args):
         r_5 = ranked_recall(gt_array, test_vectors, 5)
         r_20 = ranked_recall(gt_array, test_vectors, 20)
         r_50 = ranked_recall(gt_array, test_vectors, 50)
+        map_5 = ranked_mean_precision(gt_array, test_vectors, 5)
+        map_20 = ranked_mean_precision(gt_array, test_vectors, 20)
+        map_50 = ranked_mean_precision(gt_array, test_vectors, 50)
         print('r[5]: {}'.format(r_5))
         print('r[20]: {}'.format(r_20))
         print('r[50]: {}'.format(r_50))
+        print('map[5]: {}'.format(map_5))
+        print('map[20]: {}'.format(map_20))
+        print('map[50]: {}'.format(map_50))
 
 
 
