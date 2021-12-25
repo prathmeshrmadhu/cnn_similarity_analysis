@@ -432,3 +432,18 @@ def ranked_recall(gt_array, vectors, rank):
         tp = label_predict.count(label) - 1
         recall += weight * (tp / class_num)
     return recall
+
+
+def ranked_mean_precision(gt_array, vectors, rank):
+    precisions = np.zores(17)
+    for i in range(gt_array.shape[0]):
+        label = gt_array[i]
+        class_num = gt_array[gt_array == label].shape[0]
+        cos = F.cosine_similarity(vectors[i], vectors, dim=-1).cpu().numpy()
+        label_match = gt_array[np.argsort(-cos)]
+        label_predict = list(label_match[:rank+1])
+        tp = label_predict.count(label) - 1
+        fp = rank - tp
+        precisions[label] += (tp/(tp+fp))/class_num
+    map = np.mean(precisions)
+    return map
