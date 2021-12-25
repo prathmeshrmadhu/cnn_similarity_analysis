@@ -435,7 +435,7 @@ def ranked_recall(gt_array, vectors, rank):
 
 
 def ranked_mean_precision(gt_array, vectors, rank):
-    precisions = np.zores(17)
+    precisions = np.zeros(17)
     for i in range(gt_array.shape[0]):
         label = gt_array[i]
         class_num = gt_array[gt_array == label].shape[0]
