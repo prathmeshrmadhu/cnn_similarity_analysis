@@ -58,7 +58,7 @@ def embedding_features(args):
     # resnet_50 = torchvision.models.resnet50(pretrained=True)
     # net = ResNet50Conv4(resnet_50)
     if args.loss == 'normal':
-        net = TripletSiameseNetwork(args.model)
+        net = TripletSiameseNetwork(args.model, args.method)
     elif args.loss == 'custom':
         net = TripletSiameseNetwork_custom(args.model)
 
