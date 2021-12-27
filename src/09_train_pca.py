@@ -71,7 +71,7 @@ def train(args):
     train_loader = DataLoader(dataset=train_dataset, shuffle=True, num_workers=args.num_workers,
                               batch_size=args.batch_size)
     if args.loss == 'normal':
-        net = TripletSiameseNetwork(args.model)
+        net = TripletSiameseNetwork(args.model, args.method)
     elif args.loss == 'custom':
         net = TripletSiameseNetwork_custom(args.model)
     if args.net:
