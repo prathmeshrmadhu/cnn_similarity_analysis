@@ -290,10 +290,6 @@ class TripletSiameseNetwork(nn.Module):
             x = self.flatten(x)
         return x
 
-    def forward_map(self, x):
-        x = self.head(x)
-        return x
-
     def forward(self, input1, input2, input3):
         # score_positive_1 = 1 - (torch.sum(self.cos(out1, out2), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
         # score_negative_1 = 1 - (torch.sum(self.cos(out1, out3), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
