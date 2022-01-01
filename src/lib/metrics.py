@@ -379,6 +379,41 @@ def feature_map_matching(gt, data1, data2):
     return np.array(confidence_list), np.array(correct_list), accuracy
 
 
+def feature_location_matching(gt, map1_f, map2_f, sigma):
+    matched_list = []
+    confidence_list = []
+    hit = 0
+    similarity_list = []
+    correct_list = np.zeros(map1_f.shape[0])
+    for vec1s in map1_f:
+        for vec2s in map2_f:
+            cos = cosine_similarity(vec1s, vec2s)
+            predict_vec_12 = np.argsort(-cos, axis=1)[:, 0]
+            confidence_vec_12 = -np.sort(-cos, axis=1)[:, 0]
+            locations_12 = np.linspace(0, predict_vec_12.shape[0] - 1, predict_vec_12.shape[0], dtype=int)
+            diff_location_12 = np.abs(locations_12 - predict_vec_12)
+            weights_12 = np.exp(-np.square(diff_location_12) / 2 * sigma)
+            similarity_12 = np.sum(weights_12 * confidence_vec_12) / (2 * predict_vec_12.shape[0])
+
+            predict_vec_21 = np.argsort(-cos, axis=1)[0, :]
+            confidence_vec_21 = -np.sort(-cos, axis=1)[0, :]
+            locations_21 = np.linspace(0, predict_vec_21.shape[0] - 1, predict_vec_21.shape[0], dtype=int)
+            diff_location_21 = np.abs(locations_21 - predict_vec_21)
+            weights_21 = np.exp(-np.square(diff_location_21) / 2 * sigma)
+            similarity_21 = np.sum(weights_21 * confidence_vec_21) / (2 * predict_vec_21.shape[0])
+            similarity_list.append(similarity_12 + similarity_21)
+        similarity_array = np.asarray(similarity_list)
+        matched_list.append(np.argsort(-similarity_array)[0])
+        confidence_list.append(-np.sort(-similarity_array)[0])
+        similarity_list.clear()
+
+        for item in gt:
+            if matched_list[item[0]] == item[1]:
+                hit += 1
+                correct_list[item[0]] = 1
+        accuracy = hit / len(gt)
+        return np.array(confidence_list), np.array(correct_list), accuracy
+
 def feature_vector_matching(gt, data1, data2):
     hit = 0
     correct_list = np.zeros(data1.shape[0])

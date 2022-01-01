@@ -35,12 +35,28 @@ def evaluation(args):
         d3_names, d3_vectors = read_pickle_descriptors(args.d3_f)
 
         if p1_vectors.ndim == 4:
-            confidence_p1p2, correct_p1p2, accuracy_p1p2 = feature_map_matching(gt_p1p2, p1_vectors, p2_vectors)
-            confidence_p2p3, correct_p2p3, accuracy_p2p3 = feature_map_matching(gt_p2p3, p2_vectors, p3_vectors)
-            confidence_p1p3, correct_p1p3, accuracy_p1p3 = feature_map_matching(gt_p1p3, p1_vectors, p3_vectors)
-            confidence_d1d2, correct_d1d2, accuracy_d1d2 = feature_map_matching(gt_d1d2, d1_vectors, d2_vectors)
-            confidence_d2d3, correct_d2d3, accuracy_d2d3 = feature_map_matching(gt_d2d3, d2_vectors, d3_vectors)
-            confidence_d1d3, correct_d1d3, accuracy_d1d3 = feature_map_matching(gt_d1d3, d1_vectors, d3_vectors)
+            if args.method == 'matching_based':
+                sigma = 2
+                p1_vectors = reshape_feature_map(p1_vectors)
+                p2_vectors = reshape_feature_map(p2_vectors)
+                p3_vectors = reshape_feature_map(p3_vectors)
+                d1_vectors = reshape_feature_map(d1_vectors)
+                d2_vectors = reshape_feature_map(d2_vectors)
+                d3_vectors = reshape_feature_map(d3_vectors)
+                confidence_p1p2, correct_p1p2, accuracy_p1p2 = feature_location_matching(gt_p1p2, p1_vectors, p2_vectors, sigma)
+                confidence_p2p3, correct_p2p3, accuracy_p2p3 = feature_location_matching(gt_p2p3, p2_vectors, p3_vectors, sigma)
+                confidence_p1p3, correct_p1p3, accuracy_p1p3 = feature_location_matching(gt_p1p3, p1_vectors, p3_vectors, sigma)
+                confidence_d1d2, correct_d1d2, accuracy_d1d2 = feature_location_matching(gt_d1d2, d1_vectors, d2_vectors, sigma)
+                confidence_d2d3, correct_d2d3, accuracy_d2d3 = feature_location_matching(gt_d2d3, d2_vectors, d3_vectors, sigma)
+                confidence_d1d3, correct_d1d3, accuracy_d1d3 = feature_location_matching(gt_d1d3, d1_vectors, d3_vectors, sigma)
+
+            elif args.method == 'row_feature':
+                confidence_p1p2, correct_p1p2, accuracy_p1p2 = feature_map_matching(gt_p1p2, p1_vectors, p2_vectors)
+                confidence_p2p3, correct_p2p3, accuracy_p2p3 = feature_map_matching(gt_p2p3, p2_vectors, p3_vectors)
+                confidence_p1p3, correct_p1p3, accuracy_p1p3 = feature_map_matching(gt_p1p3, p1_vectors, p3_vectors)
+                confidence_d1d2, correct_d1d2, accuracy_d1d2 = feature_map_matching(gt_d1d2, d1_vectors, d2_vectors)
+                confidence_d2d3, correct_d2d3, accuracy_d2d3 = feature_map_matching(gt_d2d3, d2_vectors, d3_vectors)
+                confidence_d1d3, correct_d1d3, accuracy_d1d3 = feature_map_matching(gt_d1d3, d1_vectors, d3_vectors)
         else:
             confidence_p1p2, correct_p1p2, accuracy_p1p2 = feature_vector_matching(gt_p1p2, p1_vectors, p2_vectors)
             confidence_p2p3, correct_p2p3, accuracy_p2p3 = feature_vector_matching(gt_p2p3, p2_vectors, p3_vectors)
