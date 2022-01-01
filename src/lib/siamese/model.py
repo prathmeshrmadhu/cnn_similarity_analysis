@@ -285,6 +285,8 @@ class TripletSiameseNetwork(nn.Module):
         elif self.method == 'sum_pool_2x2':
             x = x.size()[2] * x.size()[3] * 0.25 * F.adaptive_avg_pool2d(x, (2, 2))
             x = self.flatten(x)
+        elif self.method == 'feature_map':
+            pass
         else:
             x = self.gem(x)
             x = self.flatten(x)
