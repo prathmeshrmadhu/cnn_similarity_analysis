@@ -21,6 +21,7 @@ class TripletLoss(torch.nn.Module):
         return loss
 
 
+<<<<<<< HEAD
 class CustomLoss(torch.nn.Module):
     def __int__(self):
         super(CustomLoss, self).__init__()
@@ -35,6 +36,8 @@ class CustomLoss(torch.nn.Module):
         return loss
 
 
+=======
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
 class ContrastiveLossSimClr(torch.nn.Module):
     def __int__(self, batch_size, temperature=0.5):
         super().__init__()

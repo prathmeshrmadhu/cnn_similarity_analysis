@@ -3,15 +3,25 @@ import glob
 import json
 import pandas as pd
 import torch
+<<<<<<< HEAD
 import torch.nn.functional as F
+=======
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 from lib.io import read_config
 import sys
+<<<<<<< HEAD
 sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 
 from src.lib.loss import TripletLoss, CustomLoss
 from src.lib.siamese.args import siamese_args
+=======
+sys.path.append('/cluster/yinan/cnn_similarity_analysis/')
+
+from src.lib.loss import TripletLoss
+from src.lib.siamese.args import  siamese_args
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
 from src.lib.siamese.dataset import generate_train_dataset, get_transforms, add_file_list
 from src.lib.augmentations import *
 from src.data.siamese_dataloader import TripletTrainList, TripletValList
@@ -66,6 +76,7 @@ def train(args, augmentations_list):
 
     print("loading siamese model")
     if args.loss == "normal":
+<<<<<<< HEAD
         net = TripletSiameseNetwork(args.model, args.method)
         # Defining the criteria for training
         criterion = TripletLoss()
@@ -75,12 +86,23 @@ def train(args, augmentations_list):
         # Defining the criteria for training
         criterion = CustomLoss()
         criterion.to(args.device)
+=======
+        net = TripletSiameseNetwork(args.model)
+    elif args.loss == "custom":
+        net = TripletSiameseNetwork_custom(args.model)
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
     if not args.start:
         state_dict = torch.load(args.net + args.checkpoint)
         net.load_state_dict(state_dict)
     net.to(args.device)
 
+<<<<<<< HEAD
 
+=======
+    # Defining the criteria for training
+    criterion = TripletLoss()
+    criterion.to(args.device)
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
 
     if args.optimizer == "adam":
         if args.loss == "normal":
@@ -132,6 +154,7 @@ def train(args, augmentations_list):
             query_img = query_img.to(args.device)
             rp_img = rp_img.to(args.device)
             rn_img = rn_img.to(args.device)
+<<<<<<< HEAD
             if args.loss == 'normal':
                 p_score, n_score = net(query_img, rp_img, rn_img)
                 optimizer.zero_grad()
@@ -140,6 +163,12 @@ def train(args, augmentations_list):
                 q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4 = net(query_img, rp_img, rn_img)
                 optimizer.zero_grad()
                 loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, args.regular)
+=======
+
+            p_score, n_score = net(query_img, rp_img, rn_img)
+            optimizer.zero_grad()
+            loss = criterion(p_score, n_score, args.margin)
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
             loss.backward()
             optimizer.step()
             loss_history.append(loss)
@@ -161,6 +190,7 @@ def train(args, augmentations_list):
                 query_img = query_img.to(args.device)
                 rp_img = rp_img.to(args.device)
                 rn_img = rn_img.to(args.device)
+<<<<<<< HEAD
                 if args.loss == 'normal':
                     p_score, n_score = net(query_img, rp_img, rn_img)
                     val_loss.append(criterion(p_score, n_score, args.margin))
@@ -174,6 +204,13 @@ def train(args, augmentations_list):
                     n_score = F.cosine_similarity(q3, n3)
                     p_score_list.append(torch.mean(p_score))
                     n_score_list.append(torch.mean(n_score))
+=======
+
+                p_score, n_score = net(query_img, rp_img, rn_img)
+                val_loss.append(criterion(p_score, n_score, args.margin))
+                p_score_list.append(torch.mean(p_score))
+                n_score_list.append(torch.mean(n_score))
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
             val_loss = torch.mean(torch.Tensor(val_loss))
         print("Epoch:{},  Current validation loss {}\n".format(epoch, val_loss))
         epoch_losses.append(val_loss.cpu())
@@ -202,7 +239,11 @@ def train(args, augmentations_list):
     plt.legend()
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
+<<<<<<< HEAD
     plt.savefig(args.plots + 'loss.png')
+=======
+    plt.savefig(args.images + 'loss.png')
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
     plt.show()
 
 

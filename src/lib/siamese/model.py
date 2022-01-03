@@ -20,6 +20,7 @@ class ResNet50Conv4(nn.Module):
         return x
 
 
+<<<<<<< HEAD
 class VGG16Pool5(nn.Module):
     def __init__(self):
         super(VGG16Pool5, self).__init__()
@@ -62,6 +63,8 @@ class VGG16FC7(nn.Module):
         return x
 
 
+=======
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
 def load_siamese_checkpoint(name, checkpoint_file):
     if name == "resnet50":
         print('--------------------------------------------------------------')
@@ -111,6 +114,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         # model.eval()
         return model
 
+<<<<<<< HEAD
     elif name == "vgg_pool5":
         print('--------------------------------------------------------------')
         print('used model: VGG16')
@@ -135,6 +139,8 @@ def load_siamese_checkpoint(name, checkpoint_file):
         # model.eval()
         return model
 
+=======
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
     elif name == "resnet152":
         print('--------------------------------------------------------------')
         print('used model: ResNet152')
@@ -252,13 +258,20 @@ class ContrastiveSiameseNetwork(nn.Module):
 
 
 class TripletSiameseNetwork(nn.Module):
+<<<<<<< HEAD
     def __init__(self, model, method, checkpoint='/cluster/yinan/isc2021/data/multigrain_joint_3B_0.5.pth'):
+=======
+    def __init__(self, model, checkpoint='/cluster/yinan/isc2021/data/multigrain_joint_3B_0.5.pth'):
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
         super(TripletSiameseNetwork, self).__init__()
         self.head = load_siamese_checkpoint(model, checkpoint)
         self.flatten = nn.Flatten()
         self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
+<<<<<<< HEAD
         self.method = method
 
+=======
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
         # self.fc = nn.Sequential(
         #     nn.Linear(1000, 512),
         #     nn.BatchNorm1d(512),
@@ -274,6 +287,7 @@ class TripletSiameseNetwork(nn.Module):
 
     def forward_once(self, x):
         x = self.head(x)
+<<<<<<< HEAD
         if self.method == 'center_extraction' or self.method == 'warp_extraction':
             x = F.normalize(x)
         elif self.method == 'max_pool':
@@ -290,6 +304,8 @@ class TripletSiameseNetwork(nn.Module):
         else:
             x = self.gem(x)
             x = self.flatten(x)
+=======
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
         return x
 
     def forward(self, input1, input2, input3):
@@ -338,11 +354,31 @@ class TripletSiameseNetwork_custom(nn.Module):
         return x1, x2, x3, x4
 
     def forward(self, input1, input2, input3):
+<<<<<<< HEAD
         x1_1, x1_2, x1_3, x1_4 = self.forward_once(input1)
         x2_1, x2_2, x2_3, x2_4 = self.forward_once(input2)
         x3_1, x3_2, x3_3, x3_4 = self.forward_once(input3)
 
         return x1_1, x1_2, x1_3, x1_4, x2_1, x2_2, x2_3, x2_4, x3_1, x3_2, x3_3, x3_4
+=======
+        # score_positive_1 = 1 - (torch.sum(self.cos(out1, out2), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
+        # score_negative_1 = 1 - (torch.sum(self.cos(out1, out3), axis=(1, 2)) / (out1.shape[2] * out1.shape[3]))
+        x1_1, x1_2, x1_3, x1_4 = self.forward_once(input1)
+        x2_1, x2_2, x2_3, x2_4 = self.forward_once(input2)
+        x3_1, x3_2, x3_3, x3_4 = self.forward_once(input3)
+        score_p_1 = 1 - self.cos(x1_1, x2_1)
+        score_n_1 = 1 - self.cos(x1_1, x3_1)
+        score_p_2 = 1 - self.cos(x1_2, x2_2)
+        score_n_2 = 1 - self.cos(x1_2, x3_2)
+        score_p_3 = 1 - self.cos(x1_3, x2_3)
+        score_n_3 = 1 - self.cos(x1_3, x3_3)
+        score_p_4 = 1 - self.cos(x1_4, x2_4)
+        score_n_4 = 1 - self.cos(x1_4, x3_4)
+        score_positive = 0.25 * score_p_1 + 0.25 * score_p_2 + 0.25 * score_p_3 + 0.25 * score_p_4
+        score_negative = 0.25 * score_n_1 + 0.25 * score_n_2 + 0.25 * score_n_3 + 0.25 * score_n_4
+
+        return score_positive, score_negative
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
 
 
 

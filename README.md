@@ -1,4 +1,4 @@
-# Creat Experiment
+# Create Experiment
 ```
 python3 cnn_similarity_analysis/src/01_create_experiment.py \
 --exp_directory test_exp \
@@ -240,17 +240,17 @@ python3 yinan_cnn/cnn_similarity_analysis/src/09_embedding_pca_features.py \
 --db_list /cluster/shared_dataset/DEVKitArtDL/artdl_sample_list.csv \
 --db_f yinan_cnn/cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/db.pkl
 ```
-'--pca_file': pca file to be loaded.
+`--pca_file`: pca file to be loaded.
 
-'--net': loaded model check point.
+`--net`: loaded model check point.
 
-'test_list': generated test .csv file list with structure ['test_images', 'label'].
+`test_list`: generated test .csv file list with structure ['test_images', 'label'].
 
-'test_f': path to save generated test features.
+`test_f`: path to save generated test features.
 
-'db_list': generated sample .csv file, (one image represented one class) for evaluation.
+`db_list`: generated sample .csv file, (one image represented one class) for evaluation.
 
-'db_f': path to save sample features.
+`db_f`: path to save sample features.
 
 ## Evaluation
 ```
@@ -260,8 +260,8 @@ python3 yinan_cnn/cnn_similarity_analysis/src/08_evaluate_siamese.py \
 --test_f yinan_cnn/cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/artdl_test.pkl \
 --db_f yinan_cnn/cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/db.pkl \
 ```
-'--test_list': .csv file with test ground truth labels.
+`--test_list`: .csv file with test ground truth labels.
 
-'--test_f': load test features from .pkl file.
+`--test_f`: load test features from .pkl file.
 
-'--db_f': load sample features.
+`--db_f`: load sample features.

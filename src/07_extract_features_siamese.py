@@ -8,7 +8,11 @@ import torchvision
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 import sys
+<<<<<<< HEAD
 sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
+=======
+sys.path.append('/cluster/yinan/cnn_similarity_analysis/')
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
 
 from src.lib.loss import ContrastiveLoss, TripletLoss
 from src.lib.siamese.args import siamese_args
@@ -21,34 +25,68 @@ from lib.io import *
 
 
 def generate_features(args, net, image_names, data_loader, save_path):
+<<<<<<< HEAD
     # images_list = list()
     if args.loss == "custom":
+=======
+    images_list = list()
+    if args.loss == "normal":
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
         features_list = list()
         t0 = time.time()
         with torch.no_grad():
             for no, data in enumerate(data_loader):
                 images = data
                 images = images.to(args.device)
+<<<<<<< HEAD
                 feats1, feats2, feats3, feats4 = net.forward_once(images)
                 features_list.append(feats3.cpu().numpy())
                 # images_list.append(images.cpu().numpy())
+=======
+                feats = net.forward_once(images)
+                features_list.append(feats.cpu().numpy())
+                images_list.append(images.cpu().numpy())
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
         t1 = time.time()
         features = np.vstack(features_list)
         write_pickle_descriptors(features, image_names, save_path)
 
+<<<<<<< HEAD
     else:
         features_list = list()
+=======
+    elif args.loss == "custom":
+        features_list1 = list()
+        features_list2 = list()
+        features_list3 = list()
+        features_list4 = list()
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
         t0 = time.time()
         with torch.no_grad():
             for no, data in enumerate(data_loader):
                 images = data
                 images = images.to(args.device)
+<<<<<<< HEAD
                 feats = net.forward_once(images)
                 features_list.append(feats.cpu().numpy())
                 # images_list.append(images.cpu().numpy())
         t1 = time.time()
         features = np.vstack(features_list)
         write_pickle_descriptors(features, image_names, save_path)
+=======
+                feats1, feats2, feats3, feats4 = net.forward_once(images)
+                features_list1.append(feats1.cpu().numpy())
+                features_list2.append(feats2.cpu().numpy())
+                features_list3.append(feats3.cpu().numpy())
+                features_list4.append(feats4.cpu().numpy())
+                images_list.append(images.cpu().numpy())
+        t1 = time.time()
+        features1 = np.vstack(features_list1)
+        features2 = np.vstack(features_list2)
+        features3 = np.vstack(features_list3)
+        features4 = np.vstack(features_list4)
+        write_pickle_descriptors_mix(features1, features2, features3, features4, image_names, save_path)
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
 
     print(f"writing descriptors to {save_path}")
     print(f"image_description_time: {(t1 - t0) / len(image_names):.5f} s per image")
@@ -60,6 +98,7 @@ def extract_features(args):
     transforms = get_transforms(args)
 
     # Loading the pretrained siamese model
+<<<<<<< HEAD
 
     if args.loss == "custom":
         net = TripletSiameseNetwork_custom(args.model)
@@ -68,6 +107,14 @@ def extract_features(args):
     if args.net:
         state_dict = torch.load(args.net + args.checkpoint)
         net.load_state_dict(state_dict)
+=======
+    if args.loss == "custom":
+        net = TripletSiameseNetwork_custom(args.model)
+    elif args.loss == "normal":
+        net = TripletSiameseNetwork(args.model)
+    state_dict = torch.load(args.net + args.checkpoint)
+    net.load_state_dict(state_dict)
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
     net.eval()
     net.to(args.device)
     print("checkpoint {} loaded\n".format(args.checkpoint))
@@ -108,18 +155,25 @@ def extract_features(args):
         generate_features(args, net, d3_images, d3_loader, args.d3_f)
 
     elif args.test_dataset == "artdl":
+<<<<<<< HEAD
         test_set = pd.read_csv(args.test_list)
+=======
+        test_set = pd.read(args.test_list)
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
         test_paths = list(test_set['test_images'])
         test_dataset = ImageList(test_paths, transform=transforms)
         test_dataloader = DataLoader(dataset=test_dataset, shuffle=False, num_workers=args.num_workers,
                                batch_size=args.batch_size)
         generate_features(args, net, test_paths, test_dataloader, args.test_f)
+<<<<<<< HEAD
         sample_set = pd.read_csv(args.db_list)
         sample_paths = list(sample_set['samples'])
         sample_dataset = ImageList(sample_paths, transform=transforms)
         sample_dataloader = DataLoader(dataset=sample_dataset, shuffle=False, num_workers=args.num_workers,
                                      batch_size=args.batch_size)
         generate_features(args, net, sample_paths, sample_dataloader, args.db_f)
+=======
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
 
     # creating the dataset
     #query_images, database_images, _ = generate_extraction_dataset(query, ref, ref)

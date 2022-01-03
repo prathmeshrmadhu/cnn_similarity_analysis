@@ -17,11 +17,19 @@ if osuname == "prathmeshmadhu":
     pretrained_path = "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/resources"
 else:
     data_path = "/cluster/shared_dataset/omniart"
+<<<<<<< HEAD
     database_path = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/databases"
     visualization_path = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/visualizations"
     experiments_path = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/experiments"
     knn_path = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/knn"
     pretrained_path = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/resources"
+=======
+    database_path = "/cluster/yinan/cnn_similarity_analysis/databases"
+    visualization_path = "/cluster/yinan/cnn_similarity_analysis/visualizations"
+    experiments_path = "/cluster/yinan/cnn_similarity_analysis/experiments"
+    knn_path = "/cluster/yinan/cnn_similarity_analysis/knn"
+    pretrained_path = "/cluster/yinan/cnn_similarity_analysis/resources"
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
 
 
 

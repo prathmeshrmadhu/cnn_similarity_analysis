@@ -1,12 +1,20 @@
 import sys
+<<<<<<< HEAD
 sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 import numpy as np
 import pandas as pd
+=======
+sys.path.append('/cluster/yinan/cnn_similarity_analysis/')
+import numpy as np
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
 import torch
 import torch.nn.functional as F
 import time
 from torch.utils.data import DataLoader
+<<<<<<< HEAD
 from sklearn.metrics.pairwise import euclidean_distances, cosine_similarity
+=======
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
 from src.lib.siamese.args import siamese_args
 from src.lib.siamese.model import load_siamese_checkpoint, TripletSiameseNetwork, TripletSiameseNetwork_custom
 from src.data.siamese_dataloader import ImageList
@@ -19,6 +27,7 @@ import random
 
 def generate_features(args, net, image_names, data_loader):
     features_list = list()
+<<<<<<< HEAD
     # images_list = image_names
     if args.loss == 'normal':
         t0 = time.time()
@@ -40,6 +49,18 @@ def generate_features(args, net, image_names, data_loader):
                 features_list.append(feats3.cpu().numpy())
                 # images_list.append(images.cpu().numpy())
         t1 = time.time()
+=======
+    images_list = list()
+    t0 = time.time()
+    with torch.no_grad():
+        for no, data in enumerate(data_loader):
+            images = data
+            images = images.to(args.device)
+            feats = net.forward_once(images)
+            features_list.append(feats.cpu().numpy())
+            images_list.append(images.cpu().numpy())
+    t1 = time.time()
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
     features = np.vstack(features_list)
     print(f"image_description_time: {(t1 - t0) / len(image_names):.5f} s per image")
     return features
@@ -62,6 +83,7 @@ def train(args):
         train_images = [TRAIN + l.strip() + '.jpg' for l in open(args.train_list, "r")]
         train_images = [train_images[i] for i in rs.choice(len(train_images), size=10000, replace=False)]
 
+<<<<<<< HEAD
     if args.train_dataset == 'artdl':
         train = pd.read_csv(args.train_list)
         train_images = list(train['anchor_query']) + list(train['ref_positive']) + list(train['ref_negative'])
@@ -72,6 +94,14 @@ def train(args):
                               batch_size=args.batch_size)
     if args.loss == 'normal':
         net = TripletSiameseNetwork(args.model, args.method)
+=======
+    transforms = get_transforms(args)
+    train_dataset = ImageList(train_images, transform=transforms)
+    train_loader = DataLoader(dataset=train_dataset, shuffle=False, num_workers=args.num_workers,
+                              batch_size=args.batch_size)
+    if args.loss == 'normal':
+        net = TripletSiameseNetwork(args.model)
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
     elif args.loss == 'custom':
         net = TripletSiameseNetwork_custom(args.model)
     if args.net:
@@ -83,7 +113,11 @@ def train(args):
     train_features = generate_features(args, net, train_images, train_loader)
 
     d = train_features.shape[1]
+<<<<<<< HEAD
     pca = faiss.PCAMatrix(d, args.pca_dim, -0.5)
+=======
+    pca = faiss.PCAMatrix(d, 256, -0.5)
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
     print(f"Train PCA {pca.d_in} -> {pca.d_out}")
     pca.train(train_features)
     print(f"Storing PCA to {args.pca_file}")
@@ -122,6 +156,7 @@ def train(args):
         mean_sp = np.mean(np.array(sp_d1d2 + sp_d2d3 + sp_d1d3))
         mean_sn = np.mean(np.array(sn_d1d2 + sn_d2d3 + sn_d1d3))
 
+<<<<<<< HEAD
 
     elif args.val_dataset == 'artdl':
         val = pd.read_csv(args.val_list)
@@ -156,6 +191,17 @@ def train(args):
     print('\n')
     print('average positive similarity: {}'.format(mean_sp))
     print('average negative similarity: {}'.format(mean_sn))
+=======
+        print('average positive distance: {}'.format(mean_dp))
+        print('average negative distance: {}'.format(mean_dn))
+        print('\n')
+        print('average positive similarity: {}'.format(mean_sp))
+        print('average negative similarity: {}'.format(mean_sn))
+
+
+
+
+>>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
 
 if __name__ == "__main__":
 
