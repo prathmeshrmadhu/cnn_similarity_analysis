@@ -73,7 +73,7 @@ def train(args, augmentations_list):
     elif args.loss == "custom":
         net = TripletSiameseNetwork_custom(args.model)
         # Defining the criteria for training
-        criterion = CustomLoss()
+        criterion = CustomLoss(False)
         criterion.to(args.device)
     if not args.start:
         state_dict = torch.load(args.net + args.checkpoint)
