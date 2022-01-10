@@ -22,11 +22,10 @@ class TripletLoss(torch.nn.Module):
 
 
 class CustomLoss(torch.nn.Module):
-    def __int__(self, cos=True):
+    def __int__(self):
         super(CustomLoss, self).__init__()
-        self.cos = cos
 
-    def forward(self, q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, margin, lam):
+    def forward(self, q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, margin, lam, cos=True):
         if self.cos:
             score_positive = 1 - F.cosine_similarity(q3, p3)
             score_negative = 1 - F.cosine_similarity(q3, n3)

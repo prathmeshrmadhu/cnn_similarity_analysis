@@ -73,7 +73,7 @@ def train(args, augmentations_list):
     elif args.loss == "custom":
         net = TripletSiameseNetwork_custom(args.model)
         # Defining the criteria for training
-        criterion = CustomLoss(False)
+        criterion = CustomLoss()
         criterion.to(args.device)
     if not args.start:
         state_dict = torch.load(args.net + args.checkpoint)
@@ -139,7 +139,7 @@ def train(args, augmentations_list):
             elif args.loss == 'custom':
                 q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4 = net(query_img, rp_img, rn_img)
                 optimizer.zero_grad()
-                loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, args.regular)
+                loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, args.regular, cos=False)
             loss.backward()
             optimizer.step()
             loss_history.append(loss)
@@ -168,7 +168,7 @@ def train(args, augmentations_list):
                     n_score_list.append(torch.mean(n_score))
                 elif args.loss == 'custom':
                     q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4 = net(query_img, rp_img, rn_img)
-                    loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, args.regular)
+                    loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, args.regular, cos=False)
                     val_loss.append(loss)
                     p_score = F.cosine_similarity(q3, p3)
                     n_score = F.cosine_similarity(q3, n3)
