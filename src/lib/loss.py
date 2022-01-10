@@ -26,7 +26,7 @@ class CustomLoss(torch.nn.Module):
         super(CustomLoss, self).__init__()
 
     def forward(self, q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, margin, lam, cos=True):
-        if self.cos:
+        if cos:
             score_positive = 1 - F.cosine_similarity(q3, p3)
             score_negative = 1 - F.cosine_similarity(q3, n3)
         else:
