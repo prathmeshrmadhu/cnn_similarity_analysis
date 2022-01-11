@@ -25,7 +25,7 @@ def process_create_experiment_arguments():
 
     # dataset parameters
     parser.add_argument('--dataset_name', help="Dataset to take the images from " +\
-                        "[arthist, classarch, chrisarch]", required=True, default="arthist")
+                        "[arthist, classarch, chrisarch, artdl, image_collation]", required=True, default="arthist")
     parser.add_argument('--image_size', help="Size used to standardize the images (size x size)")
     parser.add_argument('--shuffle_train', help="If True, train set is iterated randomly",
                         action='store_true')
@@ -63,7 +63,7 @@ def process_create_experiment_arguments():
     args = parser.parse_args()
 
     # enforcing correct values
-    assert args.dataset_name in ["arthist", "classarch", "chrisarch"],\
+    assert args.dataset_name in ["arthist", "classarch", "chrisarch", "artdl", "image_collation"],\
         "Wrong dataset given. Only ['arthist', 'classarch', 'chrisarch'] are allowed"
     assert args.model_name in ["resnet18", "resnet34", "resnet50"],\
         "Wrong model name given. Only ['resnet18', 'resnet34', 'resnet50'] are allowed"
@@ -80,7 +80,7 @@ def get_directory_argument(get_checkpoint=False, get_dataset=False):
     parser.add_argument("-d", "--exp_directory", help="Path to the experiment directory")
     parser.add_argument("--checkpoint", help="Name of the checkpoint file to load")
     parser.add_argument("--dataset_name", help="Name of the dataset to use for training" \
-                        " or evaluation purposes ['arthist', 'classarch', 'chrisarch']",
+                        " or evaluation purposes ['arthist', 'classarch', 'chrisarch', 'artdl', 'image_collation']",
                         default="")
     args = parser.parse_args()
 
@@ -93,7 +93,7 @@ def get_directory_argument(get_checkpoint=False, get_dataset=False):
     if(get_checkpoint is True and checkpoint is not None):
         checkpoint = process_checkpoint(checkpoint, exp_directory)
     if(get_dataset is True):
-        assert dataset_name in ["", "arthist", "classarch", "chrisarch"]
+        assert dataset_name in ["", "arthist", "classarch", "chrisarch", "artdl", "image_collation"]
         dataset_name = None if dataset_name == "" else dataset_name
 
     if(get_dataset==True and get_checkpoint==True):

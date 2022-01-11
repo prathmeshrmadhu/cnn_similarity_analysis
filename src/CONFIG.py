@@ -5,9 +5,11 @@ EnhancePseEstimation/src
 @author: Angel Villar-Corrales
 """
 import os
+import pdb
 
 osuname = os.uname().nodename
 print("osuname", osuname)
+# pdb.set_trace()
 if osuname == "prathmeshmadhu":
     data_path = "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cv_notebooks/data/classification_all"
     database_path = "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/databases"
@@ -15,23 +17,20 @@ if osuname == "prathmeshmadhu":
     experiments_path = "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/experiments"
     knn_path = "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/knn"
     pretrained_path = "/localhome/prathmeshmadhu/work/EFI/Data/Christian_Arch/src/cnn_similarity_analysis/resources"
+elif osuname == "lme181":
+    data_path = "/cluster/shared_dataset/artdl"
+    database_path = "None"
+    knn_path = "None"
+    pretrained_path = "None"
+    visualization_path = "../cnn_similarity_analysis/visualizations"
+    experiments_path = "../cnn_similarity_analysis/experiments"
 else:
     data_path = "/cluster/shared_dataset/omniart"
-<<<<<<< HEAD
     database_path = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/databases"
     visualization_path = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/visualizations"
     experiments_path = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/experiments"
     knn_path = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/knn"
     pretrained_path = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/resources"
-=======
-    database_path = "/cluster/yinan/cnn_similarity_analysis/databases"
-    visualization_path = "/cluster/yinan/cnn_similarity_analysis/visualizations"
-    experiments_path = "/cluster/yinan/cnn_similarity_analysis/experiments"
-    knn_path = "/cluster/yinan/cnn_similarity_analysis/knn"
-    pretrained_path = "/cluster/yinan/cnn_similarity_analysis/resources"
->>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
-
-
 
 CONFIG = {
 

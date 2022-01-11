@@ -378,8 +378,6 @@ def feature_map_matching(gt, data1, data2):
     accuracy = hit / len(gt)
     return np.array(confidence_list), np.array(correct_list), accuracy
 
-
-<<<<<<< HEAD
 def feature_location_matching(gt, map1_f, map2_f, sigma):
     matched_list = []
     confidence_list = []
@@ -415,8 +413,7 @@ def feature_location_matching(gt, map1_f, map2_f, sigma):
         accuracy = hit / len(gt)
         return np.array(confidence_list), np.array(correct_list), accuracy
 
-=======
->>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
+
 def feature_vector_matching(gt, data1, data2):
     hit = 0
     correct_list = np.zeros(data1.shape[0])
@@ -455,7 +452,6 @@ def calculate_gap(confidence, correct, gt):
     x['prec_k'] = x.corre.cumsum() / (np.arange(len(x)) + 1)
     x['term'] = x.prec_k * x.corre
     gap = x.term.sum() / len(gt)
-<<<<<<< HEAD
     return gap
 
 
@@ -486,6 +482,4 @@ def ranked_mean_precision(gt_array, vectors, rank):
         precisions[label] += (tp/(tp+fp))/class_num
     map = np.mean(precisions)
     return map
-=======
-    return gap
->>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
+

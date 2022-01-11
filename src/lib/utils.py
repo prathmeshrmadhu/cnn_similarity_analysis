@@ -14,6 +14,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 from CONFIG import CONFIG, DEFAULT_ARGS
+from pathlib import Path
 
 
 def imshow(img, text=None, should_save=False, pth=None):
@@ -145,7 +146,7 @@ def create_directory(path, name=None):
         path = os.path.join(path, name)
 
     if(not os.path.exists(path)):
-        os.makedirs(path)
+        Path(path).mkdir(parents=True, exist_ok=True)
 
     return
 

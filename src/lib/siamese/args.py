@@ -1,12 +1,9 @@
 import argparse
 from lib.io import read_config
 
-<<<<<<< HEAD
-EXP_PATH = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/experiment_parameters.json"
-=======
-EXP_PATH = "/cluster/yinan/cnn_similarity_analysis/experiments/test_exp/experiment_2021-10-10_12-16-55/experiment_parameters.json"
->>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
-EXP_PARAMS = read_config(EXP_PATH)
+#TODO Make it dynamic
+exp_path = "/media/prathmeshmadhu/My Passport/2020/similarity/cnn_similarity_analysis/experiments/artdl/experiment_2022-01-03_13-20-31/experiment_parameters.json"
+EXP_PARAMS = read_config(exp_path)
 
 def siamese_args():
     parser = argparse.ArgumentParser()
@@ -25,10 +22,8 @@ def siamese_args():
     aa('--num_workers', default=EXP_PARAMS['num_workers'], type=int, help="nb of dataloader workers")
     aa('--optimizer', default="sgd", help='type of optimizer')
     aa('--loss', default="normal", help='type of loss strcture')
-<<<<<<< HEAD
     aa('--method', default=None, help='type of experiment method')
-=======
->>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
+
 
     group = parser.add_argument_group('model options')
     aa('--model', default=EXP_PARAMS['model']['model_name'], help="model to use")
@@ -42,15 +37,11 @@ def siamese_args():
        help="momentum for sgd")
     aa('--weight_decay', default=0.0, type=float, help="max image size at extraction time")
     aa('--margin', default=10.0, type=float, help="margin in loss function")
-<<<<<<< HEAD
     aa('--regular', default=0.01, type=float, help="regularization factor in custom loss function")
     aa('--threshold_d', default=8.0, type=float, help="threshold for confusion_matrix with euclidean distance")
     aa('--threshold_s', default=8.0, type=float, help="threshold for confusion_matrix with cosine similarity")
     aa('--pca_dim', default=256, type=int, help="output dimensionality of pca")
-=======
-    aa('--threshold_d', default=8.0, type=float, help="threshold for confusion_matrix with euclidean distance")
-    aa('--threshold_s', default=8.0, type=float, help="threshold for confusion_matrix with cosine similarity")
->>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
+
 
     group = parser.add_argument_group('dataset options')
     aa('--train_dataset', default=None, help="training dataset name")
@@ -65,11 +56,7 @@ def siamese_args():
     aa('--query_list', default=None, help="file with query image filenames")
     aa('--gt_list', default=None, help="file or folder with ground truth image filenames")
     aa('--train_list', default=None, help="file with training image filenames")
-<<<<<<< HEAD
     aa('--db_list', default=None, help="file with reference image filenames")
-=======
-    aa('--db_list', default=None, help="file with training image filenames")
->>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
     aa('--val_list', default=None, help="file with validation image filenames")
     aa('--test_list', default=None, help="file with test image filenames")
     aa('--image_data', default=None, help="path to images")
@@ -86,11 +73,8 @@ def siamese_args():
     aa('--matched_f', default=None, help="save matched result to this folder")
     aa('--test_f', default=None, help="save test result to this folder")
     aa('--net', default=None, help="save network parameters to this folder")
-<<<<<<< HEAD
     aa('--plots', default="isc2021/data/images/siamese/", help="save visualized test result to this folder")
-=======
-    aa('--images', default="isc2021/data/images/siamese/", help="save visualized test result to this folder")
->>>>>>> b0b89f55185afd17d845ddbbf4b5315160de05b7
+
     aa('--p1_f', default=None, help="write p1 features to this file")
     aa('--p2_f', default=None, help="write p2 features to this file")
     aa('--p3_f', default=None, help="write p3 features to this file")

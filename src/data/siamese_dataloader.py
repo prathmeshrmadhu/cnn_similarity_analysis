@@ -1,6 +1,10 @@
+import pdb
+
 from torch.utils.data import Dataset
 from PIL import Image
 import random
+import pdb
+import os
 from torchvision.transforms import Compose
 from src.lib.augmentations import *
 
@@ -56,8 +60,9 @@ class TripletTrainList(Dataset):
 
 class TripletValList(Dataset):
 
-    def __init__(self, image_list, imsize=None, transform=None, argumentation=None):
+    def __init__(self, image_folder, image_list, imsize=None, transform=None, argumentation=None):
         Dataset.__init__(self)
+        self.image_folder = image_folder
         self.image_list = image_list
         self.transform = transform
         self.argumentation = argumentation
@@ -69,7 +74,11 @@ class TripletValList(Dataset):
     def __getitem__(self, i):
         random.shuffle(self.argumentation)
         argument = Compose(self.argumentation)
+        # pdb.set_trace()
         q, r_p, r_n = self.image_list[i]
+        q = os.path.join(self.image_folder, q.split('/')[-1])
+        r_p = os.path.join(self.image_folder, r_p.split('/')[-1])
+        r_n = os.path.join(self.image_folder, r_n.split('/')[-1])
         query_image = Image.open(q)
         db_positive = Image.open(r_p)
         db_positive = argument(db_positive)
