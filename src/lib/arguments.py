@@ -26,6 +26,8 @@ def process_create_experiment_arguments():
     # dataset parameters
     parser.add_argument('--dataset_name', help="Dataset to take the images from " +\
                         "[arthist, classarch, chrisarch, artdl, image_collation]", required=True, default="arthist")
+    parser.add_argument('--data_path', help="Path to dataset folder")
+    parser.add_argument('--database_path', help="Path to images folder")
     parser.add_argument('--image_size', help="Size used to standardize the images (size x size)")
     parser.add_argument('--shuffle_train', help="If True, train set is iterated randomly",
                         action='store_true')
