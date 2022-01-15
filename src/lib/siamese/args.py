@@ -1,7 +1,7 @@
 import argparse
 from lib.io import read_config
 
-EXP_PATH = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/experiments/test_exp/experiment_2021-12-12_11-11-01/experiment_parameters.json"
+EXP_PATH = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/experiments/artdl/experiment_2022-01-15_15-16-02/experiment_parameters.json"
 EXP_PARAMS = read_config(EXP_PATH)
 
 def siamese_args():
@@ -41,9 +41,11 @@ def siamese_args():
     aa('--pca_dim', default=256, type=int, help="output dimensionality of pca")
 
     group = parser.add_argument_group('dataset options')
-    aa('--train_dataset', default=None, help="training dataset name")
-    aa('--val_dataset', default=None, help="validation dataset name")
-    aa('--test_dataset', default=None, help="test dataset name")
+    aa('--train_dataset', default=EXP_PARAMS['dataset']['dataset_name'], help="training dataset name")
+    aa('--val_dataset', default=EXP_PARAMS['dataset']['dataset_name'], help="validation dataset name")
+    aa('--test_dataset', default=EXP_PARAMS['dataset']['dataset_name'], help="test dataset name")
+    aa('--data_path', default=EXP_PARAMS['dataset']['data_path'], help="Path to dataset folder")
+    aa('--database_path', default=EXP_PARAMS['dataset']['database_path'], help="Path to images folder")
     aa('--d1', default='/cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/D1/', help="folder for d1 subset")
     aa('--d2', default='/cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/D2/', help="folder for d2 subset")
     aa('--d3', default='/cluster/shared_dataset/ImageCollation/ManuscriptDownloader/download/D3/', help="folder for d3 subset")
