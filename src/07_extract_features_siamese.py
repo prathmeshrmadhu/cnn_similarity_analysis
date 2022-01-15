@@ -108,18 +108,20 @@ def extract_features(args):
         generate_features(args, net, d3_images, d3_loader, args.d3_f)
 
     elif args.test_dataset == "artdl":
+        save_path_test = args.exp_path + args.test_f
+        save_path_db = args.exp_path + args.db_f
         test_set = pd.read_csv(args.test_list)
         test_paths = list(test_set['test_images'])
         test_dataset = ImageList(test_paths, transform=transforms)
         test_dataloader = DataLoader(dataset=test_dataset, shuffle=False, num_workers=args.num_workers,
                                batch_size=args.batch_size)
-        generate_features(args, net, test_paths, test_dataloader, args.test_f)
+        generate_features(args, net, test_paths, test_dataloader, save_path_test)
         sample_set = pd.read_csv(args.db_list)
         sample_paths = list(sample_set['samples'])
         sample_dataset = ImageList(sample_paths, transform=transforms)
         sample_dataloader = DataLoader(dataset=sample_dataset, shuffle=False, num_workers=args.num_workers,
                                      batch_size=args.batch_size)
-        generate_features(args, net, sample_paths, sample_dataloader, args.db_f)
+        generate_features(args, net, sample_paths, sample_dataloader, save_path_db)
 
     # creating the dataset
     #query_images, database_images, _ = generate_extraction_dataset(query, ref, ref)
