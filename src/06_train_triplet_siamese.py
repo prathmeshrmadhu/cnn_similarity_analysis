@@ -22,47 +22,50 @@ def train(args, augmentations_list):
     if args.device == "gpu":
         print("hardware_image_description:", torch.cuda.get_device_name(0))
 
-    if args.train_dataset == "image_collation":
-        print("Used dataset: Image Collation")
-        d1_images = [args.d1 + 'illustration/' + l.strip() for l in open(args.d1 + 'files.txt', "r")]
-        d2_images = [args.d2 + 'illustration/' + l.strip() for l in open(args.d2 + 'files.txt', "r")]
-        d3_images = [args.d3 + 'illustration/' + l.strip() for l in open(args.d3 + 'files.txt', "r")]
+    if args.mining_mode == "offline":
+        if args.train_dataset == "image_collation":
+            print("Used dataset: Image Collation")
+            d1_images = [args.d1 + 'illustration/' + l.strip() for l in open(args.d1 + 'files.txt', "r")]
+            d2_images = [args.d2 + 'illustration/' + l.strip() for l in open(args.d2 + 'files.txt', "r")]
+            d3_images = [args.d3 + 'illustration/' + l.strip() for l in open(args.d3 + 'files.txt', "r")]
 
-        gt_d1d2 = read_config(args.gt_list + 'D1-D2.json')
-        gt_d2d3 = read_config(args.gt_list + 'D2-D3.json')
-        gt_d1d3 = read_config(args.gt_list + 'D1-D3.json')
+            gt_d1d2 = read_config(args.gt_list + 'D1-D2.json')
+            gt_d2d3 = read_config(args.gt_list + 'D2-D3.json')
+            gt_d1d3 = read_config(args.gt_list + 'D1-D3.json')
 
-        query_val = []
-        p_val = []
-        n_val = []
-        query_val, p_val, n_val = add_file_list(query_val, p_val, n_val, gt_d1d3, d1_images, d3_images)
+            query_val = []
+            p_val = []
+            n_val = []
+            query_val, p_val, n_val = add_file_list(query_val, p_val, n_val, gt_d1d3, d1_images, d3_images)
 
-    if args.train_dataset == "artdl":
-        print("Used dataset: Image Collation")
-        train = pd.read_csv(args.train_list)
-        val = pd.read_csv(args.val_list)
+        if args.train_dataset == "artdl":
+            print("Used dataset: Image Collation")
+            train_list = args.data_path + args.train_list
+            val_list = args.data_path + args.val_list
+            train = pd.read_csv(train_list)
+            val = pd.read_csv(val_list)
 
-        query_val = list(val['anchor_query'])
-        p_val = list(val['ref_positive'])
-        n_val = list(val['ref_negative'])
+            query_val = list(val['anchor_query'])
+            p_val = list(val['ref_positive'])
+            n_val = list(val['ref_negative'])
 
-        query_train = list(train['anchor_query'])
-        p_train = list(train['ref_positive'])
-        n_train = list(train['ref_negative'])
-        train_list = []
-        for i in range(len(query_train)):
-            train_list.append((query_train[i], p_train[i], n_train[i]))
+            query_train = list(train['anchor_query'])
+            p_train = list(train['ref_positive'])
+            n_train = list(train['ref_negative'])
+            train_list = []
+            for i in range(len(query_train)):
+                train_list.append((query_train[i], p_train[i], n_train[i]))
 
-    # defining the transforms
-    transforms = get_transforms(args)
+        # defining the transforms
+        transforms = get_transforms(args)
 
-    val_list = []
-    for j in range(len(query_val)):
-        val_list.append((query_val[j], p_val[j], n_val[j]))
+        val_list = []
+        for j in range(len(query_val)):
+            val_list.append((query_val[j], p_val[j], n_val[j]))
 
-    val_pairs = TripletValList(val_list, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
-    val_dataloader = DataLoader(dataset=val_pairs, shuffle=True, num_workers=args.num_workers,
-                                batch_size=args.batch_size)
+        val_pairs = TripletValList(val_list, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
+        val_dataloader = DataLoader(dataset=val_pairs, shuffle=True, num_workers=args.num_workers,
+                                    batch_size=args.batch_size)
 
     print("loading siamese model")
     if args.loss == "normal":
