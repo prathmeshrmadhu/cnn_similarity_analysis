@@ -1,8 +1,8 @@
 import argparse
 from lib.io import read_config
 
-EXP_PATH = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/experiments/artdl/experiment_2022-01-15_15-16-02/experiment_parameters.json"
-EXP_PARAMS = read_config(EXP_PATH)
+EXP_PATH = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/experiments/artdl/experiment_2022-01-15_15-16-02/"
+EXP_PARAMS = read_config(EXP_PATH + "experiment_parameters.json")
 
 def siamese_args():
     parser = argparse.ArgumentParser()
@@ -65,6 +65,7 @@ def siamese_args():
     aa('--i1', default=-1, type=int, help="last image to process + 1")
 
     group = parser.add_argument_group('output options')
+    aa('--exp_path', default=EXP_PATH, help="path to experiment folder")
     aa('--query_f', default="isc2021/data/query_siamese.hdf5", help="write query features to this file")
     aa('--db_f', default="isc2021/data/db_siamese.hdf5", help="write query features to this file")
     aa('--train_f', default="isc2021/data/train_siamese.hdf5", help="write training features to this file")
