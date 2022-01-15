@@ -11,6 +11,7 @@ def siamese_args():
         group.add_argument(*args, **kwargs)
 
     group = parser.add_argument_group('feature extraction options')
+    aa('--mining_mode', default="offline", help="online or offline data mining")
     aa('--transpose', default=-1, type=int, help="one of the 7 PIL transpose options ")
     aa('--train', default=False, action="store_true", help="run Siamese training")
     aa('--pca', default=False, action="store_true", help="use pca or not")
