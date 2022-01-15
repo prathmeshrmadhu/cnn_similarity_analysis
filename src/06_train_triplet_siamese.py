@@ -6,7 +6,7 @@ import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
-from lib.io import read_config
+from lib.io import read_config, generate_train_list
 import sys
 sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 
