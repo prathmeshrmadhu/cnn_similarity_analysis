@@ -52,6 +52,8 @@ CONFIG = {
 
 DEFAULT_ARGS = {
     "dataset": {
+        "data_path": data_path,
+        "database_path": database_path,
         "dataset_name": "chrisarch",
         "image_size": 400,
         "flip": False,
