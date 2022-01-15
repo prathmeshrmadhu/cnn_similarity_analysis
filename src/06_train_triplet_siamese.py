@@ -126,7 +126,7 @@ def train(args, augmentations_list):
     # epoch_size = int(len(train_list) / args.epoch)
     best_val_loss = np.inf
     for epoch in range(args.num_epochs):
-        if args.mining == "online":
+        if args.mining_mode == "online":
             if args.train_dataset == "image_collation":
                 query_train = []
                 p_train = []
