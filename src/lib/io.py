@@ -280,25 +280,13 @@ def read_descriptors(filenames):
 
 def generate_train_list(args):
     """generate random train triplets"""
-    train_df = pd.read_csv(args.train_list)
-    val_df = pd.read_csv(args.val_list)
+    train_df = pd.read_csv(args.data_path + args.train_list)
     anchor_query = []
     ref_positive = []
     ref_negative = []
-    train_list = []
-    for i in range(7):
-        sub_df_p_1 = train_df[train_df['label_encoded'] == i]
-        sub_df_n_1 = train_df[train_df['label_encoded'] != i]
-        sub_df_p_2 = val_df[val_df['label_encoded'] == i]
-        sub_df_n_2 = val_df[val_df['label_encoded'] != i]
-        frames_p = [sub_df_p_1, sub_df_p_2]
-        frames_n = [sub_df_n_1, sub_df_n_2]
-        sub_df_p = pd.concat(frames_p)
-        sub_df_n = pd.concat(frames_n)
-        # len_p = int(sub_df_p.shape[0] * 3 / 4)
-        # len_n = int(sub_df_n.shape[0] * 3 / 4)
-        # sub_df_p = sub_df_p[:len_p]
-        # sub_df_n = sub_df_n[:len_n]
+    for i in range(10):
+        sub_df_p = train_df[train_df['label_encoded'] == i]
+        sub_df_n = train_df[train_df['label_encoded'] != i]
         for ite in sub_df_p['item']:
             for j in range(10):
                 r_p = random.choice(list(sub_df_p['item']))
@@ -311,3 +299,26 @@ def generate_train_list(args):
                   'ref_negative': ref_negative}
     train_data = DataFrame(train_disc)
     return train_data
+
+
+def generate_val_list(args):
+    """generate random train triplets"""
+    val_df = pd.read_csv(args.data_path + args.val_list)
+    anchor_query = []
+    ref_positive = []
+    ref_negative = []
+    for i in range(10):
+        sub_df_p = val_df[val_df['label_encoded'] == i]
+        sub_df_n = val_df[val_df['label_encoded'] != i]
+        for ite in sub_df_p['item']:
+            for j in range(10):
+                r_p = random.choice(list(sub_df_p['item']))
+                r_n = random.choice(list(sub_df_n['item']))
+                anchor_query.append(args.database_path + ite + '.jpg')
+                ref_positive.append(args.database_path + r_p + '.jpg')
+                ref_negative.append(args.database_path + r_n + '.jpg')
+    val_disc = {'anchor_query': anchor_query,
+                  'ref_positive': ref_positive,
+                  'ref_negative': ref_negative}
+    val_data = DataFrame(val_disc)
+    return val_data

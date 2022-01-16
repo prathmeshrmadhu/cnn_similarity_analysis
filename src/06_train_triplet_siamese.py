@@ -6,7 +6,7 @@ import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
-from lib.io import read_config, generate_train_list
+from lib.io import read_config, generate_train_list, generate_val_list
 import sys
 sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 
@@ -72,14 +72,15 @@ def train(args, augmentations_list):
                 train_list.append((query_train[i], p_train[i], n_train[i]))
 
     if args.train_dataset == "artdl":
-        val_list = args.data_path + args.val_list
-        val = pd.read_csv(val_list)
-        query_val = list(val['anchor_query'])
-        p_val = list(val['ref_positive'])
-        n_val = list(val['ref_negative'])
 
         if args.mining_mode == "offline":
             print("Used dataset: Image Collation")
+            val_list = args.data_path + args.val_list
+            val = pd.read_csv(val_list)
+            query_val = list(val['anchor_query'])
+            p_val = list(val['ref_positive'])
+            n_val = list(val['ref_negative'])
+
             train_list = args.data_path + args.train_list
             train = pd.read_csv(train_list)
             query_train = list(train['anchor_query'])
@@ -88,6 +89,13 @@ def train(args, augmentations_list):
             train_list = []
             for i in range(len(query_train)):
                 train_list.append((query_train[i], p_train[i], n_train[i]))
+
+        elif args.mining_mode == "online":
+            print("Used dataset: Image Collation")
+            val = generate_val_list(args)
+            query_val = list(val['anchor_query'])
+            p_val = list(val['ref_positive'])
+            n_val = list(val['ref_negative'])
 
     # defining the transforms
     transforms = get_transforms(args)
