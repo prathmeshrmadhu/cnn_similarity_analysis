@@ -14,7 +14,7 @@ from src.lib.loss import TripletLoss, CustomLoss
 from src.lib.siamese.args import siamese_args
 from src.lib.siamese.dataset import generate_train_dataset, get_transforms, add_file_list
 from src.lib.augmentations import *
-from src.data.siamese_dataloader import TripletTrainList, TripletValList
+from src.data.siamese_dataloader import TripletTrainList, TripletValList, ImageList
 from src.lib.siamese.model import TripletSiameseNetwork, TripletSiameseNetwork_custom
 
 
@@ -175,12 +175,9 @@ def train(args, augmentations_list):
                 n_train_o = list(train_origin['ref_negative'])
 
                 '''extract features of each triplets'''
-                query_o = TripletValList(query_train_o, transform=transforms, imsize=args.imsize,
-                                         argumentation=augmentations_list)
-                p_o = TripletValList(p_train_o, transform=transforms, imsize=args.imsize,
-                                     argumentation=augmentations_list)
-                n_o = TripletValList(n_train_o, transform=transforms, imsize=args.imsize,
-                                     argumentation=augmentations_list)
+                query_o = ImageList(query_train_o, transform=transforms, imsize=args.imsize)
+                p_o = ImageList(p_train_o, transform=transforms, imsize=args.imsize)
+                n_o = ImageList(n_train_o, transform=transforms, imsize=args.imsize)
                 query_dataloader = DataLoader(dataset=query_o, shuffle=False, num_workers=args.num_workers,
                                               batch_size=args.batch_size)
                 p_dataloader = DataLoader(dataset=p_o, shuffle=False, num_workers=args.num_workers,
