@@ -18,11 +18,34 @@ from src.data.siamese_dataloader import TripletTrainList, TripletValList
 from src.lib.siamese.model import TripletSiameseNetwork, TripletSiameseNetwork_custom
 
 
+def generate_features(args, net, data_loader):
+    if args.loss == "custom":
+        features_list = list()
+        with torch.no_grad():
+            for no, data in enumerate(data_loader):
+                images = data
+                images = images.to(args.device)
+                feats1, feats2, feats3, feats4 = net.forward_once(images)
+                features_list.append(feats3.cpu().numpy())
+        features = torch.Tensor(np.vstack(features_list))
+
+    else:
+        features_list = list()
+        with torch.no_grad():
+            for no, data in enumerate(data_loader):
+                images = data
+                images = images.to(args.device)
+                feats = net.forward_once(images)
+                features_list.append(feats.cpu().numpy())
+        features = torch.Tensor(np.vstack(features_list))
+
+    return features
+
+
 def train(args, augmentations_list):
     if args.device == "gpu":
         print("hardware_image_description:", torch.cuda.get_device_name(0))
 
-    # if args.mining_mode == "offline":
     if args.train_dataset == "image_collation":
         print("Used dataset: Image Collation")
         d1_images = [args.d1 + 'illustration/' + l.strip() for l in open(args.d1 + 'files.txt', "r")]
@@ -49,17 +72,16 @@ def train(args, augmentations_list):
                 train_list.append((query_train[i], p_train[i], n_train[i]))
 
     if args.train_dataset == "artdl":
+        val_list = args.data_path + args.val_list
+        val = pd.read_csv(val_list)
+        query_val = list(val['anchor_query'])
+        p_val = list(val['ref_positive'])
+        n_val = list(val['ref_negative'])
+
         if args.mining_mode == "offline":
             print("Used dataset: Image Collation")
             train_list = args.data_path + args.train_list
-            val_list = args.data_path + args.val_list
             train = pd.read_csv(train_list)
-            val = pd.read_csv(val_list)
-
-            query_val = list(val['anchor_query'])
-            p_val = list(val['ref_positive'])
-            n_val = list(val['ref_negative'])
-
             query_train = list(train['anchor_query'])
             p_train = list(train['ref_positive'])
             n_train = list(train['ref_negative'])
@@ -138,7 +160,50 @@ def train(args, augmentations_list):
                     train_list.append((query_train[i], p_train[i], n_train[i]))
 
             if args.train_dataset == "artdl":
-                pass
+                '''online mining training list'''
+                train_origin = generate_train_list(args)
+                query_train_o = list(train_origin['anchor_query'])
+                p_train_o = list(train_origin['ref_positive'])
+                n_train_o = list(train_origin['ref_negative'])
+
+                '''extract features of each triplets'''
+                query_o = TripletValList(query_train_o, transform=transforms, imsize=args.imsize,
+                                         argumentation=augmentations_list)
+                p_o = TripletValList(p_train_o, transform=transforms, imsize=args.imsize,
+                                     argumentation=augmentations_list)
+                n_o = TripletValList(n_train_o, transform=transforms, imsize=args.imsize,
+                                     argumentation=augmentations_list)
+                query_dataloader = DataLoader(dataset=query_o, shuffle=False, num_workers=args.num_workers,
+                                              batch_size=args.batch_size)
+                p_dataloader = DataLoader(dataset=p_o, shuffle=False, num_workers=args.num_workers,
+                                          batch_size=args.batch_size)
+                n_dataloader = DataLoader(dataset=n_o, shuffle=False, num_workers=args.num_workers,
+                                          batch_size=args.batch_size)
+                query_f_o = generate_features(args, net, query_dataloader)
+                p_f_o = generate_features(args, net, p_dataloader)
+                n_f_o = generate_features(args, net, n_dataloader)
+
+                '''calculate distances between each triplets'''
+                query_f_o.to(args.device)
+                p_f_o.to(args.device)
+                n_f_o.to(args.device)
+                score_pos = (1 - F.cosine_similarity(query_f_o, p_f_o)).cpu().numpy()
+                score_neg = (1 - F.cosine_similarity(query_f_o, n_f_o)).cpu().numpy()
+
+                '''select only semi-hard triplets'''
+                true_list = (score_pos < score_neg) * (score_neg < score_pos + args.margin)
+                true_list = list(true_list)
+                train_origin.insert(train_origin.shape[1], 'label', true_list)
+                train_selected = train_origin[train_origin['label']]
+
+                '''generate new training list'''
+                query_train = list(train_selected['anchor_query'])
+                p_train = list(train_selected['ref_positive'])
+                n_train = list(train_selected['ref_negative'])
+                num_triplets = len(query_train)
+                train_list = []
+                for i in range(num_triplets):
+                    train_list.append((query_train[i], p_train[i], n_train[i]))
 
         image_pairs = TripletValList(train_list, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
         train_dataloader = DataLoader(dataset=image_pairs, shuffle=True, num_workers=args.num_workers,
@@ -165,7 +230,7 @@ def train(args, augmentations_list):
         mean_loss = torch.mean(torch.Tensor(loss_history))
         loss_history.clear()
 
-        print("Epoch:{},  Current training loss {}\n".format(epoch, mean_loss))
+        print("Epoch:{},  Current training loss {}, num_triplets={}\n".format(epoch, mean_loss, num_triplets))
         train_losses.append(mean_loss)  # Q: Does this only store the mean loss of the last 10 iterations?
 
         # Validating over batches
