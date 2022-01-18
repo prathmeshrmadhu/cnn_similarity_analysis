@@ -210,6 +210,10 @@ def train(args, augmentations_list):
                 for i in range(num_triplets):
                     train_list.append((query_train[i], p_train[i], n_train[i]))
 
+                '''eraly stop if not able to find semi-hard triplets'''
+                if num_triplets == 0:
+                    break
+
         image_pairs = TripletValList(train_list, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
         train_dataloader = DataLoader(dataset=image_pairs, shuffle=True, num_workers=args.num_workers,
                                       batch_size=args.batch_size)
