@@ -322,3 +322,16 @@ def generate_val_list(args):
                   'ref_negative': ref_negative}
     val_data = DataFrame(val_disc)
     return val_data
+
+
+def generate_test_list(args):
+    """generate random train triplets"""
+    test_df = pd.read_csv(args.data_path + args.test_list)
+    test_list = []
+    test_labels = list(test_df["label_encoded"])
+    for i in range(len(test_labels)):
+        test_list.append(args.database_path + list(test_df['item'])[i] + '.jpg')
+    test_disc = {'test_images': test_list,
+                 'label': test_labels}
+    test_data = DataFrame(test_disc)
+    return test_data

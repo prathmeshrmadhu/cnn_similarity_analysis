@@ -110,7 +110,7 @@ def extract_features(args):
     elif args.test_dataset == "artdl":
         save_path_test = args.exp_path + args.test_f
         save_path_db = args.exp_path + args.db_f
-        test_set = pd.read_csv(args.test_list)
+        test_set = generate_test_list(args)
         test_paths = list(test_set['test_images'])
         test_dataset = ImageList(test_paths, transform=transforms)
         test_dataloader = DataLoader(dataset=test_dataset, shuffle=False, num_workers=args.num_workers,
