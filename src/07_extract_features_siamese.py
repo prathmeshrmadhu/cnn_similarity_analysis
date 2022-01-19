@@ -116,7 +116,8 @@ def extract_features(args):
         test_dataloader = DataLoader(dataset=test_dataset, shuffle=False, num_workers=args.num_workers,
                                batch_size=args.batch_size)
         generate_features(args, net, test_paths, test_dataloader, save_path_test)
-        sample_set = pd.read_csv(args.db_list)
+        db_file = args.data_path + args.db_list
+        sample_set = pd.read_csv(db_file)
         sample_paths = list(sample_set['samples'])
         sample_dataset = ImageList(sample_paths, transform=transforms)
         sample_dataloader = DataLoader(dataset=sample_dataset, shuffle=False, num_workers=args.num_workers,
