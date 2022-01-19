@@ -16,8 +16,8 @@ from src.lib.siamese.dataset import generate_extraction_dataset, generate_valida
 from src.lib.augmentations import *
 from src.data.siamese_dataloader import ImageList, ContrastiveValList
 from src.lib.siamese.model import TripletSiameseNetwork, TripletSiameseNetwork_custom
-from lib.utils import imshow
-from lib.io import *
+from src.lib.utils import imshow
+from src.lib.io import *
 
 
 def generate_features(args, net, image_names, data_loader, save_path):
