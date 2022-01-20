@@ -4,8 +4,8 @@ import numpy as np
 sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 import pandas as pd
 import torch.nn.functional as F
-from lib.io import *
-from lib.metrics import *
+from src.lib.io import *
+from src.lib.metrics import *
 from src.lib.siamese.args import siamese_args
 
 
@@ -89,9 +89,11 @@ def evaluation(args):
 
     elif args.test_dataset == 'artdl':
         print('Dataset to be evaluate: ArtDL')
-        test_names, test_vectors = read_pickle_descriptors(args.test_f)
-        test_file = pd.read_csv(args.test_list)
-        labels = list(test_file['label'])
+        test_features = args.exp_path + args.test_f
+        test_names, test_vectors = read_pickle_descriptors(test_features)
+        test_file_path = args.data_path + args.test_list
+        test_file = pd.read_csv(args.test_file_path)
+        labels = list(test_file['label_encoded'])
         # sample_names, sample_vectors = read_pickle_descriptors(args.db_f)
         test_vectors = torch.Tensor(test_vectors).to(args.device)
         # sample_vectors = torch.tensor(sample_vectors).to(args.device)
