@@ -92,7 +92,7 @@ def evaluation(args):
         test_features = args.exp_path + args.test_f
         test_names, test_vectors = read_pickle_descriptors(test_features)
         test_file_path = args.data_path + args.test_list
-        test_file = pd.read_csv(args.test_file_path)
+        test_file = pd.read_csv(test_file_path)
         labels = list(test_file['label_encoded'])
         # sample_names, sample_vectors = read_pickle_descriptors(args.db_f)
         test_vectors = torch.Tensor(test_vectors).to(args.device)
