@@ -170,49 +170,49 @@ def train(args, augmentations_list):
             if args.train_dataset == "artdl":
                 '''online mining training list'''
                 train_origin = generate_train_list(args)
-                query_train_o = list(train_origin['anchor_query'])
-                p_train_o = list(train_origin['ref_positive'])
-                n_train_o = list(train_origin['ref_negative'])
+                query_train = list(train_origin['anchor_query'])
+                p_train = list(train_origin['ref_positive'])
+                n_train = list(train_origin['ref_negative'])
 
-                '''extract features of each triplets'''
-                query_o = ImageList(query_train_o, transform=transforms, imsize=args.imsize)
-                p_o = ImageList(p_train_o, transform=transforms, imsize=args.imsize)
-                n_o = ImageList(n_train_o, transform=transforms, imsize=args.imsize)
-                query_dataloader = DataLoader(dataset=query_o, shuffle=False, num_workers=args.num_workers,
-                                              batch_size=args.batch_size)
-                p_dataloader = DataLoader(dataset=p_o, shuffle=False, num_workers=args.num_workers,
-                                          batch_size=args.batch_size)
-                n_dataloader = DataLoader(dataset=n_o, shuffle=False, num_workers=args.num_workers,
-                                          batch_size=args.batch_size)
-                query_f_o = generate_features(args, net, query_dataloader)
-                p_f_o = generate_features(args, net, p_dataloader)
-                n_f_o = generate_features(args, net, n_dataloader)
-
-                '''calculate distances between each triplets'''
-                query_f_o.to(args.device)
-                p_f_o.to(args.device)
-                n_f_o.to(args.device)
-                score_pos = (1 - F.cosine_similarity(query_f_o, p_f_o)).cpu().numpy()
-                score_neg = (1 - F.cosine_similarity(query_f_o, n_f_o)).cpu().numpy()
-
-                '''select only semi-hard triplets'''
-                true_list = (score_pos < score_neg) * (score_neg < score_pos + args.margin)
-                true_list = list(true_list)
-                train_origin.insert(train_origin.shape[1], 'label', true_list)
-                train_selected = train_origin[train_origin['label']]
-
-                '''generate new training list'''
-                query_train = list(train_selected['anchor_query'])
-                p_train = list(train_selected['ref_positive'])
-                n_train = list(train_selected['ref_negative'])
-                num_triplets = len(query_train)
+                # '''extract features of each triplets'''
+                # query_o = ImageList(query_train_o, transform=transforms, imsize=args.imsize)
+                # p_o = ImageList(p_train_o, transform=transforms, imsize=args.imsize)
+                # n_o = ImageList(n_train_o, transform=transforms, imsize=args.imsize)
+                # query_dataloader = DataLoader(dataset=query_o, shuffle=False, num_workers=args.num_workers,
+                #                               batch_size=args.batch_size)
+                # p_dataloader = DataLoader(dataset=p_o, shuffle=False, num_workers=args.num_workers,
+                #                           batch_size=args.batch_size)
+                # n_dataloader = DataLoader(dataset=n_o, shuffle=False, num_workers=args.num_workers,
+                #                           batch_size=args.batch_size)
+                # query_f_o = generate_features(args, net, query_dataloader)
+                # p_f_o = generate_features(args, net, p_dataloader)
+                # n_f_o = generate_features(args, net, n_dataloader)
+                #
+                # '''calculate distances between each triplets'''
+                # query_f_o.to(args.device)
+                # p_f_o.to(args.device)
+                # n_f_o.to(args.device)
+                # score_pos = (1 - F.cosine_similarity(query_f_o, p_f_o)).cpu().numpy()
+                # score_neg = (1 - F.cosine_similarity(query_f_o, n_f_o)).cpu().numpy()
+                #
+                # '''select only semi-hard triplets'''
+                # true_list = (score_pos < score_neg) * (score_neg < score_pos + args.margin)
+                # true_list = list(true_list)
+                # train_origin.insert(train_origin.shape[1], 'label', true_list)
+                # train_selected = train_origin[train_origin['label']]
+                #
+                # '''generate new training list'''
+                # query_train = list(train_selected['anchor_query'])
+                # p_train = list(train_selected['ref_positive'])
+                # n_train = list(train_selected['ref_negative'])
+                # num_triplets = len(query_train)
                 train_list = []
-                for i in range(num_triplets):
+                for i in range(len(query_train)):
                     train_list.append((query_train[i], p_train[i], n_train[i]))
 
-                '''eraly stop if not able to find semi-hard triplets'''
-                if num_triplets == 0:
-                    break
+                # '''eraly stop if not able to find semi-hard triplets'''
+                # if num_triplets == 0:
+                #     break
 
         image_pairs = TripletValList(train_list, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
         train_dataloader = DataLoader(dataset=image_pairs, shuffle=True, num_workers=args.num_workers,

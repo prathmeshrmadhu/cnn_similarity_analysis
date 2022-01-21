@@ -35,6 +35,8 @@ class CustomLoss(torch.nn.Module):
         triplet_loss = torch.mean(
             torch.clamp(torch.pow(score_positive, 2) - torch.pow(score_negative, 2) + margin, min=0.0))
         regular = lam * (F.l1_loss(q1, p1) + F.l1_loss(p2, q2) + F.l1_loss(q4, p4))
+        triplet_loss[triplet_loss > margin] *= 0.0
+        regular[triplet_loss > margin] *= 0.0
         loss = triplet_loss + regular
         return loss
 
