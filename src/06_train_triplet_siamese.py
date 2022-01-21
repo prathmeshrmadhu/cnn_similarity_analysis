@@ -239,7 +239,8 @@ def train(args, augmentations_list):
         mean_loss = torch.mean(torch.Tensor(loss_history))
         loss_history.clear()
 
-        print("Epoch:{},  Current training loss {}, num_triplets={}\n".format(epoch, mean_loss, num_triplets))
+        #print("Epoch:{},  Current training loss {}, num_triplets={}\n".format(epoch, mean_loss, num_triplets))
+        print("Epoch:{},  Current training loss {}\n".format(epoch, mean_loss))
         train_losses.append(mean_loss)  # Q: Does this only store the mean loss of the last 10 iterations?
 
         # Validating over batches
