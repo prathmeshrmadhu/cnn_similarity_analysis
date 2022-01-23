@@ -120,6 +120,7 @@ def train(args, augmentations_list):
         criterion = CustomLoss()
         criterion.to(args.device)
     if not args.start:
+        print('load trained model:{}'.format(args.checkpoint))
         state_dict = torch.load(args.net + args.checkpoint)
         net.load_state_dict(state_dict)
     net.to(args.device)
