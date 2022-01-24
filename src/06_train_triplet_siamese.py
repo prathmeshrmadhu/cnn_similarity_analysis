@@ -98,7 +98,12 @@ def train(args, augmentations_list):
             n_val = list(val['ref_negative'])
 
     if args.train_dataset == "the_MET":
-        pass
+        if args.mining_model == 'offline':
+            print("Used dataset: The MET")
+            train_file = args.data_path + args.train_list
+            train_set = pd.read_csv(train_file)
+            id_list = list(train_set['MET_id'].drop_duplicates())
+
 
     # defining the transforms
     transforms = get_transforms(args)
