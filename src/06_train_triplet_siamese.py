@@ -97,6 +97,9 @@ def train(args, augmentations_list):
             p_val = list(val['ref_positive'])
             n_val = list(val['ref_negative'])
 
+    if args.train_dataset == "the_MET":
+        pass
+
     # defining the transforms
     transforms = get_transforms(args)
 
