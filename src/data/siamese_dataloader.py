@@ -90,7 +90,7 @@ class TripletValList(Dataset):
         q, r_p, r_n = self.image_list[i]
         query_image = Image.open(q)
         db_positive = Image.open(r_p)
-        # db_positive = argument(db_positive)
+        db_positive = argument(db_positive)
         db_negative = Image.open(r_n)
         query_image = query_image.convert("RGB")
         db_positive = db_positive.convert("RGB")
