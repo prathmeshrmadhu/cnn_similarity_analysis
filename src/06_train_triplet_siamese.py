@@ -45,6 +45,8 @@ def generate_features(args, net, data_loader):
 def train(args, augmentations_list):
     if args.device == "gpu":
         print("hardware_image_description:", torch.cuda.get_device_name(0))
+        # defining the transforms
+        transforms = get_transforms(args)
 
     if args.train_dataset == "image_collation":
         print("Used dataset: Image Collation")
@@ -101,18 +103,18 @@ def train(args, augmentations_list):
         if args.mining_model == 'offline':
             print("Used dataset: The MET")
             train_file = args.data_path + args.train_list
-            train_set = pd.read_csv(train_file)
-            id_list = list(train_set['MET_id'].drop_duplicates())
-
-
-    # defining the transforms
-    transforms = get_transforms(args)
+            train_frame = pd.read_csv(train_file)
+            val_file = args.data_path + args.val_list
+            val_frame = pd.read_csv(val_file)
 
     val_list = []
-    for j in range(len(query_val)):
-        val_list.append((query_val[j], p_val[j], n_val[j]))
+    if args.train_dataset == 'the_MET':
+        val_pairs = TripletTrainList(args.data_path, val_frame, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
+    else:
+        for j in range(len(query_val)):
+            val_list.append((query_val[j], p_val[j], n_val[j]))
 
-    val_pairs = TripletValList(val_list, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
+        val_pairs = TripletValList(val_list, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
     val_dataloader = DataLoader(dataset=val_pairs, shuffle=True, num_workers=args.num_workers,
                                 batch_size=args.batch_size)
 
@@ -132,8 +134,6 @@ def train(args, augmentations_list):
         state_dict = torch.load(args.net + args.checkpoint)
         net.load_state_dict(state_dict)
     net.to(args.device)
-
-
 
     if args.optimizer == "adam":
         if args.loss == "normal":
@@ -223,7 +223,11 @@ def train(args, augmentations_list):
                 if num_triplets == 0:
                     break
 
-        image_pairs = TripletValList(train_list, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
+        if args.train_dataset == 'the_MET':
+            image_pairs = TripletTrainList(args.data_path, train_frame, transform=transforms, imsize=args.imsize,
+                                           argumentation=augmentations_list)
+        else:
+            image_pairs = TripletValList(train_list, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
         train_dataloader = DataLoader(dataset=image_pairs, shuffle=True, num_workers=args.num_workers,
                                       batch_size=args.batch_size)
         net.train()
