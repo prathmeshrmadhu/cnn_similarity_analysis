@@ -104,12 +104,14 @@ def train(args, augmentations_list):
             print("Used dataset: The MET")
             train_file = args.data_path + args.train_list
             train_frame = pd.read_csv(train_file)
+            train_frame = train_frame[:10000]
             val_file = args.data_path + args.val_list
             val_frame = pd.read_csv(val_file)
 
     val_list = []
     if args.train_dataset == 'the_MET':
-        val_pairs = TripletTrainList(args.data_path, val_frame, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
+        val_pairs = TripletTrainList(args.data_path, val_frame, transform=transforms, imsize=args.imsize,
+                                     argumentation=augmentations_list)
     else:
         for j in range(len(query_val)):
             val_list.append((query_val[j], p_val[j], n_val[j]))
