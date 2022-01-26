@@ -90,6 +90,7 @@ def evaluation(args):
     elif args.test_dataset == 'artdl':
         print('Dataset to be evaluate: ArtDL')
         test_features = args.exp_path + args.test_f
+        print('test file {} will be loaded'.format(test_features))
         test_names, test_vectors = read_pickle_descriptors(test_features)
         test_file_path = args.data_path + args.test_list
         test_file = pd.read_csv(test_file_path)
