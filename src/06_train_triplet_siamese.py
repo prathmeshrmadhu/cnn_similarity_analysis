@@ -141,12 +141,19 @@ def train(args, augmentations_list):
         if args.loss == "normal":
             optimizer = torch.optim.Adam(net.parameters(), lr=args.lr, weight_decay=args.weight_decay)
         elif args.loss == "custom":
-            optimizer = torch.optim.Adam([{'params': net.head.conv1.parameters(), 'lr': args.lr * 0.25},
-                                         {'params': net.head.layer1.parameters(), 'lr': args.lr * 0.25},
-                                         {'params': net.head.layer2.parameters(), 'lr': args.lr * 0.5},
-                                         {'params': net.head.layer3.parameters(), 'lr': args.lr * 0.75},
-                                         {'params': net.head.layer4.parameters(), 'lr': args.lr}], lr=args.lr,
-                                         weight_decay=args.weight_decay)
+            if args.model == 'resnet50':
+                optimizer = torch.optim.Adam([{'params': net.head.conv1.parameters(), 'lr': args.lr * 0.25},
+                                             {'params': net.head.layer1.parameters(), 'lr': args.lr * 0.25},
+                                             {'params': net.head.layer2.parameters(), 'lr': args.lr * 0.5},
+                                             {'params': net.head.layer3.parameters(), 'lr': args.lr * 0.75},
+                                             {'params': net.head.layer4.parameters(), 'lr': args.lr}], lr=args.lr,
+                                             weight_decay=args.weight_decay)
+            elif args.model == 'vgg':
+                optimizer = torch.optim.Adam([{'params': net.head.features[:3].parameters(), 'lr': args.lr * 0.25},
+                                              {'params': net.head.features[4:9].parameters(), 'lr': args.lr * 0.5},
+                                              {'params': net.head.features[9:16].parameters(), 'lr': args.lr * 0.75},
+                                              {'params': net.head.features[16:23].parameters(), 'lr': args.lr}], lr=args.lr,
+                                             weight_decay=args.weight_decay)
 
     elif args.optimizer == "sgd":
         if args.loss == "normal":
