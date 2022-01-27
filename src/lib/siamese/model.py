@@ -340,13 +340,13 @@ class TripletSiameseNetwork_custom(nn.Module):
 
         elif self.model == 'vgg':
             '''relu1_2'''
-            x1 = self.head[:3](x)
+            x1 = self.head.features[:3](x)
             '''relu2_2'''
-            x2 = self.head[4:9](x1)
+            x2 = self.head.features[4:9](x1)
             '''relu3_3'''
-            x4 = self.head[9:16](x2)
+            x4 = self.head.features[9:16](x2)
             '''relu4_3'''
-            x3 = self.head[16:23](x4)
+            x3 = self.head.features[16:23](x4)
 
             x1 = F.adaptive_max_pool2d(x1, (1, 1))
             x1 = self.flatten(x1)
