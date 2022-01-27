@@ -153,13 +153,22 @@ def train(args, augmentations_list):
             optimizer = torch.optim.SGD(net.parameters(), lr=args.lr, momentum=args.momentum,
                                         weight_decay=args.weight_decay)
         elif args.loss == "custom":
-            optimizer = torch.optim.SGD([{'params': net.head.conv1.parameters(), 'lr': args.lr * 0.25},
-                                         {'params': net.head.layer1.parameters(), 'lr': args.lr * 0.25},
-                                         {'params': net.head.layer2.parameters(), 'lr': args.lr * 0.5},
-                                         {'params': net.head.layer3.parameters(), 'lr': args.lr * 0.75},
-                                         {'params': net.head.layer4.parameters(), 'lr': args.lr}], lr=args.lr,
-                                         momentum=args.momentum,
-                                         weight_decay=args.weight_decay)
+            if args.model == 'resnet50':
+                optimizer = torch.optim.SGD([{'params': net.head.conv1.parameters(), 'lr': args.lr * 0.25},
+                                             {'params': net.head.layer1.parameters(), 'lr': args.lr * 0.25},
+                                             {'params': net.head.layer2.parameters(), 'lr': args.lr * 0.5},
+                                             {'params': net.head.layer3.parameters(), 'lr': args.lr * 0.75},
+                                             {'params': net.head.layer4.parameters(), 'lr': args.lr}], lr=args.lr,
+                                             momentum=args.momentum,
+                                             weight_decay=args.weight_decay)
+            elif args.model == 'vgg':
+                optimizer = torch.optim.SGD([{'params': net.head[:3].parameters(), 'lr': args.lr * 0.25},
+                                             {'params': net.head[4:9].parameters(), 'lr': args.lr * 0.5},
+                                             {'params': net.head[9:16].parameters(), 'lr': args.lr * 0.75},
+                                             {'params': net.head[16:23].parameters(), 'lr': args.lr}], lr=args.lr,
+                                            momentum=args.momentum,
+                                            weight_decay=args.weight_decay)
+
 
     loss_history = list()
     epoch_losses = list()
