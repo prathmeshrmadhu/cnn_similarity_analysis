@@ -347,6 +347,7 @@ class TripletSiameseNetwork_custom(nn.Module):
             x4 = self.head[9:16](x2)
             '''relu4_3'''
             x3 = self.head[16:23](4)
+
             x1 = F.adaptive_max_pool2d(x1, (1, 1))
             x1 = self.flatten(x1)
             x2 = F.adaptive_max_pool2d(x2, (1, 1))
