@@ -65,10 +65,14 @@ def extract_features(args):
         net = TripletSiameseNetwork_custom(args.model)
     elif args.loss == "normal":
         net = TripletSiameseNetwork(args.model, args.method)
-    if args.net:
-        print('load trained model:{}'.format(args.net + args.checkpoint))
+
+    try:
         state_dict = torch.load(args.net + args.checkpoint)
+        print('load trained model:{}'.format(args.net + args.checkpoint))
         net.load_state_dict(state_dict)
+    except:
+        pass
+
     net.eval()
     net.to(args.device)
     print("checkpoint {} loaded\n".format(args.checkpoint))
