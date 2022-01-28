@@ -62,14 +62,16 @@ def extract_features(args):
     # Loading the pretrained siamese model
 
     if args.loss == "custom":
+        print('model trained with custom loss')
         net = TripletSiameseNetwork_custom(args.model)
     elif args.loss == "normal":
+        print('model trained with regular loss')
         net = TripletSiameseNetwork(args.model, args.method)
 
     try:
         state_dict = torch.load(args.net + args.checkpoint)
-        print('load trained model:{}'.format(args.net + args.checkpoint))
         net.load_state_dict(state_dict)
+        print('load trained model:{}'.format(args.net + args.checkpoint))
     except:
         pass
 
