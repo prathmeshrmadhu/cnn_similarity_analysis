@@ -22,11 +22,18 @@ def generate_features(args, net, data_loader):
     if args.loss == "custom":
         features_list = list()
         with torch.no_grad():
-            for no, data in enumerate(data_loader):
-                images = data
-                images = images.to(args.device)
-                feats1, feats2, feats3, feats4 = net.forward_once(images)
-                features_list.append(feats3.cpu().numpy())
+            if args.model == 'resnet50':
+                for no, data in enumerate(data_loader):
+                    images = data
+                    images = images.to(args.device)
+                    feats1, feats2, feats3, feats4 = net.forward_once(images)
+                    features_list.append(feats3.cpu().numpy())
+            elif args.model == 'vgg':
+                for no, data in enumerate(data_loader):
+                    images = data
+                    images = images.to(args.device)
+                    _, _, _, _, feats5 = net.forward_once(images)
+                    features_list.append(feats5.cpu().numpy())
         features = torch.Tensor(np.vstack(features_list))
 
     else:
