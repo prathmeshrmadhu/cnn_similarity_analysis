@@ -10,7 +10,7 @@ from lib.io import read_config, generate_train_list, generate_val_list
 import sys
 sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 
-from src.lib.loss import TripletLoss, CustomLoss
+from src.lib.loss import TripletLoss, CustomLoss, CustomLoss_vgg
 from src.lib.siamese.args import siamese_args
 from src.lib.siamese.dataset import generate_train_dataset, get_transforms, add_file_list
 from src.lib.augmentations import *
@@ -129,7 +129,10 @@ def train(args, augmentations_list):
     elif args.loss == "custom":
         net = TripletSiameseNetwork_custom(args.model)
         # Defining the criteria for training
-        criterion = CustomLoss()
+        if args.model == 'resnet50':
+            criterion = CustomLoss()
+        elif args.model == 'vgg':
+            criterion = CustomLoss_vgg()
         criterion.to(args.device)
     if not args.start:
         print('load trained model:{}'.format(args.checkpoint))
@@ -151,9 +154,12 @@ def train(args, augmentations_list):
             elif args.model == 'vgg':
                 optimizer = torch.optim.Adam([{'params': net.head.features[:3].parameters(), 'lr': args.lr * 0.25},
                                               {'params': net.head.features[4:9].parameters(), 'lr': args.lr * 0.5},
-                                              {'params': net.head.features[9:16].parameters(), 'lr': args.lr * 0.75},
-                                              {'params': net.head.features[16:23].parameters(), 'lr': args.lr}], lr=args.lr,
-                                             weight_decay=args.weight_decay)
+                                              {'params': net.head.features[9:16].parameters(), 'lr': args.lr * 0.5},
+                                              {'params': net.head.features[16:23].parameters(), 'lr': args.lr * 0.75},
+                                              {'params': net.head.features[23:].parameters(), 'lr': args.lr},
+                                              {'params': net.head.avgpool.parameters(), 'lr': args.lr},
+                                              {'params': net.head.classifier.parameters(), 'lr': args.lr}], lr=args.lr,
+                                              weight_decay=args.weight_decay)
 
     elif args.optimizer == "sgd":
         if args.loss == "normal":
@@ -171,10 +177,13 @@ def train(args, augmentations_list):
             elif args.model == 'vgg':
                 optimizer = torch.optim.SGD([{'params': net.head.features[:3].parameters(), 'lr': args.lr * 0.25},
                                              {'params': net.head.features[4:9].parameters(), 'lr': args.lr * 0.5},
-                                             {'params': net.head.features[9:16].parameters(), 'lr': args.lr * 0.75},
-                                             {'params': net.head.features[16:23].parameters(), 'lr': args.lr}], lr=args.lr,
-                                            momentum=args.momentum,
-                                            weight_decay=args.weight_decay)
+                                             {'params': net.head.features[9:16].parameters(), 'lr': args.lr * 0.5},
+                                             {'params': net.head.features[16:23].parameters(), 'lr': args.lr * 0.75},
+                                             {'params': net.head.features[23:].parameters(), 'lr': args.lr},
+                                             {'params': net.head.avgpool.parameters(), 'lr': args.lr},
+                                             {'params': net.head.classifier.parameters(), 'lr': args.lr}], lr=args.lr,
+                                             momentum=args.momentum,
+                                             weight_decay=args.weight_decay)
 
 
     loss_history = list()
@@ -260,9 +269,15 @@ def train(args, augmentations_list):
                 optimizer.zero_grad()
                 loss = criterion(p_score, n_score, args.margin)
             elif args.loss == 'custom':
-                q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4 = net(query_img, rp_img, rn_img)
-                optimizer.zero_grad()
-                loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, args.regular, cos=True)
+                if args.model == 'resnet50':
+                    q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4 = net(query_img, rp_img, rn_img)
+                    optimizer.zero_grad()
+                    loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, args.regular, cos=True)
+                elif args.model == 'vgg':
+                    q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, n1, n2, n3, n4, n5 = net(query_img, rp_img, rn_img)
+                    optimizer.zero_grad()
+                    loss = criterion(q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, n5, args.margin, args.regular,
+                                     cos=True)
             loss.backward()
             optimizer.step()
             loss_history.append(loss)
