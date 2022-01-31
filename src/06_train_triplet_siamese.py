@@ -182,10 +182,10 @@ def train(args, augmentations_list):
                                              momentum=args.momentum,
                                              weight_decay=args.weight_decay)
             elif args.model == 'vgg':
-                optimizer = torch.optim.SGD([{'params': net.head.features[:3].parameters(), 'lr': args.lr * 0.25},
-                                             {'params': net.head.features[4:9].parameters(), 'lr': args.lr * 0.5},
-                                             {'params': net.head.features[9:16].parameters(), 'lr': args.lr * 0.5},
-                                             {'params': net.head.features[16:23].parameters(), 'lr': args.lr * 0.75},
+                optimizer = torch.optim.SGD([{'params': net.head.features[:3].parameters(), 'lr': args.lr},
+                                             {'params': net.head.features[4:9].parameters(), 'lr': args.lr},
+                                             {'params': net.head.features[9:16].parameters(), 'lr': args.lr},
+                                             {'params': net.head.features[16:23].parameters(), 'lr': args.lr},
                                              {'params': net.head.features[23:].parameters(), 'lr': args.lr},
                                              {'params': net.head.avgpool.parameters(), 'lr': args.lr},
                                              {'params': net.head.classifier.parameters(), 'lr': args.lr}], lr=args.lr,
