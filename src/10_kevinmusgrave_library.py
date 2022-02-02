@@ -26,7 +26,9 @@ def train(args, augmentations_list):
         val_df = pd.read_csv(val_file)
         train_file = args.data_path + args.train_list
         train_df = pd.read_csv(train_file)
-        train_images = args.database_path + list(train_df['item']) + '.jpg'
+        train_images = []
+        for ite in list(train_df['item']):
+            train_images.append(args.database_path + ite + '.jpg')
         train_labels = list(train_df['label_encoded'])
     train_list = ImageList_with_label(train_images, train_labels, transform=transforms)
     dataloader = DataLoader(dataset=train_list, shuffle=True, num_workers=args.num_workers,
