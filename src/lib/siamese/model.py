@@ -129,6 +129,14 @@ def load_siamese_checkpoint(name, checkpoint_file):
 
     elif name == "vgg_fc7":
         print('--------------------------------------------------------------')
+        print('used model: VGG16_fc7')
+        print('--------------------------------------------------------------')
+        model = VGG16FC7()
+        # model.eval()
+        return model
+
+    elif name == "vgg_fc7":
+        print('--------------------------------------------------------------')
         print('used model: VGG16')
         print('--------------------------------------------------------------')
         model = VGG16FC7()
