@@ -16,7 +16,7 @@ from src.lib.siamese.dataset import generate_train_dataset, get_transforms, add_
 from src.lib.augmentations import *
 from src.data.siamese_dataloader import ImageList_with_label
 from src.lib.siamese.model import TripletSiameseNetwork, TripletSiameseNetwork_custom, VGG16FC7
-from pytorch_metric_learning import losses
+from pytorch_metric_learning import losses, miners
 
 
 def train(args, augmentations_list):
@@ -35,15 +35,18 @@ def train(args, augmentations_list):
                                   batch_size=args.batch_size)
     model = TripletSiameseNetwork(args.model, args.method)
     loss_func = losses.TripletMarginLoss()
+    miner = miners.MultiSimilarityMiner()
     model.to(args.device)
     loss_func.to(args.device)
+    miner.to(args.device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     for i, (data, labels) in enumerate(dataloader):
         optimizer.zero_grad()
         data = data.to(args.device)
         labels = labels.to(args.device)
         embeddings = model.forward_once(data)
-        loss = loss_func(embeddings, labels)
+        hard_pairs = miner(embeddings, labels)
+        loss = loss_func(embeddings, labels, hard_pairs)
         loss.backward()
         optimizer.step()
     best_model_name = 'Triplet_kevin.pth'
