@@ -40,8 +40,8 @@ def train(args, augmentations_list):
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     for i, (data, labels) in enumerate(dataloader):
         optimizer.zero_grad()
-        data.cuda()
-        labels.cuda()
+        data = data.to(args.device)
+        labels = labels.to(args.device)
         embeddings = model(data)
         loss = loss_func(embeddings, labels)
         loss.backward()
