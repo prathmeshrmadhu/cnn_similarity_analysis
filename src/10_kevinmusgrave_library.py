@@ -33,9 +33,13 @@ def train(args, augmentations_list):
                                   batch_size=args.batch_size)
     model = VGG16FC7()
     loss_func = losses.TripletMarginLoss()
+    model.to(args.device)
+    loss_func.to(args.device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     for i, (data, labels) in enumerate(dataloader):
         optimizer.zero_grad()
+        data.to(args.device)
+        labels.to(args.device)
         embeddings = model(data)
         loss = loss_func(embeddings, labels)
         loss.backward()
