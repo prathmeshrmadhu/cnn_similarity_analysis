@@ -40,19 +40,20 @@ def train(args, augmentations_list):
     loss_func.to(args.device)
     miner.to(args.device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
-    for i, (data, labels) in enumerate(dataloader):
-        optimizer.zero_grad()
-        data = data.to(args.device)
-        labels = labels.to(args.device)
-        embeddings = model.forward_once(data)
-        hard_pairs = miner(embeddings, labels)
-        loss = loss_func(embeddings, labels, hard_pairs)
-        loss.backward()
-        optimizer.step()
-    best_model_name = 'Triplet_kevin.pth'
-    model_full_path = args.net + best_model_name
-    torch.save(model.state_dict(), model_full_path)
-    print('best model updated\n')
+    for epoch in range(args.num_epochs):
+        for i, (data, labels) in enumerate(dataloader):
+            optimizer.zero_grad()
+            data = data.to(args.device)
+            labels = labels.to(args.device)
+            embeddings = model.forward_once(data)
+            hard_pairs = miner(embeddings, labels)
+            loss = loss_func(embeddings, labels, hard_pairs)
+            loss.backward()
+            optimizer.step()
+        best_model_name = 'Triplet_kevin.pth'
+        model_full_path = args.net + best_model_name
+        torch.save(model.state_dict(), model_full_path)
+        print('model updated\n')
 
 
 if __name__ == "__main__":
