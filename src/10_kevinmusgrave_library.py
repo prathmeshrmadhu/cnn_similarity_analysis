@@ -33,7 +33,7 @@ def train(args, augmentations_list):
     train_list = ImageList_with_label(train_images, train_labels, transform=transforms)
     dataloader = DataLoader(dataset=train_list, shuffle=True, num_workers=args.num_workers,
                                   batch_size=args.batch_size)
-    model = VGG16FC7()
+    model = TripletSiameseNetwork(args.model, args.method)
     loss_func = losses.TripletMarginLoss()
     model.to(args.device)
     loss_func.to(args.device)
@@ -42,7 +42,7 @@ def train(args, augmentations_list):
         optimizer.zero_grad()
         data = data.to(args.device)
         labels = labels.to(args.device)
-        embeddings = model(data)
+        embeddings = model.forward_once(data)
         loss = loss_func(embeddings, labels)
         loss.backward()
         optimizer.step()
