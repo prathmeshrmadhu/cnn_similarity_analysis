@@ -25,6 +25,27 @@ class ImageList(Dataset):
         return x
 
 
+class ImageList_with_label(Dataset):
+
+    def __init__(self, image_list, labels, imsize=None, transform=None):
+        Dataset.__init__(self)
+        self.image_list = image_list
+        self.labels = labels
+        self.transform = transform
+        self.imsize = imsize
+
+    def __len__(self):
+        return len(self.image_list)
+
+    def __getitem__(self, i):
+        label = self.labels[i]
+        x = Image.open(self.image_list[i])
+        x = x.convert("RGB")
+        if self.transform is not None:
+            x = self.transform(x)
+        return x, label
+
+
 class TripletTrainList(Dataset):
 
     def __init__(self, image_path, train_frame, imsize=None, transform=None, argumentation=None):
@@ -161,5 +182,7 @@ class ContrastiveTrainList(Dataset):
                 query_image = self.transform(query_image)
                 db_image = self.transform(db_image)
         return query_image, db_image, label
+
+
 
 
