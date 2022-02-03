@@ -6,7 +6,7 @@ import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
-from lib.io import read_config, generate_train_list, generate_val_list
+from src.lib.io import read_config, generate_train_list, generate_val_list
 import sys
 sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 
@@ -16,7 +16,7 @@ from src.lib.siamese.dataset import generate_train_dataset, get_transforms, add_
 from src.lib.augmentations import *
 from src.data.siamese_dataloader import ImageList_with_label
 from src.lib.siamese.model import TripletSiameseNetwork, TripletSiameseNetwork_custom, VGG16FC7
-from pytorch_metric_learning import losses, miners
+from src.pytorch_metric_learning import losses, miners
 
 
 def train(args, augmentations_list):
