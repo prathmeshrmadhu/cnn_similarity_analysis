@@ -34,7 +34,7 @@ def train(args, augmentations_list):
     dataloader = DataLoader(dataset=train_list, shuffle=True, num_workers=args.num_workers,
                                   batch_size=args.batch_size)
     model = TripletSiameseNetwork(args.model, args.method)
-    loss_func = losses.TripletMarginLoss()
+    loss_func = losses.TripletMarginLoss(margin=args.margin)
     miner = miners.MultiSimilarityMiner()
     model.to(args.device)
     loss_func.to(args.device)
