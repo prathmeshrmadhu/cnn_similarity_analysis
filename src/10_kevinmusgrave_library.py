@@ -41,6 +41,7 @@ def train(args, augmentations_list):
     miner.to(args.device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     for epoch in range(args.num_epochs):
+        loss_history = list()
         for i, (data, labels) in enumerate(dataloader):
             optimizer.zero_grad()
             data = data.to(args.device)
@@ -50,6 +51,9 @@ def train(args, augmentations_list):
             loss = loss_func(embeddings, labels, hard_pairs)
             loss.backward()
             optimizer.step()
+            loss_history.append(loss)
+        mean_loss = torch.mean(torch.Tensor(loss_history))
+        print("Epoch:{},  Current training loss {}\n".format(epoch, mean_loss))
         best_model_name = 'Triplet_kevin.pth'
         model_full_path = args.net + best_model_name
         torch.save(model.state_dict(), model_full_path)
