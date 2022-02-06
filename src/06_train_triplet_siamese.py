@@ -136,7 +136,7 @@ def train(args, augmentations_list):
     elif args.loss == "simclr":
         net = TripletSiameseNetwork(args.model, args.method)
         # Defining the criteria for training
-        criterion = ContrastiveLossSimClr()
+        criterion = ContrastiveLossSimClr(args.batch_size)
         criterion.to(args.device)
     elif args.loss == "custom":
         net = TripletSiameseNetwork_custom(args.model)

@@ -41,7 +41,7 @@ class CustomLoss(torch.nn.Module):
 
 class CustomLoss_vgg(torch.nn.Module):
     def __int__(self):
-        super(CustomLoss, self).__init__()
+        super(CustomLoss_vgg, self).__init__()
 
     def forward(self, q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, n5, margin, lam, cos=True):
         if cos:
