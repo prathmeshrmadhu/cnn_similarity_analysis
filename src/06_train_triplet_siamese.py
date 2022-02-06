@@ -282,7 +282,9 @@ def train(args, augmentations_list):
                 loss = criterion(p_score, n_score, args.margin)
             elif args.loss == 'simclr':
                 q_emb = net.forward_once(query_img)
+                print(q_emb.size())
                 p_emb = net.forward_once(rp_img)
+                print(p_emb.size())
                 loss = criterion(q_emb, p_emb)
             elif args.loss == 'custom':
                 if args.model == 'resnet50':
