@@ -10,7 +10,7 @@ from lib.io import read_config, generate_train_list, generate_val_list
 import sys
 sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 
-from src.lib.loss import TripletLoss, CustomLoss, CustomLoss_vgg
+from src.lib.loss import TripletLoss, CustomLoss, CustomLoss_vgg, ContrastiveLossSimClr
 from src.lib.siamese.args import siamese_args
 from src.lib.siamese.dataset import generate_train_dataset, get_transforms, add_file_list
 from src.lib.augmentations import *
@@ -133,6 +133,11 @@ def train(args, augmentations_list):
         # Defining the criteria for training
         criterion = TripletLoss()
         criterion.to(args.device)
+    elif args.loss == "simclr":
+        net = TripletSiameseNetwork(args.model, args.method)
+        # Defining the criteria for training
+        criterion = ContrastiveLossSimClr()
+        criterion.to(args.device)
     elif args.loss == "custom":
         net = TripletSiameseNetwork_custom(args.model)
         # Defining the criteria for training
@@ -148,7 +153,7 @@ def train(args, augmentations_list):
     net.to(args.device)
 
     if args.optimizer == "adam":
-        if args.loss == "normal":
+        if args.loss == "normal" or args.loss == "simclr":
             optimizer = torch.optim.Adam(net.parameters(), lr=args.lr, weight_decay=args.weight_decay)
         elif args.loss == "custom":
             if args.model == 'resnet50':
@@ -169,7 +174,7 @@ def train(args, augmentations_list):
                                               weight_decay=args.weight_decay)
 
     elif args.optimizer == "sgd":
-        if args.loss == "normal":
+        if args.loss == "normal" or args.loss == "simclr":
             optimizer = torch.optim.SGD(net.parameters(), lr=args.lr, momentum=args.momentum,
                                         weight_decay=args.weight_decay)
         elif args.loss == "custom":
@@ -275,6 +280,10 @@ def train(args, augmentations_list):
                 p_score, n_score = net(query_img, rp_img, rn_img)
                 optimizer.zero_grad()
                 loss = criterion(p_score, n_score, args.margin)
+            elif args.loss == 'simclr':
+                q_emb = net.forward_once(query_img)
+                p_emb = net.forward_once(rp_img)
+                loss = criterion(q_emb, p_emb)
             elif args.loss == 'custom':
                 if args.model == 'resnet50':
                     q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4 = net(query_img, rp_img, rn_img)
