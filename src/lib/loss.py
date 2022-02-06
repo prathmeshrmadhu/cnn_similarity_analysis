@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 import torch.nn.functional as F
 
 
@@ -57,23 +58,45 @@ class CustomLoss_vgg(torch.nn.Module):
         return loss
 
 
-class ContrastiveLossSimClr(torch.nn.Module):
-    def __int__(self, batch_size, temperature=0.5):
-        super().__init__()
+class SimCLR_Loss(torch.nn.Module):
+    def __init__(self, batch_size, temperature=0.5):
+        super(SimCLR_Loss, self).__init__()
         self.batch_size = batch_size
-        self.register_buffer("temperature", torch.tensor(temperature))
-        self.register_buffer("negatives_mask", (~torch.eye(batch_size * 2, batch_size * 2, dtype=bool)).float())
+        self.temperature = temperature
 
-    def forward(self, emb_i, emb_j):
-        z_i = F.normalize(emb_i, dim=1)
-        z_j = F.normalize(emb_j, dim=1)
-        representations = torch.cat([z_i, z_j], dim=0)
-        similarity_matrix = F.cosine_similarity(representations.unsqueeze(1), representations.unsqueeze_(0), dim=2)
-        sim_ij = torch.diag(similarity_matrix, self.batch_size)
-        sim_ji = torch.diag(similarity_matrix, -self.batch_size)
-        positives = torch.cat([sim_ij, sim_ji], dim=0)
-        nominator = torch.exp(positives / self.temperature)
-        denominator = self.negatives_mask * torch.exp(similarity_matrix / self.temperature)
-        loss_partial = -torch.log(nominator / torch.sum(denominator, dim=1))
-        loss = torch.sum(loss_partial) / (2 * self.batch_size)
+        self.mask = self.mask_correlated_samples(batch_size)
+        self.criterion = torch.nn.CrossEntropyLoss(reduction="sum")
+        self.similarity_f = torch.nn.CosineSimilarity(dim=2)
+
+    def mask_correlated_samples(self, batch_size):
+        N = 2 * batch_size
+        mask = torch.ones((N, N), dtype=bool)
+        mask = mask.fill_diagonal_(0)
+
+        for i in range(batch_size):
+            mask[i, batch_size + i] = 0
+            mask[batch_size + i, i] = 0
+        return mask
+
+    def forward(self, z_i, z_j):
+        N = 2 * self.batch_size
+
+        z = torch.cat((z_i, z_j), dim=0)
+
+        sim = self.similarity_f(z.unsqueeze(1), z.unsqueeze(0)) / self.temperature
+
+        sim_i_j = torch.diag(sim, self.batch_size)
+        sim_j_i = torch.diag(sim, -self.batch_size)
+
+        # We have 2N samples, but with Distributed training every GPU gets N examples too, resulting in: 2xNxN
+        positive_samples = torch.cat((sim_i_j, sim_j_i), dim=0).reshape(N, 1)
+        negative_samples = sim[self.mask].reshape(N, -1)
+
+        # SIMCLR
+        labels = torch.from_numpy(np.array([0] * N)).reshape(-1).to(positive_samples.device).long()  # .float()
+
+        logits = torch.cat((positive_samples, negative_samples), dim=1)
+        loss = self.criterion(logits, labels)
+        loss /= N
+
         return loss
