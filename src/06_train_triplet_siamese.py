@@ -10,7 +10,7 @@ from lib.io import read_config, generate_train_list, generate_val_list
 import sys
 sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 
-from src.lib.loss import TripletLoss, CustomLoss, CustomLoss_vgg, ContrastiveLossSimClr
+from src.lib.loss import TripletLoss, CustomLoss, CustomLoss_vgg, SimCLR_Loss
 from src.lib.siamese.args import siamese_args
 from src.lib.siamese.dataset import generate_train_dataset, get_transforms, add_file_list
 from src.lib.augmentations import *
@@ -136,7 +136,7 @@ def train(args, augmentations_list):
     elif args.loss == "simclr":
         net = TripletSiameseNetwork(args.model, args.method)
         # Defining the criteria for training
-        criterion = ContrastiveLossSimClr(args.batch_size)
+        criterion = SimCLR_Loss(args.batch_size)
         criterion.to(args.device)
     elif args.loss == "custom":
         net = TripletSiameseNetwork_custom(args.model)
