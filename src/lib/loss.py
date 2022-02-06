@@ -80,6 +80,7 @@ class SimCLR_Loss(torch.nn.Module):
 
     def forward(self, z_i, z_j):
         self.batch_size = z_i.size(dim=0)
+        self.mask = self.mask_correlated_samples(self.batch_size)
         N = 2 * self.batch_size
 
         z = torch.cat((z_i, z_j), dim=0)
