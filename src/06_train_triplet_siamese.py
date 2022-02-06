@@ -320,6 +320,13 @@ def train(args, augmentations_list):
                     val_loss.append(criterion(p_score, n_score, args.margin))
                     p_score_list.append(torch.mean(p_score))
                     n_score_list.append(torch.mean(n_score))
+                elif args.loss == 'simclr':
+                    p_score, n_score = net(query_img, rp_img, rn_img)
+                    q_emb = net.forward_once(query_img)
+                    p_emb = net.forward_once(rp_img)
+                    val_loss.append(criterion(q_emb, p_emb))
+                    p_score_list.append(torch.mean(p_score))
+                    n_score_list.append(torch.mean(n_score))
                 elif args.loss == 'custom':
                     if args.model == 'resnet50':
                         q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4 = net(query_img, rp_img, rn_img)
