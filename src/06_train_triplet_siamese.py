@@ -28,7 +28,7 @@ def generate_features(args, net, data_loader):
                     images = images.to(args.device)
                     feats1, feats2, feats3, feats4 = net.forward_once(images)
                     features_list.append(feats3.cpu().numpy())
-            elif args.model == 'vgg':
+            elif args.model == 'vgg' or args.model == 'vgg_fc7':
                 for no, data in enumerate(data_loader):
                     images = data
                     images = images.to(args.device)
@@ -163,7 +163,7 @@ def train(args, augmentations_list):
                                              {'params': net.head.layer3.parameters(), 'lr': args.lr * 0.75},
                                              {'params': net.head.layer4.parameters(), 'lr': args.lr}], lr=args.lr,
                                              weight_decay=args.weight_decay)
-            elif args.model == 'vgg':
+            elif args.model == 'vgg' or args.model == 'vgg_fc7':
                 optimizer = torch.optim.Adam([{'params': net.head.features[:3].parameters(), 'lr': args.lr * 0.25},
                                               {'params': net.head.features[4:9].parameters(), 'lr': args.lr * 0.5},
                                               {'params': net.head.features[9:16].parameters(), 'lr': args.lr * 0.5},
@@ -186,7 +186,7 @@ def train(args, augmentations_list):
                                              {'params': net.head.layer4.parameters(), 'lr': args.lr}], lr=args.lr,
                                              momentum=args.momentum,
                                              weight_decay=args.weight_decay)
-            elif args.model == 'vgg':
+            elif args.model == 'vgg' or args.model == 'vgg_fc7':
                 optimizer = torch.optim.SGD([{'params': net.head.features[:3].parameters(), 'lr': args.lr},
                                              {'params': net.head.features[4:9].parameters(), 'lr': args.lr},
                                              {'params': net.head.features[9:16].parameters(), 'lr': args.lr},
@@ -290,7 +290,7 @@ def train(args, augmentations_list):
                     q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4 = net(query_img, rp_img, rn_img)
                     optimizer.zero_grad()
                     loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, args.regular, cos=True)
-                elif args.model == 'vgg':
+                elif args.model == 'vgg' or args.model == 'vgg_fc7':
                     q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, n1, n2, n3, n4, n5 = net(query_img, rp_img, rn_img)
                     optimizer.zero_grad()
                     loss = criterion(q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, n5, args.margin, args.regular,
@@ -334,7 +334,7 @@ def train(args, augmentations_list):
                         loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, args.regular, cos=True)
                         p_score = F.cosine_similarity(q3, p3)
                         n_score = F.cosine_similarity(q3, n3)
-                    elif args.model == 'vgg':
+                    elif args.model == 'vgg' or args.model == 'vgg_fc7':
                         q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, n1, n2, n3, n4, n5 = net(query_img, rp_img, rn_img)
                         loss = criterion(q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, n5, args.margin, args.regular,
                                          cos=True)
