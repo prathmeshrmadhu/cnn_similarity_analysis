@@ -143,7 +143,7 @@ def train(args, augmentations_list):
         # Defining the criteria for training
         if args.model == 'resnet50':
             criterion = CustomLoss()
-        elif args.model == 'vgg':
+        elif args.model == 'vgg' or args.model == 'vgg_fc7':
             criterion = CustomLoss_vgg()
         criterion.to(args.device)
     if not args.start:
