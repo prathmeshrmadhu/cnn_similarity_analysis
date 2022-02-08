@@ -364,12 +364,16 @@ class TripletSiameseNetwork_custom(nn.Module):
 
             x1 = F.adaptive_max_pool2d(x1, (1, 1))
             x1 = self.flatten(x1)
+            x1 = F.normalize(x1)
             x2 = F.adaptive_max_pool2d(x2, (1, 1))
             x2 = self.flatten(x2)
+            x2 = F.normalize(x2)
             x3 = F.adaptive_max_pool2d(x3, (1, 1))
             x3 = self.flatten(x3)
+            x3 = F.normalize(x3)
             x4 = F.adaptive_max_pool2d(x4, (1, 1))
             x4 = self.flatten(x4)
+            x4 = F.normalize(x4)
             return x1, x2, x3, x4, x5
 
     def forward(self, input1, input2, input3):
@@ -380,7 +384,7 @@ class TripletSiameseNetwork_custom(nn.Module):
 
             return x1_1, x1_2, x1_3, x1_4, x2_1, x2_2, x2_3, x2_4, x3_1, x3_2, x3_3, x3_4
 
-        elif self.model == 'vgg':
+        elif self.model == 'vgg' or self.model == 'vgg_fc7':
             x1_1, x1_2, x1_3, x1_4, x1_5 = self.forward_once(input1)
             x2_1, x2_2, x2_3, x2_4, x2_5 = self.forward_once(input2)
             x3_1, x3_2, x3_3, x3_4, x3_5 = self.forward_once(input3)
