@@ -32,7 +32,7 @@ def generate_features(args, net, image_names, data_loader, save_path):
                     images = images.to(args.device)
                     feats1, feats2, feats3, feats4 = net.forward_once(images)
                     features_list.append(feats3.cpu().numpy())
-            elif args.model == 'vgg':
+            elif args.model == 'vgg' or args.model == 'vgg_fc7':
                 t0 = time.time()
                 for no, data in enumerate(data_loader):
                     images = data
