@@ -355,7 +355,7 @@ def train(args, augmentations_list):
             if args.loss == "simclr":
                 best_model_name = 'SimCLR.pth'
             else:
-                best_model_name = 'Triplet_best.pth'
+                best_model_name = 'Triplet_l2.pth'
             model_full_path = args.net + best_model_name
             torch.save(net.state_dict(), model_full_path)
             print('best model updated\n')
