@@ -150,7 +150,7 @@ def train(args, augmentations_list):
         print('load trained model:{}'.format(args.checkpoint))
         state_dict = torch.load(args.net + args.checkpoint)
         net.load_state_dict(state_dict)
-    net.to(args.device)
+    net = net.cuda()
 
     if args.optimizer == "adam":
         if args.loss == "normal" or args.loss == "simclr":
