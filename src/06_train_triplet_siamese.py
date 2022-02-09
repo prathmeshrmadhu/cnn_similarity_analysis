@@ -32,8 +32,8 @@ def generate_features(args, net, data_loader):
                 for no, data in enumerate(data_loader):
                     images = data
                     images = images.to(args.device)
-                    _, _, _, _, feats5 = net.forward_once(images)
-                    features_list.append(feats5.cpu().numpy())
+                    _, _, _, _, _, feats6 = net.forward_once(images)
+                    features_list.append(feats6.cpu().numpy())
         features = torch.Tensor(np.vstack(features_list))
 
     else:
@@ -164,12 +164,12 @@ def train(args, augmentations_list):
                                              {'params': net.head.layer4.parameters(), 'lr': args.lr}], lr=args.lr,
                                              weight_decay=args.weight_decay)
             elif args.model == 'vgg' or args.model == 'vgg_fc7':
-                optimizer = torch.optim.Adam([{'params': net.head.features[:3].parameters(), 'lr': args.lr * 0.25},
-                                              {'params': net.head.features[4:9].parameters(), 'lr': args.lr * 0.5},
-                                              {'params': net.head.features[9:16].parameters(), 'lr': args.lr * 0.5},
-                                              {'params': net.head.features[16:23].parameters(), 'lr': args.lr * 0.75},
-                                              {'params': net.head.features[23:].parameters(), 'lr': args.lr},
-                                              {'params': net.head.avgpool.parameters(), 'lr': args.lr},
+                optimizer = torch.optim.Adam([{'params': net.head.features[:3].parameters(), 'lr': args.lr*0.2},
+                                              {'params': net.head.features[4:9].parameters(), 'lr': args.lr*0.3},
+                                              {'params': net.head.features[9:16].parameters(), 'lr': args.lr*0.4},
+                                              {'params': net.head.features[16:23].parameters(), 'lr': args.lr*0.5},
+                                              {'params': net.head.features[23:].parameters(), 'lr': args.lr*0.6},
+                                              {'params': net.head.avgpool.parameters(), 'lr': args.lr*0.7},
                                               {'params': net.head.classifier.parameters(), 'lr': args.lr}], lr=args.lr,
                                               weight_decay=args.weight_decay)
 
@@ -187,12 +187,12 @@ def train(args, augmentations_list):
                                              momentum=args.momentum,
                                              weight_decay=args.weight_decay)
             elif args.model == 'vgg' or args.model == 'vgg_fc7':
-                optimizer = torch.optim.SGD([{'params': net.head.features[:3].parameters(), 'lr': args.lr},
-                                             {'params': net.head.features[4:9].parameters(), 'lr': args.lr},
-                                             {'params': net.head.features[9:16].parameters(), 'lr': args.lr},
-                                             {'params': net.head.features[16:23].parameters(), 'lr': args.lr},
-                                             {'params': net.head.features[23:].parameters(), 'lr': args.lr},
-                                             {'params': net.head.avgpool.parameters(), 'lr': args.lr},
+                optimizer = torch.optim.SGD([{'params': net.head.features[:3].parameters(), 'lr': args.lr * 0.2},
+                                             {'params': net.head.features[4:9].parameters(), 'lr': args.lr * 0.3},
+                                             {'params': net.head.features[9:16].parameters(), 'lr': args.lr * 0.4},
+                                             {'params': net.head.features[16:23].parameters(), 'lr': args.lr * 0.5},
+                                             {'params': net.head.features[23:].parameters(), 'lr': args.lr * 0.6},
+                                             {'params': net.head.avgpool.parameters(), 'lr': args.lr * 0.7},
                                              {'params': net.head.classifier.parameters(), 'lr': args.lr}], lr=args.lr,
                                              momentum=args.momentum,
                                              weight_decay=args.weight_decay)
@@ -291,9 +291,9 @@ def train(args, augmentations_list):
                     optimizer.zero_grad()
                     loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, args.regular, cos=True)
                 elif args.model == 'vgg' or args.model == 'vgg_fc7':
-                    q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, n1, n2, n3, n4, n5 = net(query_img, rp_img, rn_img)
+                    q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n1, n2, n3, n4, n5, n6 = net(query_img, rp_img, rn_img)
                     optimizer.zero_grad()
-                    loss = criterion(q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, n5, args.margin, args.regular,
+                    loss = criterion(q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n6, args.margin, args.regular,
                                      cos=True)
             loss.backward()
             optimizer.step()
@@ -335,11 +335,11 @@ def train(args, augmentations_list):
                         p_score = F.cosine_similarity(q3, p3)
                         n_score = F.cosine_similarity(q3, n3)
                     elif args.model == 'vgg' or args.model == 'vgg_fc7':
-                        q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, n1, n2, n3, n4, n5 = net(query_img, rp_img, rn_img)
-                        loss = criterion(q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, n5, args.margin, args.regular,
+                        q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n1, n2, n3, n4, n5, n6 = net(query_img, rp_img, rn_img)
+                        loss = criterion(q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n6, args.margin, args.regular,
                                          cos=True)
-                        p_score = F.cosine_similarity(q5, p5)
-                        n_score = F.cosine_similarity(q5, n5)
+                        p_score = F.cosine_similarity(q6, p6)
+                        n_score = F.cosine_similarity(q6, n6)
                     val_loss.append(loss)
                     p_score_list.append(torch.mean(p_score))
                     n_score_list.append(torch.mean(n_score))
