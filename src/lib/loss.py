@@ -111,5 +111,7 @@ class SimCLR_Loss(torch.nn.Module):
         div = pos / (neg_sum + 1e-05)
         losses = -torch.log(div)
         loss2 = torch.mean(losses)
-
+        if loss2 == 'nan':
+            print(pos)
+            print(neg_sum)
         return loss2
