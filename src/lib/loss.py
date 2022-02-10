@@ -108,7 +108,7 @@ class SimCLR_Loss(torch.nn.Module):
         pos = torch.exp(positive_samples)
         neg = torch.exp(negative_samples)
         neg_sum = torch.sum(neg, dim=1).reshape(N, 1)
-        div = pos / neg_sum
+        div = pos / (neg_sum + 1e-05)
         losses = -torch.log(div)
         loss2 = torch.mean(losses)
 
