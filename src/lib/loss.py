@@ -102,7 +102,7 @@ class SimCLR_Loss(torch.nn.Module):
 
         # SIMCLR
         labels = torch.from_numpy(np.array([0] * N)).reshape(-1).to(positive_samples.device).long()  # .float()
-
+        labels[0] = 1
         logits = torch.cat((positive_samples, negative_samples), dim=1)
         loss = self.criterion(logits, labels)
         loss /= N
