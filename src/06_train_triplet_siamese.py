@@ -284,6 +284,8 @@ def train(args, augmentations_list):
                 q_emb = net.forward_once(query_img)
                 p_emb = net.forward_once(rp_img)
                 loss = criterion(q_emb, p_emb)
+                print(q_emb.size())
+                print(p_emb.size())
                 print(loss)
             elif args.loss == 'custom':
                 if args.model == 'resnet50':
