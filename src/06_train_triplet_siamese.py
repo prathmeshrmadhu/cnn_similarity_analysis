@@ -164,12 +164,12 @@ def train(args, augmentations_list):
                                              {'params': net.head.layer4.parameters(), 'lr': args.lr}], lr=args.lr,
                                              weight_decay=args.weight_decay)
             elif args.model == 'vgg' or args.model == 'vgg_fc7':
-                optimizer = torch.optim.Adam([{'params': net.head.features[:3].parameters(), 'lr': args.lr*0.2},
-                                              {'params': net.head.features[4:9].parameters(), 'lr': args.lr*0.3},
-                                              {'params': net.head.features[9:16].parameters(), 'lr': args.lr*0.4},
-                                              {'params': net.head.features[16:23].parameters(), 'lr': args.lr*0.5},
-                                              {'params': net.head.features[23:].parameters(), 'lr': args.lr*0.6},
-                                              {'params': net.head.avgpool.parameters(), 'lr': args.lr*0.7},
+                optimizer = torch.optim.Adam([{'params': net.head.features[:3].parameters(), 'lr': args.lr},
+                                              {'params': net.head.features[4:9].parameters(), 'lr': args.lr},
+                                              {'params': net.head.features[9:16].parameters(), 'lr': args.lr},
+                                              {'params': net.head.features[16:23].parameters(), 'lr': args.lr},
+                                              {'params': net.head.features[23:].parameters(), 'lr': args.lr},
+                                              {'params': net.head.avgpool.parameters(), 'lr': args.lr},
                                               {'params': net.head.classifier.parameters(), 'lr': args.lr}], lr=args.lr,
                                               weight_decay=args.weight_decay)
 
@@ -187,12 +187,12 @@ def train(args, augmentations_list):
                                              momentum=args.momentum,
                                              weight_decay=args.weight_decay)
             elif args.model == 'vgg' or args.model == 'vgg_fc7':
-                optimizer = torch.optim.SGD([{'params': net.head.features[:3].parameters(), 'lr': args.lr * 0.2},
-                                             {'params': net.head.features[4:9].parameters(), 'lr': args.lr * 0.3},
-                                             {'params': net.head.features[9:16].parameters(), 'lr': args.lr * 0.4},
-                                             {'params': net.head.features[16:23].parameters(), 'lr': args.lr * 0.5},
-                                             {'params': net.head.features[23:].parameters(), 'lr': args.lr * 0.6},
-                                             {'params': net.head.avgpool.parameters(), 'lr': args.lr * 0.7},
+                optimizer = torch.optim.SGD([{'params': net.head.features[:3].parameters(), 'lr': args.lr},
+                                             {'params': net.head.features[4:9].parameters(), 'lr': args.lr},
+                                             {'params': net.head.features[9:16].parameters(), 'lr': args.lr},
+                                             {'params': net.head.features[16:23].parameters(), 'lr': args.lr},
+                                             {'params': net.head.features[23:].parameters(), 'lr': args.lr},
+                                             {'params': net.head.avgpool.parameters(), 'lr': args.lr},
                                              {'params': net.head.classifier.parameters(), 'lr': args.lr}], lr=args.lr,
                                              momentum=args.momentum,
                                              weight_decay=args.weight_decay)
