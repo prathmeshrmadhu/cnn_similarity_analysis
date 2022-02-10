@@ -53,13 +53,13 @@ class CustomLoss_vgg(torch.nn.Module):
             score_negative = F.pairwise_distance(q6, n6, p=2.0)
         triplet_loss = torch.mean(
             torch.clamp(torch.pow(score_positive, 2) - torch.pow(score_negative, 2) + margin, min=0.0))
-        d1 = torch.mean(F.pairwise_distance(q1, p1, p=2.0))
-        d2 = torch.mean(F.pairwise_distance(q2, p2, p=2.0))
-        d3 = torch.mean(F.pairwise_distance(q3, p3, p=2.0))
-        d4 = torch.mean(F.pairwise_distance(q4, p4, p=2.0))
-        d5 = torch.mean(F.pairwise_distance(q5, p5, p=2.0))
-        regular = lam * (d1 + d2 + d3 + d4 + d5)
-        # regular = lam * (F.l1_loss(q1, p1) + F.l1_loss(p2, q2) + F.l1_loss(q3, p3) + F.l1_loss(q4, p4) + F.l1_loss(q5, p5))
+        # d1 = torch.mean(F.pairwise_distance(q1, p1, p=2.0))
+        # d2 = torch.mean(F.pairwise_distance(q2, p2, p=2.0))
+        # d3 = torch.mean(F.pairwise_distance(q3, p3, p=2.0))
+        # d4 = torch.mean(F.pairwise_distance(q4, p4, p=2.0))
+        # d5 = torch.mean(F.pairwise_distance(q5, p5, p=2.0))
+        # regular = lam * (d1 + d2 + d3 + d4 + d5)
+        regular = lam * (F.l1_loss(q1, p1) + F.l1_loss(p2, q2) + F.l1_loss(q3, p3) + F.l1_loss(q4, p4))
         loss = triplet_loss + regular
         return loss
 
