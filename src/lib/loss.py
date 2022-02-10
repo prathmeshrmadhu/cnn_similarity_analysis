@@ -101,9 +101,15 @@ class SimCLR_Loss(torch.nn.Module):
         negative_samples = sim[self.mask].reshape(N, -1)
 
         # SIMCLR
-        labels = torch.from_numpy(np.array([0] * N)).reshape(-1).to(positive_samples.device).long()  # .float()
-        logits = torch.cat((positive_samples, negative_samples), dim=1)
-        loss = self.criterion(logits, labels)
-        loss /= N
+        # labels = torch.from_numpy(np.array([0] * N)).reshape(-1).to(positive_samples.device).long()  # .float()
+        # logits = torch.cat((positive_samples, negative_samples), dim=1)
+        # loss = self.criterion(logits, labels)
+        # loss /= N
+        pos = torch.exp(positive_samples)
+        neg = torch.exp(negative_samples)
+        neg_sum = torch.sum(neg, dim=1).reshape(N, 1)
+        div = pos / neg_sum
+        losses = -torch.log(div)
+        loss2 = torch.mean(losses)
 
-        return loss
+        return loss2
