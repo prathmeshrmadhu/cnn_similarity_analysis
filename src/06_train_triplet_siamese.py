@@ -1,6 +1,7 @@
 import os
 import glob
 import json
+import optuna
 import pandas as pd
 import torch
 import torch.nn.functional as F
@@ -49,7 +50,7 @@ def generate_features(args, net, data_loader):
     return features
 
 
-def train(args, augmentations_list):
+def train(args, augmentations_list, lam):
     if args.device == "gpu":
         print("hardware_image_description:", torch.cuda.get_device_name(0))
         # defining the transforms
@@ -83,7 +84,7 @@ def train(args, augmentations_list):
     if args.train_dataset == "artdl":
 
         if args.mining_mode == "offline":
-            print("Used dataset: Image Collation")
+            print("Used dataset: artdl")
             val_list = args.data_path + args.val_list
             val = pd.read_csv(val_list)
             query_val = list(val['anchor_query'])
@@ -100,7 +101,7 @@ def train(args, augmentations_list):
                 train_list.append((query_train[i], p_train[i], n_train[i]))
 
         elif args.mining_mode == "online":
-            print("Used dataset: Image Collation")
+            print("Used dataset: artdl")
             val = generate_val_list(args)
             query_val = list(val['anchor_query'])
             p_val = list(val['ref_positive'])
@@ -288,11 +289,11 @@ def train(args, augmentations_list):
                 if args.model == 'resnet50':
                     q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4 = net(query_img, rp_img, rn_img)
                     optimizer.zero_grad()
-                    loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, args.regular, cos=True)
+                    loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, lam, cos=True)
                 elif args.model == 'vgg' or args.model == 'vgg_fc7':
                     q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n1, n2, n3, n4, n5, n6 = net(query_img, rp_img, rn_img)
                     optimizer.zero_grad()
-                    loss = criterion(q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n6, args.margin, args.regular,
+                    loss = criterion(q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n6, args.margin, lam,
                                      cos=True)
             loss.backward()
             optimizer.step()
@@ -330,12 +331,12 @@ def train(args, augmentations_list):
                 elif args.loss == 'custom':
                     if args.model == 'resnet50':
                         q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4 = net(query_img, rp_img, rn_img)
-                        loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, args.regular, cos=True)
+                        loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, lam, cos=True)
                         p_score = F.cosine_similarity(q3, p3)
                         n_score = F.cosine_similarity(q3, n3)
                     elif args.model == 'vgg' or args.model == 'vgg_fc7':
                         q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n1, n2, n3, n4, n5, n6 = net(query_img, rp_img, rn_img)
-                        loss = criterion(q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n6, args.margin, args.regular,
+                        loss = criterion(q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n6, args.margin, lam,
                                          cos=True)
                         p_score = F.cosine_similarity(q6, p6)
                         n_score = F.cosine_similarity(q6, n6)
@@ -367,15 +368,16 @@ def train(args, augmentations_list):
     epochs = np.asarray(range(args.num_epochs))
 
     # Loss plot
-    plt.title('Loss Visualization')
-    plt.plot(epochs, train_losses, color='blue', label='training loss')
-    plt.plot(epochs, epoch_losses, color='red', label='validation loss')
-    plt.legend()
-    plt.xlabel('Epochs')
-    plt.ylabel('Loss')
-    plt.savefig(args.plots + 'loss.png')
-    plt.show()
+    # plt.title('Loss Visualization')
+    # plt.plot(epochs, train_losses, color='blue', label='training loss')
+    # plt.plot(epochs, epoch_losses, color='red', label='validation loss')
+    # plt.legend()
+    # plt.xlabel('Epochs')
+    # plt.ylabel('Loss')
+    # plt.savefig(args.plots + 'loss.png')
+    # plt.show()
 
+    return best_val_loss
 
 if __name__ == "__main__":
 
@@ -388,4 +390,11 @@ if __name__ == "__main__":
         AuglyRotate(0.25),
     ]
 
-    train(siamese_args, augmentations_list)
+    def objective(trial):
+        lam = trial.suggest_float('x', 0.00001, 1, step=0.05)
+        f = train(siamese_args, augmentations_list, lam)
+        return f
+
+    study = optuna.create_study(direction='minimize')
+    study.optimize(objective, n_trials=10)
+    print(study.best_params)
