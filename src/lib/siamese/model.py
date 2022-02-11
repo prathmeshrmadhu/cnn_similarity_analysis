@@ -180,7 +180,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         print('used model: vit_large_patch16_384')
         print('--------------------------------------------------------------')
         model = timm.create_model('vit_large_patch16_384', pretrained=True)
-        model.eval()
+        # model.eval()
         return model
 
     elif name == "resnet50_conv4":
