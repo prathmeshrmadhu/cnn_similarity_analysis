@@ -227,7 +227,7 @@ def train(args, augmentations_list):
         # Validating over batches
         net.eval()
         val_features = generate_features(args, net, val_dataloader)
-        val_features = val_features.numpy()
+        val_features = val_features.cuda()
         map_10 = ranked_mean_precision(gt_array, val_features, 10)
 
         print("Epoch:{},  Current map {}\n".format(epoch, map_10))
