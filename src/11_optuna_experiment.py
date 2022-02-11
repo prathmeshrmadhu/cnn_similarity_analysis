@@ -73,7 +73,7 @@ def train(args, augmentations_list):
             val_labels = list(val_file['label_encoded'])
             gt_array = np.array(val_labels)
 
-    val_pairs = ImageList(val_list, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
+    val_pairs = ImageList(val_list, transform=transforms, imsize=args.imsize)
     val_dataloader = DataLoader(dataset=val_pairs, shuffle=True, num_workers=args.num_workers,
                                 batch_size=args.batch_size)
 
