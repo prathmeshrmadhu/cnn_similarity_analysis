@@ -6,7 +6,7 @@ import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
-
+import optuna
 import sys
 sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 
@@ -18,6 +18,7 @@ from src.lib.augmentations import *
 from src.data.siamese_dataloader import TripletTrainList, TripletValList, ImageList
 from src.lib.siamese.model import TripletSiameseNetwork, TripletSiameseNetwork_custom
 from src.lib.metrics import *
+
 
 def generate_features(args, net, data_loader):
     features_list = list()
@@ -38,7 +39,7 @@ def generate_features(args, net, data_loader):
     return features
 
 
-def train(args, augmentations_list):
+def train(args, augmentations_list, lam):
     if args.device == "gpu":
         print("hardware_image_description:", torch.cuda.get_device_name(0))
         # defining the transforms
@@ -208,11 +209,11 @@ def train(args, augmentations_list):
             if args.model == 'resnet50':
                 q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4 = net(query_img, rp_img, rn_img)
                 optimizer.zero_grad()
-                loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, args.regular, cos=True)
+                loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, lam, cos=True)
             elif args.model == 'vgg' or args.model == 'vgg_fc7':
                 q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n1, n2, n3, n4, n5, n6 = net(query_img, rp_img, rn_img)
                 optimizer.zero_grad()
-                loss = criterion(q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n6, args.margin, args.regular,
+                loss = criterion(q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n6, args.margin, lam,
                                  cos=True)
             loss.backward()
             optimizer.step()
@@ -256,5 +257,12 @@ if __name__ == "__main__":
         AuglyRotate(0.25),
     ]
 
-    best_map = train(siamese_args, augmentations_list)
-    print('best map is:{}'.format(best_map))
+    def objective(trial):
+        lam = trial.suggest_float('lambda', 1e-5, 1.0)
+        best_map = train(siamese_args, augmentations_list, lam)
+        return best_map
+
+    study = optuna.create_study(direction='maximize')
+    study.optimize(objective, n_trials=20)
+    print(study.best_params)
+    # print('best map is:{}'.format(best_map))
