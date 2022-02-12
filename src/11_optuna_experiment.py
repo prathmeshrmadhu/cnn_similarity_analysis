@@ -257,4 +257,4 @@ if __name__ == "__main__":
     ]
 
     best_map = train(siamese_args, augmentations_list)
-    print('best map is:'.format(best_map))
+    print('best map is:{}'.format(best_map))
