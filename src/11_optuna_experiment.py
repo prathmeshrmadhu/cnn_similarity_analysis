@@ -49,11 +49,13 @@ def train(args, augmentations_list, lam):
 
         if args.mining_mode == "offline":
             print("Used dataset: artdl")
-            val_list = args.data_path + args.val_list
-            val = pd.read_csv(val_list)
-            query_val = list(val['anchor_query'])
-            p_val = list(val['ref_positive'])
-            n_val = list(val['ref_negative'])
+            val_file_path = args.data_path + args.val_list
+            val_file = pd.read_csv(val_file_path)
+            val_list = []
+            for ite in list(val_file['item']):
+                val_list.append(args.database_path + ite + '.jpg')
+            val_labels = list(val_file['label_encoded'])
+            gt_array = np.array(val_labels)
 
             train_list = args.data_path + args.train_list
             train = pd.read_csv(train_list)
