@@ -65,6 +65,7 @@ def train(args, augmentations_list, lam):
             train_list = []
             for i in range(len(query_train)):
                 train_list.append((query_train[i], p_train[i], n_train[i]))
+            num_triplets = len(train_list)
 
         elif args.mining_mode == "online":
             print("Used dataset: artdl")
