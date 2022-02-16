@@ -59,9 +59,9 @@ def train(args, augmentations_list, lam):
 
             train_list = args.data_path + args.train_list
             train = pd.read_csv(train_list)
-            query_train = list(train['anchor_query'])
-            p_train = list(train['ref_positive'])
-            n_train = list(train['ref_negative'])
+            query_train_o = list(train['anchor_query'])
+            p_train_o = list(train['ref_positive'])
+            n_train_o = list(train['ref_negative'])
             # train_list = []
             # for i in range(len(query_train)):
             #     train_list.append((query_train[i], p_train[i], n_train[i]))
@@ -201,9 +201,9 @@ def train(args, augmentations_list, lam):
 
         elif args.mining_mode == "offline":
             train_origin = train
-            query_train_o = query_train
-            p_train_o = p_train
-            n_train_o = n_train
+            # query_train_o = query_train
+            # p_train_o = p_train
+            # n_train_o = n_train
 
             '''extract features of each triplets'''
             query_o = ImageList(query_train_o, transform=transforms, imsize=args.imsize)
