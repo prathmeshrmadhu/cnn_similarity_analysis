@@ -139,6 +139,19 @@ def extract_features(args):
                                      batch_size=args.batch_size)
         generate_features(args, net, sample_paths, sample_dataloader, save_path_db)
 
+    elif args.test_dataset == "the_MET":
+        save_path_test = args.exp_path + args.test_f
+        test_file = args.data_path + args.test_list
+        test_frame = pd.read_csv(test_file)
+        test_paths = test_frame['path']
+        test_list = []
+        for ite in test_paths:
+            test_list.append(args.data_path + ite)
+        test_dataset = ImageList(test_list, transform=transforms)
+        test_dataloader = DataLoader(dataset=test_dataset, shuffle=False, num_workers=args.num_workers,
+                                     batch_size=args.batch_size)
+        generate_features(args, net, test_paths, test_dataloader, save_path_test)
+
     # creating the dataset
     #query_images, database_images, _ = generate_extraction_dataset(query, ref, ref)
 
