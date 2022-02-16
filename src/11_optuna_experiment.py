@@ -58,10 +58,10 @@ def train(args, augmentations_list, lam):
             gt_array = np.array(val_labels)
 
             train_list = args.data_path + args.train_list
-            train = pd.read_csv(train_list)
-            query_train_o = list(train['anchor_query'])
-            p_train_o = list(train['ref_positive'])
-            n_train_o = list(train['ref_negative'])
+            train_origin = pd.read_csv(train_list)
+            query_train_o = list(train_origin['anchor_query'])
+            p_train_o = list(train_origin['ref_positive'])
+            n_train_o = list(train_origin['ref_negative'])
             # train_list = []
             # for i in range(len(query_train)):
             #     train_list.append((query_train[i], p_train[i], n_train[i]))
@@ -200,7 +200,7 @@ def train(args, augmentations_list, lam):
                     break
 
         elif args.mining_mode == "offline":
-            train_origin = train
+            # train_origin = train
             # query_train_o = query_train
             # p_train_o = p_train
             # n_train_o = n_train
