@@ -229,7 +229,7 @@ def train(args, augmentations_list, lam):
             '''select only semi-hard triplets'''
             true_list = (score_pos < score_neg) * (score_neg < score_pos + args.margin)
             true_list = list(true_list)
-            train_new = train_origin
+            train_new = train_origin.copy()
             train_new.insert(train_new.shape[1], 'label', true_list)
             train_selected = train_new[train_new['label']]
 
