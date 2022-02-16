@@ -52,7 +52,9 @@ class TripletTrainList(Dataset):
         Dataset.__init__(self)
         self.train_frame = train_frame
         self.image_path = image_path
-        self.image_list = image_path + list(train_frame['path'])
+        self.image_list = list(train_frame['path'])
+        for j in range(len(self.image_list)):
+            self.image_list[j] = image_path + self.image_list[i]
         self.transform = transform
         self.argumentation = argumentation
         self.imsize = imsize
@@ -79,9 +81,13 @@ class TripletTrainList(Dataset):
         else:
             sub_f_p = self.train_frame[self.train_frame['MET_id'] == label]
             sub_f_n = self.train_frame[self.train_frame['MET_id'] != label]
-            sub_list_p = self.image_path + list(sub_f_p['path'])
+            sub_list_p = list(sub_f_p['path'])
+            for j in range(len(sub_list_p)):
+                sub_list_p[j] = self.image_path + sub_list_p[j]
             sub_list_p.remove(self.image_list[i])
-            sub_list_n = self.image_path + list(sub_f_n['path'])
+            sub_list_n = list(sub_f_n['path'])
+            for j in range(len(sub_list_n)):
+                sub_list_n[j] = self.image_path + sub_list_n[j]
             query_image = Image.open(random.choice(sub_list_p))
             db_negative = Image.open(random.choice(sub_list_n))
             query_image = query_image.convert("RGB")
