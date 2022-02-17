@@ -308,7 +308,7 @@ if __name__ == "__main__":
     ]
 
     def objective(trial):
-        lam = trial.suggest_float('lambda', 1e-5, 1.0)
+        lam = trial.suggest_float('lambda', 1.0, 5.0)
         best_map = train(siamese_args, augmentations_list, lam)
         return best_map
 
