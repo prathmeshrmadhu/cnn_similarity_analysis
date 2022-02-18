@@ -308,11 +308,11 @@ if __name__ == "__main__":
     ]
 
     def objective(trial):
-        lam = trial.suggest_float('lambda', 1.0, 5.0)
+        lam = trial.suggest_float('lambda', siamese_args.lower_bound, siamese_args.upper_bound)
         best_map = train(siamese_args, augmentations_list, lam)
         return best_map
 
     study = optuna.create_study(direction='maximize')
-    study.optimize(objective, n_trials=20)
+    study.optimize(objective, n_trials=siamese_args.num_experiment)
     print(study.best_params)
     # print('best map is:{}'.format(best_map))
