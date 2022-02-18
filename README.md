@@ -265,3 +265,32 @@ python3 yinan_cnn/cnn_similarity_analysis/src/08_evaluate_siamese.py \
 '--test_f': load test features from .pkl file.
 
 '--db_f': load sample features.
+
+## Optuna Experiment
+```
+python3 yinan_cnn/cnn_similarity_analysis/src/11_optuna_experiment.py \
+--train \
+--start \
+--num_epochs 5 \
+--model vgg_fc7 \
+--margin 0.5 \
+--lr 0.0001 \
+--weight_decay 0.001 \
+--imsize 256 \
+--train_dataset artdl \
+--optimizer sgd \
+--loss custom \
+--regular 0.001 \
+--train_list artdl_train_list_full.csv \
+--val_list artdl_valid.csv \
+--num_workers 8 \
+--method feature_map \
+--mining_mode offline \
+--batch_size 8 \
+--upper_bound 0.1 \
+--lower_bound 0.00001 \
+--num_experiment 20
+```
+'--upper_bound': upper bound of the to be searched hyperparameter 
+'--lower_bound': lower bound of the to be searched hyperparameter 
+'--num_experiment': number of search experiment
