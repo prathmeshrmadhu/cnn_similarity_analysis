@@ -85,7 +85,7 @@ def siamese_args():
     group = parser.add_argument_group('optuna parameters')
     aa('--upper_bound', type=float, default=None, help="upper bound of the hyperparameter")
     aa('--lower_bound', type=float, default=None, help="lower bound of the hyperparameter")
-    aa('--num_expriment', default=20, type=int, help="number of search expriments")
+    aa('--num_experiment', default=20, type=int, help="number of search experiments")
 
     args = parser.parse_args()
     args.scales = [float(x) for x in args.scales.split(",")]
