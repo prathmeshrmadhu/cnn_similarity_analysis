@@ -107,7 +107,7 @@ def train(args, augmentations_list):
             n_val = list(val['ref_negative'])
 
     if args.train_dataset == "the_MET":
-        if args.mining_model == 'offline':
+        if args.mining_mode == 'offline':
             print("Used dataset: The MET")
             train_file = args.data_path + args.train_list
             train_frame = pd.read_csv(train_file)
