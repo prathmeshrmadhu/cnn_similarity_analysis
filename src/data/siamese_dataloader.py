@@ -54,7 +54,7 @@ class TripletTrainList(Dataset):
         self.image_path = image_path
         self.image_list = list(train_frame['path'])
         for j in range(len(self.image_list)):
-            self.image_list[j] = image_path + self.image_list[i]
+            self.image_list[j] = image_path + self.image_list[j]
         self.transform = transform
         self.argumentation = argumentation
         self.imsize = imsize
