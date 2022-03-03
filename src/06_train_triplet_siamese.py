@@ -265,6 +265,7 @@ def train(args, augmentations_list):
         if args.train_dataset == 'the_MET':
             image_pairs = TripletTrainList(args.data_path, train_frame, transform=transforms, imsize=args.imsize,
                                            argumentation=augmentations_list)
+            num_triplets = 10000
         else:
             image_pairs = TripletValList(train_list, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
         train_dataloader = DataLoader(dataset=image_pairs, shuffle=True, num_workers=args.num_workers,
