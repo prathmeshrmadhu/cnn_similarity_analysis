@@ -56,7 +56,7 @@ class TripletTrainList(Dataset):
         for j in range(len(self.image_list)):
             self.image_list[j] = image_path + 'images/' + self.image_list[j]
         self.transform = transform
-        self.argumentation = argumentation
+        self.argumentation = Compose(argumentation)
         self.imsize = imsize
         self.label_list = list(train_frame['MET_id'])
         self.frequencies = list(train_frame['class_frequency'])
