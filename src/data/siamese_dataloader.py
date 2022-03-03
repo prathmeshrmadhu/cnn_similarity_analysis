@@ -83,11 +83,11 @@ class TripletTrainList(Dataset):
             sub_f_n = self.train_frame[self.train_frame['MET_id'] != label]
             sub_list_p = list(sub_f_p['path'])
             for j in range(len(sub_list_p)):
-                sub_list_p[j] = self.image_path + sub_list_p[j]
+                sub_list_p[j] = self.image_path + 'images/' + sub_list_p[j]
             sub_list_p.remove(self.image_list[i])
             sub_list_n = list(sub_f_n['path'])
             for j in range(len(sub_list_n)):
-                sub_list_n[j] = self.image_path + sub_list_n[j]
+                sub_list_n[j] = self.image_path + 'images/' + sub_list_n[j]
             query_image = Image.open(random.choice(sub_list_p))
             db_negative = Image.open(random.choice(sub_list_n))
             query_image = query_image.convert("RGB")
