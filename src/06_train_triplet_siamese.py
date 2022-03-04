@@ -110,8 +110,8 @@ def train(args, augmentations_list):
         if args.mining_mode == 'offline':
             print("Used dataset: The MET")
             train_file = args.data_path + args.train_list
-            train_frame = pd.read_csv(train_file)
-            train_frame = train_frame.sample(20000)
+            train_frame_o = pd.read_csv(train_file)
+            train_frame = train_frame_o.sample(20000)
             val_file = args.data_path + args.val_list
             val_frame = pd.read_csv(val_file)
 
