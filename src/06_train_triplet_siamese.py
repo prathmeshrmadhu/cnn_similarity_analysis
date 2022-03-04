@@ -111,7 +111,7 @@ def train(args, augmentations_list):
             print("Used dataset: The MET")
             train_file = args.data_path + args.train_list
             train_frame = pd.read_csv(train_file)
-            train_frame = train_frame[:10000]
+            train_frame = train_frame.sample(20000)
             val_file = args.data_path + args.val_list
             val_frame = pd.read_csv(val_file)
 
