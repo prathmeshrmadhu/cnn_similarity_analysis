@@ -107,13 +107,13 @@ def train(args, augmentations_list):
             n_val = list(val['ref_negative'])
 
     if args.train_dataset == "the_MET":
+        print("Used dataset: The MET")
+        train_file = args.data_path + args.train_list
+        train_frame_o = pd.read_csv(train_file)
         if args.mining_mode == 'offline':
-            print("Used dataset: The MET")
-            train_file = args.data_path + args.train_list
-            train_frame_o = pd.read_csv(train_file)
             train_frame = train_frame_o.sample(20000)
-            val_file = args.data_path + args.val_list
-            val_frame = pd.read_csv(val_file)
+        val_file = args.data_path + args.val_list
+        val_frame = pd.read_csv(val_file)
 
     val_list = []
     if args.train_dataset == 'the_MET':
@@ -261,6 +261,9 @@ def train(args, augmentations_list):
                 '''eraly stop if not able to find semi-hard triplets'''
                 if num_triplets == 0:
                     break
+
+            if args.train_dataset == "the_MET":
+                train_frame = train_frame_o.sample(20000)
 
         if args.train_dataset == 'the_MET':
             image_pairs = TripletTrainList(args.data_path, train_frame, transform=transforms, imsize=args.imsize,
