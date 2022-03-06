@@ -263,7 +263,7 @@ def train(args, augmentations_list):
                     break
 
             if args.train_dataset == "the_MET":
-                train_frame = train_frame_o.sample(20000)
+                train_frame = train_frame_o.sample(10000)
 
         if args.train_dataset == 'the_MET':
             image_pairs = TripletTrainList(args.data_path, train_frame, transform=transforms, imsize=args.imsize,
