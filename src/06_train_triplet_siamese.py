@@ -281,6 +281,16 @@ def train(args, augmentations_list):
             query_img = query_img.to(args.device)
             rp_img = rp_img.to(args.device)
             rn_img = rn_img.to(args.device)
+
+            if args.train_dataset == "the_MET":
+                query_features = net.head(query_img)
+                rp_features = net.head(rp_img)
+                rn_features = net.head(rn_img)
+                score_pos = (1 - F.cosine_similarity(query_features, rp_features))
+                score_neg = (1 - F.cosine_similarity(query_features, rn_features))
+                true_list = (score_pos < score_neg) * (score_neg < score_pos + args.margin)
+
+
             if args.loss == 'normal':
                 p_score, n_score = net(query_img, rp_img, rn_img)
                 optimizer.zero_grad()
@@ -300,14 +310,6 @@ def train(args, augmentations_list):
                     loss = criterion(q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n6, args.margin, args.regular,
                                      cos=True)
 
-            if args.train_dataset == "the_MET":
-                query_features = net.head(query_img)
-                rp_features = net.head(rp_img)
-                rn_features = net.head(rn_img)
-                score_pos = (1 - F.cosine_similarity(query_features, rp_features))
-                score_neg = (1 - F.cosine_similarity(query_features, rn_features))
-                true_list = (score_pos < score_neg) * (score_neg < score_pos + args.margin)
-                loss = loss * true_list
             loss.backward()
             optimizer.step()
             loss_history.append(loss)
