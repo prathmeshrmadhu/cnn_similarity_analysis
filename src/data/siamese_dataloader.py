@@ -48,8 +48,9 @@ class ImageList_with_label(Dataset):
 
 class TripletTrainList(Dataset):
 
-    def __init__(self, image_path, train_frame, imsize=None, transform=None, argumentation=None):
+    def __init__(self, image_path, train_frame, imsize=None, transform=None, argumentation=None, online=False):
         Dataset.__init__(self)
+        self.online = online
         self.train_frame = train_frame
         self.image_path = image_path
         self.image_list = list(train_frame['path'])
@@ -72,30 +73,37 @@ class TripletTrainList(Dataset):
         label = self.train_frame['MET_id'][i]
         db_positive = Image.open(self.image_list[i])
         db_positive = db_positive.convert("RGB")
-        if self.frequencies[i] == 1:
+        if not self.online:
+            if self.frequencies[i] == 1:
+                query_image = self.argumentation(db_positive)
+                sub_list = self.image_list.copy()
+                sub_list.remove(self.image_list[i])
+                db_negative = Image.open(random.choice(sub_list))
+                db_negative = db_negative.convert("RGB")
+            else:
+                sub_f_p = self.train_frame[self.train_frame['MET_id'] == label]
+                sub_f_n = self.train_frame[self.train_frame['MET_id'] != label]
+                sub_list_p = list(sub_f_p['path'])
+                for j in range(len(sub_list_p)):
+                    sub_list_p[j] = self.image_path + 'images/' + sub_list_p[j]
+                sub_list_p.remove(self.image_list[i])
+                sub_list_n = list(sub_f_n['path'])
+                for j in range(len(sub_list_n)):
+                    sub_list_n[j] = self.image_path + 'images/' + sub_list_n[j]
+                query_image = Image.open(random.choice(sub_list_p))
+                db_negative = Image.open(random.choice(sub_list_n))
+                query_image = query_image.convert("RGB")
+                db_negative = db_negative.convert("RGB")
+            if self.transform is not None:
+                query_image = self.transform(query_image)
+                db_positive = self.transform(db_positive)
+                db_negative = self.transform(db_negative)
+        else:
             query_image = self.argumentation(db_positive)
             sub_list = self.image_list.copy()
             sub_list.remove(self.image_list[i])
             db_negative = Image.open(random.choice(sub_list))
             db_negative = db_negative.convert("RGB")
-        else:
-            sub_f_p = self.train_frame[self.train_frame['MET_id'] == label]
-            sub_f_n = self.train_frame[self.train_frame['MET_id'] != label]
-            sub_list_p = list(sub_f_p['path'])
-            for j in range(len(sub_list_p)):
-                sub_list_p[j] = self.image_path + 'images/' + sub_list_p[j]
-            sub_list_p.remove(self.image_list[i])
-            sub_list_n = list(sub_f_n['path'])
-            for j in range(len(sub_list_n)):
-                sub_list_n[j] = self.image_path + 'images/' + sub_list_n[j]
-            query_image = Image.open(random.choice(sub_list_p))
-            db_negative = Image.open(random.choice(sub_list_n))
-            query_image = query_image.convert("RGB")
-            db_negative = db_negative.convert("RGB")
-        if self.transform is not None:
-            query_image = self.transform(query_image)
-            db_positive = self.transform(db_positive)
-            db_negative = self.transform(db_negative)
         return query_image, db_positive, db_negative
 
 
