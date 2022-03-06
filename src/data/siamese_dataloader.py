@@ -48,9 +48,9 @@ class ImageList_with_label(Dataset):
 
 class TripletTrainList(Dataset):
 
-    def __init__(self, image_path, train_frame, imsize=None, transform=None, argumentation=None, online=False):
+    def __init__(self, image_path, train_frame, imsize=None, transform=None, argumentation=None, mode='offline'):
         Dataset.__init__(self)
-        self.online = online
+        self.mode = mode
         self.train_frame = train_frame
         self.image_path = image_path
         self.image_list = list(train_frame['path'])
@@ -73,7 +73,7 @@ class TripletTrainList(Dataset):
         label = self.train_frame['MET_id'][i]
         db_positive = Image.open(self.image_list[i])
         db_positive = db_positive.convert("RGB")
-        if not self.online:
+        if self.mode == 'offline':
             if self.frequencies[i] == 1:
                 query_image = self.argumentation(db_positive)
                 sub_list = self.image_list.copy()
