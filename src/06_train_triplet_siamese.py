@@ -112,7 +112,7 @@ def train(args, augmentations_list):
         train_frame_o = pd.read_csv(train_file)
         if args.mining_mode == 'offline':
             train_frame = train_frame_o.sample(n=20000)
-            train_frame.reset_index()
+            train_frame = train_frame.reset_index()
         val_file = args.data_path + args.val_list
         val_frame = pd.read_csv(val_file)
 
@@ -265,7 +265,7 @@ def train(args, augmentations_list):
 
             if args.train_dataset == "the_MET":
                 train_frame = train_frame_o.sample(n=20000)
-                train_frame.reset_index()
+                train_frame = train_frame.reset_index()
 
         if args.train_dataset == 'the_MET':
             image_pairs = TripletTrainList(args.data_path, train_frame, transform=transforms, imsize=args.imsize,
