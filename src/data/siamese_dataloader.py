@@ -100,7 +100,7 @@ class TripletTrainList(Dataset):
             sub_list.remove(self.image_list[i])
             db_negative = Image.open(random.choice(sub_list))
             db_negative = db_negative.convert("RGB")
-            
+
         if self.transform is not None:
             query_image = self.transform(query_image)
             db_positive = self.transform(db_positive)
