@@ -51,7 +51,7 @@ class CustomLoss_vgg(torch.nn.Module):
         else:
             score_positive = F.pairwise_distance(q6, p6, p=2.0)
             score_negative = F.pairwise_distance(q6, n6, p=2.0)
-        if not true_list:
+        if true_list is None:
             triplet_loss = torch.mean(
                 torch.clamp(torch.pow(score_positive, 2) - torch.pow(score_negative, 2) + margin, min=0.0))
             d1 = torch.mean(F.pairwise_distance(q1, p1, p=2.0))
