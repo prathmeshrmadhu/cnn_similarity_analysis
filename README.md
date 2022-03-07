@@ -147,7 +147,7 @@ python3 cnn_similarity_analysis/src/08_evaluate_siamese.py \
 # ArtDL dataset
 ## Network training
 
-You can train a model on Image Collation dataset via:
+You can train a model on ArtDL dataset via:
 ```
 python3 cnn_similarity_analysis/src/06_train_triplet_siamese.py \
 --train \
@@ -294,3 +294,50 @@ python3 yinan_cnn/cnn_similarity_analysis/src/11_optuna_experiment.py \
 '--upper_bound': upper bound of the to be searched hyperparameter 
 '--lower_bound': lower bound of the to be searched hyperparameter 
 '--num_experiment': number of search experiment
+
+# The MET dataset
+## Network training
+
+You can train a model on ArtDL dataset via:
+```
+python3 cnn_similarity_analysis/src/06_train_triplet_siamese.py \
+yinan_cnn/cnn_similarity_analysis/src/06_train_triplet_siamese.py \
+--train \
+--start \
+--gt_list /cluster/shared_dataset/ImageCollation/IllustrationMatcher/ground_truth/ \
+--i0 0 \
+--i1 50 \
+--num_epochs 10 \
+--model vgg_fc7 \
+--margin 0.5 \
+--lr 0.0001 \
+--weight_decay 0.001 \
+--imsize 256 \
+--train_dataset the_MET \
+--optimizer sgd \
+--loss custom \
+--regular 0.001 \
+--train_list MET_database.csv \
+--val_list valset.csv \
+--num_workers 8 \
+--mining_mode offline \
+--batch_size 10 \
+--len 100000
+```
+'-- train_list', '--val_list': generated .csv file with strcture ['anchor_query', 'ref_positive', 'ref_negative']
+
+'-- start': start training or continue from a checkpoint.
+
+'-- margin': margin in loss function.
+
+'-- loss': 'normal' means just use triplet loss, 'custom' means use custom defined regularized loss.
+
+'-- optimizer': choose 'sgd' or 'adam' optimizer.
+
+'-- net': save or load checkpoint from this path.
+
+'--regular': weight for custom loss
+
+'--mining_mode': generate train list online or offline
+
+'--len': number of sampled triplets form the dataset
