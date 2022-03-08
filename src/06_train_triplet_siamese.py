@@ -111,7 +111,7 @@ def train(args, augmentations_list):
         train_file = args.data_path + args.train_list
         train_frame_o = pd.read_csv(train_file)
         if args.mining_mode == 'offline':
-            train_frame = train_frame_o[:args.len]
+            train_frame = train_frame_o
         val_file = args.data_path + args.val_list
         val_frame = pd.read_csv(val_file)
 
