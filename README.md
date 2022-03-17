@@ -162,6 +162,7 @@ python3 cnn_similarity_analysis/src/06_train_triplet_siamese.py \
 --train_dataset artdl \
 --optimizer sgd \
 --loss normal \
+--mining_mode online\
 --train_list /cluster/shared_dataset/DEVKitArtDL/artdl_train_list.csv \
 --val_list /cluster/shared_dataset/DEVKitArtDL/artdl_val_list.csv
 ```
@@ -178,6 +179,8 @@ python3 cnn_similarity_analysis/src/06_train_triplet_siamese.py \
 '-- net': save or load checkpoint from this path.
 
 '--plots': path to save plot of losses.
+
+'--mining_mode': use online or offline mining
 
 ## Network training
 
@@ -304,7 +307,6 @@ python3 cnn_similarity_analysis/src/06_train_triplet_siamese.py \
 yinan_cnn/cnn_similarity_analysis/src/06_train_triplet_siamese.py \
 --train \
 --start \
---gt_list /cluster/shared_dataset/ImageCollation/IllustrationMatcher/ground_truth/ \
 --i0 0 \
 --i1 50 \
 --num_epochs 10 \
