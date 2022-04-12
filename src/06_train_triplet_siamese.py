@@ -81,6 +81,8 @@ def train(args, augmentations_list):
                 train_list.append((query_train[i], p_train[i], n_train[i]))
 
     if args.train_dataset == "artdl":
+        file_handle = open('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/experiments/artdl/experiment_2022-01-15_15-16-02/plots/out.txt',
+                    mode='w')
 
         if args.mining_mode == "offline":
             print("Used dataset: ArtDL")
@@ -317,6 +319,7 @@ def train(args, augmentations_list):
         loss_history.clear()
 
         print("Epoch:{},  Current training loss {}, num_triplets={}\n".format(epoch, mean_loss, num_triplets))
+        file_handle.write("Epoch:{},  Current training loss {}, num_triplets={}\n".format(epoch, mean_loss, num_triplets))
         train_losses.append(mean_loss)  # Q: Does this only store the mean loss of the last 10 iterations?
 
         # Validating over batches
@@ -373,13 +376,18 @@ def train(args, augmentations_list):
             model_full_path = args.net + best_model_name
             torch.save(net.state_dict(), model_full_path)
             print('best model updated\n')
+            file_handle.write('best model updated\n')
 
     print("Training finished")
+    file_handle.write("Training finished")
     print("Average Positive Score: {}\n".format(avg_p_score))
+    file_handle.write("Average Positive Score: {}\n".format(avg_p_score))
     print("Average Negative Score: {}\n".format(avg_n_score))
+    file_handle.write("Average Negative Score: {}\n".format(avg_n_score))
     epoch_losses = np.asarray(epoch_losses)
     train_losses = np.asarray(train_losses)
     epochs = np.asarray(range(args.num_epochs))
+    file_handle.close()
 
     # Loss plot
     plt.title('Loss Visualization')
