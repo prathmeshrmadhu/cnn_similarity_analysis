@@ -262,6 +262,7 @@ def train(args, augmentations_list):
                 '''eraly stop if not able to find semi-hard triplets'''
                 if num_triplets == 0:
                     break
+                logging.info('Semi-Hard Triplets extracted')
 
             if args.train_dataset == "the_MET":
                 train_frame = train_frame_o.sample(n=args.len)
@@ -318,6 +319,7 @@ def train(args, augmentations_list):
         loss_history.clear()
 
         print("Epoch:{},  Current training loss {}, num_triplets={}\n".format(epoch, mean_loss, num_triplets))
+        logging.info('Epoch:{},  Current training loss {}, num_triplets={}\n'.format(epoch, mean_loss, num_triplets))
         train_losses.append(mean_loss)  # Q: Does this only store the mean loss of the last 10 iterations?
 
         # Validating over batches
@@ -360,6 +362,7 @@ def train(args, augmentations_list):
                     n_score_list.append(torch.mean(n_score))
             val_loss = torch.mean(torch.Tensor(val_loss))
         print("Epoch:{},  Current validation loss {}\n".format(epoch, val_loss))
+        logging.info("Epoch:{},  Current validation loss {}\n".format(epoch, val_loss))
         epoch_losses.append(val_loss.cpu())
 
         # This re-write the model if validation loss is lower
@@ -374,10 +377,14 @@ def train(args, augmentations_list):
             model_full_path = args.net + best_model_name
             torch.save(net.state_dict(), model_full_path)
             print('best model updated\n')
+            logging.info('best model updated\n')
 
     print("Training finished")
     print("Average Positive Score: {}\n".format(avg_p_score))
     print("Average Negative Score: {}\n".format(avg_n_score))
+    logging.info('Training finished')
+    logging.info("Average Positive Score: {}\n".format(avg_p_score))
+    logging.info("Average Negative Score: {}\n".format(avg_n_score))
     epoch_losses = np.asarray(epoch_losses)
     train_losses = np.asarray(train_losses)
     epochs = np.asarray(range(args.num_epochs))
