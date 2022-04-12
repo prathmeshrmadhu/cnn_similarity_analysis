@@ -83,7 +83,7 @@ def train(args, augmentations_list):
     if args.train_dataset == "artdl":
 
         if args.mining_mode == "offline":
-            print("Used dataset: Image Collation")
+            print("Used dataset: ArtDL")
             val_list = args.data_path + args.val_list
             val = pd.read_csv(val_list)
             query_val = list(val['anchor_query'])
@@ -100,7 +100,7 @@ def train(args, augmentations_list):
                 train_list.append((query_train[i], p_train[i], n_train[i]))
 
         elif args.mining_mode == "online":
-            print("Used dataset: Image Collation")
+            print("Used dataset: ArtDL")
             val = generate_val_list(args)
             query_val = list(val['anchor_query'])
             p_val = list(val['ref_positive'])
