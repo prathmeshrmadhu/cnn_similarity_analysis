@@ -4,6 +4,7 @@ import json
 import pandas as pd
 import torch
 import logging
+import traceback
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
@@ -417,6 +418,10 @@ if __name__ == "__main__":
         HorizontalFlip(probability=0.25),
         AuglyRotate(0.25),
     ]
-
-    train(siamese_args, augmentations_list)
+    try:
+        train(siamese_args, augmentations_list)
+    except Exception as e:
+        logging.error("error in training")
+        logging.error(e)
+        logging.error("\n" + traceback.format_exc())
     logging.info('Finished')
