@@ -227,7 +227,7 @@ def train(args, augmentations_list):
                 query_train_o = list(train_origin['anchor_query'])
                 p_train_o = list(train_origin['ref_positive'])
                 n_train_o = list(train_origin['ref_negative'])
-
+                logging.info('triplet list generated')
                 '''extract features of each triplets'''
                 query_o = ImageList(query_train_o, transform=transforms, imsize=args.imsize)
                 p_o = ImageList(p_train_o, transform=transforms, imsize=args.imsize)
@@ -241,6 +241,7 @@ def train(args, augmentations_list):
                 query_f_o = generate_features(args, net, query_dataloader)
                 p_f_o = generate_features(args, net, p_dataloader)
                 n_f_o = generate_features(args, net, n_dataloader)
+                logging.info('triplet list embedded')
 
                 '''calculate distances between each triplets'''
                 query_f_o.to(args.device)
@@ -248,12 +249,14 @@ def train(args, augmentations_list):
                 n_f_o.to(args.device)
                 score_pos = (1 - F.cosine_similarity(query_f_o, p_f_o)).cpu().numpy()
                 score_neg = (1 - F.cosine_similarity(query_f_o, n_f_o)).cpu().numpy()
+                logging.info('distance calculated')
 
                 '''select only semi-hard triplets'''
                 true_list = (score_pos < score_neg) * (score_neg < score_pos + args.margin)
                 true_list = list(true_list)
                 train_origin.insert(train_origin.shape[1], 'label', true_list)
                 train_selected = train_origin[train_origin['label']]
+                logging.info('semi-hard filtered')
 
                 '''generate new training list'''
                 query_train = list(train_selected['anchor_query'])
