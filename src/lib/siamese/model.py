@@ -359,11 +359,11 @@ class TripletSiameseNetwork_custom(nn.Module):
             '''linear classifier'''
             x5 = self.head.features[23:](x4)
             x6 = x5.size()[2] * x5.size()[3] * 0.25 * F.adaptive_avg_pool2d(x5, (2, 2))
-            x5 = self.head.avgpool(x5)
             x6 = self.flatten(x6)
+            x6 = F.normalize(x6)
+            x5 = self.head.avgpool(x5)
             x5 = self.head.classifier[0](x5)
             x5 = self.head.classifier[1:](x5)
-            x6 = F.normalize(x6)
             x5 = F.normalize(x5)
 
             x1 = F.adaptive_max_pool2d(x1, (1, 1))
