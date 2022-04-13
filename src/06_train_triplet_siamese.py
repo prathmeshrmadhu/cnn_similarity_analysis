@@ -242,7 +242,7 @@ def train(args, augmentations_list):
                 query_f_o = generate_features(args, net, query_dataloader)
                 p_f_o = generate_features(args, net, p_dataloader)
                 n_f_o = generate_features(args, net, n_dataloader)
-                logging.info('triplet list embedded')
+                logging.info("triplet list embedded")
 
                 '''calculate distances between each triplets'''
                 query_f_o.to(args.device)
@@ -250,14 +250,14 @@ def train(args, augmentations_list):
                 n_f_o.to(args.device)
                 score_pos = (1 - F.cosine_similarity(query_f_o, p_f_o)).cpu().numpy()
                 score_neg = (1 - F.cosine_similarity(query_f_o, n_f_o)).cpu().numpy()
-                logging.info('distance calculated')
+                logging.info("distance calculated")
 
                 '''select only semi-hard triplets'''
                 true_list = (score_pos < score_neg) * (score_neg < score_pos + args.margin)
                 true_list = list(true_list)
                 train_origin.insert(train_origin.shape[1], 'label', true_list)
                 train_selected = train_origin[train_origin['label']]
-                logging.info('semi-hard filtered')
+                logging.info("semi-hard filtered")
 
                 '''generate new training list'''
                 query_train = list(train_selected['anchor_query'])
@@ -271,7 +271,7 @@ def train(args, augmentations_list):
                 '''eraly stop if not able to find semi-hard triplets'''
                 if num_triplets == 0:
                     break
-                logging.info('Semi-Hard Triplets extracted')
+                logging.info("Semi-Hard Triplets extracted")
 
             if args.train_dataset == "the_MET":
                 train_frame = train_frame_o.sample(n=args.len)
@@ -287,6 +287,7 @@ def train(args, augmentations_list):
                                       batch_size=args.batch_size)
         net.train()
         # Training over batches
+        logging.info("start training loop")
         for i, batch in enumerate(train_dataloader, 0):
             query_img, rp_img, rn_img = batch
             query_img = query_img.to(args.device)
@@ -328,7 +329,7 @@ def train(args, augmentations_list):
         loss_history.clear()
 
         print("Epoch:{},  Current training loss {}, num_triplets={}\n".format(epoch, mean_loss, num_triplets))
-        logging.info('Epoch:{},  Current training loss {}, num_triplets={}\n'.format(epoch, mean_loss, num_triplets))
+        logging.info("Epoch:{},  Current training loss {}, num_triplets={}\n".format(epoch, mean_loss, num_triplets))
         train_losses.append(mean_loss)  # Q: Does this only store the mean loss of the last 10 iterations?
 
         # Validating over batches
