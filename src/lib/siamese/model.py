@@ -357,14 +357,15 @@ class TripletSiameseNetwork_custom(nn.Module):
             '''relu4_3'''
             x4 = self.head.features[16:23](x3)
             '''linear classifier'''
-            x5 = self.head.features[23:](x4)
-            x6 = x5.size()[2] * x5.size()[3] * 0.25 * F.adaptive_avg_pool2d(x5, (2, 2))
-            x6 = self.flatten(x6)
-            x6 = F.normalize(x6)
-            x5 = self.head.avgpool(x5)
+            x_pool5 = self.head.features[23:](x4)
+            x5 = self.head.avgpool(x_pool5)
             x5 = self.head.classifier[0](x5)
             x5 = self.head.classifier[1:](x5)
             x5 = F.normalize(x5)
+            x6 = x_pool5.size()[2] * x_pool5.size()[3] * 0.25 * F.adaptive_avg_pool2d(x_pool5, (2, 2))
+            x6 = self.flatten(x6)
+            x6 = F.normalize(x6)
+
 
             x1 = F.adaptive_max_pool2d(x1, (1, 1))
             x1 = self.flatten(x1)
