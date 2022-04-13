@@ -387,7 +387,7 @@ def train(args, augmentations_list):
             model_full_path = args.net + best_model_name
             torch.save(net.state_dict(), model_full_path)
             print('best model updated\n')
-            logging.info('best model updated\n')
+            logging.info("best model updated\n")
 
     print("Training finished")
     print("Average Positive Score: {}\n".format(avg_p_score))
