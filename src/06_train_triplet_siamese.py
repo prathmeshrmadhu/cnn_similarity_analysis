@@ -52,6 +52,7 @@ def generate_features(args, net, data_loader):
 
 
 def train(args, augmentations_list):
+    logging.info('start training')
     if args.device == "gpu":
         print("hardware_image_description:", torch.cuda.get_device_name(0))
         # defining the transforms
@@ -59,6 +60,7 @@ def train(args, augmentations_list):
 
     if args.train_dataset == "image_collation":
         print("Used dataset: Image Collation")
+        logging.info('Used dataset: Image Collation')
         d1_images = [args.d1 + 'illustration/' + l.strip() for l in open(args.d1 + 'files.txt', "r")]
         d2_images = [args.d2 + 'illustration/' + l.strip() for l in open(args.d2 + 'files.txt', "r")]
         d3_images = [args.d3 + 'illustration/' + l.strip() for l in open(args.d3 + 'files.txt', "r")]
@@ -103,6 +105,7 @@ def train(args, augmentations_list):
 
         elif args.mining_mode == "online":
             print("Used dataset: ArtDL")
+            logging.info('Used dataset: ArtDL')
             val = generate_val_list(args)
             query_val = list(val['anchor_query'])
             p_val = list(val['ref_positive'])
@@ -207,6 +210,7 @@ def train(args, augmentations_list):
     best_val_loss = np.inf
     for epoch in range(args.num_epochs):
         if args.mining_mode == "online":
+            logging.info('start data mining')
             if args.train_dataset == "image_collation":
                 query_train = []
                 p_train = []
