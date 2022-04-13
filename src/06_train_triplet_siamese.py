@@ -208,6 +208,7 @@ def train(args, augmentations_list):
     train_losses = list()
     # epoch_size = int(len(train_list) / args.epoch)
     best_val_loss = np.inf
+    torch.cuda.empty_cache()
     for epoch in range(args.num_epochs):
         if args.mining_mode == "online":
             logging.info('start data mining')
