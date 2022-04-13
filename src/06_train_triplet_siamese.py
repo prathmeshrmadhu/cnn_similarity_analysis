@@ -223,12 +223,12 @@ def train(args, augmentations_list):
 
             if args.train_dataset == "artdl":
                 '''online mining training list'''
-                logging.info('start mining for artdl')
+                logging.info("start mining for artdl")
                 train_origin = generate_train_list(args)
                 query_train_o = list(train_origin['anchor_query'])
                 p_train_o = list(train_origin['ref_positive'])
                 n_train_o = list(train_origin['ref_negative'])
-                logging.info('triplet list generated')
+                logging.info("triplet list generated")
                 '''extract features of each triplets'''
                 query_o = ImageList(query_train_o, transform=transforms, imsize=args.imsize)
                 p_o = ImageList(p_train_o, transform=transforms, imsize=args.imsize)
