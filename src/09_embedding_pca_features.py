@@ -42,8 +42,8 @@ def generate_features(args, net, image_names, data_loader):
             for no, data in enumerate(data_loader):
                 images = data
                 images = images.to(args.device)
-                feats1, feats2, feats3, feats4 = net.forward_once(images)
-                features_list.append(feats3.cpu().numpy())
+                feats1, feats2, feats3, feats4, feats5, feats6 = net.forward_once(images)
+                features_list.append(feats6.cpu().numpy())
                 # images_list.append(images.cpu().numpy())
         t1 = time.time()
     features = np.vstack(features_list)
