@@ -95,18 +95,7 @@ def evaluation(args):
         test_file_path = args.data_path + args.test_list
         test_file = pd.read_csv(test_file_path)
         labels = list(test_file['label_encoded'])
-        # sample_names, sample_vectors = read_pickle_descriptors(args.db_f)
         test_vectors = torch.Tensor(test_vectors).to(args.device)
-        # sample_vectors = torch.tensor(sample_vectors).to(args.device)
-        # hit = 0
-        # for i in range(len(labels)):
-        #     cos_similarity = F.cosine_similarity(test_vectors[i], sample_vectors, dim=-1).cpu().numpy()
-        #     prediction = np.argsort(-cos_similarity)[0]
-        #     if prediction == labels[i]:
-        #         hit += 1
-
-        # accuracy = hit/len(labels)
-        # print('Accuracy: {}'.format(accuracy))
 
         gt_array = np.array(labels)
         r_5 = ranked_recall(gt_array, test_vectors, 5)
