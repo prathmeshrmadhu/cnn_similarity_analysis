@@ -11,9 +11,9 @@ from src.lib.siamese.model import load_siamese_checkpoint, TripletSiameseNetwork
 from src.data.siamese_dataloader import ImageList
 from src.lib.siamese.dataset import get_transforms
 from sklearn.decomposition import PCA
-from lib.io import *
 import joblib
 import faiss
+from src.lib.io import *
 
 
 def generate_pca_features(features, image_names, save_path, estimator):
@@ -117,21 +117,24 @@ def embedding_features(args):
         generate_pca_features(d3_features, d3_images, args.d3_f, pca)
 
     elif args.test_dataset == 'artdl':
-        test_set = pd.read_csv(args.test_list)
+        save_path_test = args.exp_path + args.test_f
+        save_path_db = args.exp_path + args.db_f
+        test_set = generate_test_list(args)
+        # test_set = pd.read_csv(args.test_list)
         test_paths = list(test_set['test_images'])
         test_dataset = ImageList(test_paths, transform=transforms)
         test_dataloader = DataLoader(dataset=test_dataset, shuffle=False, num_workers=args.num_workers,
                                      batch_size=args.batch_size)
         test_features = generate_features(args, net, test_paths, test_dataloader)
-        generate_pca_features(test_features, test_paths, args.test_f, pca)
+        generate_pca_features(test_features, test_paths, save_path_test, pca)
 
-        sample_set = pd.read_csv(args.db_list)
-        sample_paths = list(sample_set['samples'])
-        sample_dataset = ImageList(sample_paths, transform=transforms)
-        sample_dataloader = DataLoader(dataset=sample_dataset, shuffle=False, num_workers=args.num_workers,
-                                       batch_size=args.batch_size)
-        sample_features = generate_features(args, net, sample_paths, sample_dataloader)
-        generate_pca_features(sample_features, sample_paths, args.db_f, pca)
+        # sample_set = pd.read_csv(args.db_list)
+        # sample_paths = list(sample_set['samples'])
+        # sample_dataset = ImageList(sample_paths, transform=transforms)
+        # sample_dataloader = DataLoader(dataset=sample_dataset, shuffle=False, num_workers=args.num_workers,
+        #                                batch_size=args.batch_size)
+        # sample_features = generate_features(args, net, sample_paths, sample_dataloader)
+        # generate_pca_features(sample_features, sample_paths, args.db_f, pca)
 
 if __name__ == "__main__":
 
