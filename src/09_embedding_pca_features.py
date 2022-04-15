@@ -68,8 +68,8 @@ def embedding_features(args):
     net.to(args.device)
     net.eval()
 
-
-    print("Load PCA matrix", args.pca_file)
+    pca_file = args.net + args.pca_file
+    print("Load PCA matrix", pca_file)
     pca = faiss.read_VectorTransform(args.pca_file)
 
 
