@@ -363,7 +363,7 @@ class TripletSiameseNetwork_custom(nn.Module):
             x5 = self.head.classifier[0](x5)
             x5 = self.head.classifier[1:](x5)
             x5 = F.normalize(x5)
-            x6 = x_pool5.size()[2] * x_pool5.size()[3] * 0.25 * F.adaptive_avg_pool2d(x_pool5, (2, 2))
+            x6 = self.gem(x_pool5)
             x6 = self.flatten(x6)
             x6 = F.normalize(x6)
 
