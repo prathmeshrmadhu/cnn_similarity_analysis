@@ -87,7 +87,7 @@ def train(args):
     print(f"Train PCA {pca.d_in} -> {pca.d_out}")
     pca.train(train_features)
     save_path = args.net + args.pca_file
-    print(f"Storing PCA to {args.save_path}")
+    print(f"Storing PCA to {save_path}")
     faiss.write_VectorTransform(pca, save_path)
 
     if args.val_dataset == 'image_collation':
