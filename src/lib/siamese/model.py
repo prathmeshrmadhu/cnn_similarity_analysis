@@ -358,14 +358,14 @@ class TripletSiameseNetwork_custom(nn.Module):
             x4 = self.head.features[16:23](x3)
             '''linear classifier'''
             x_pool5 = self.head.features[23:](x4)
-            x5 = self.head.avgpool(x_pool5)
+            # x5 = self.head.avgpool(x_pool5)
+            # x5 = self.flatten(x5)
+            # x5 = self.head.classifier[0](x5)
+            # x5 = self.head.classifier[1:](x5)
+            # x5 = F.normalize(x5)
+            x5 = self.gem(x_pool5)
             x5 = self.flatten(x5)
-            x5 = self.head.classifier[0](x5)
-            x5 = self.head.classifier[1:](x5)
             x5 = F.normalize(x5)
-            x6 = self.gem(x_pool5)
-            x6 = self.flatten(x6)
-            x6 = F.normalize(x6)
 
 
             # x1 = F.adaptive_max_pool2d(x1, (1, 1))
@@ -384,7 +384,7 @@ class TripletSiameseNetwork_custom(nn.Module):
             x4 = self.gem(x4)
             x4 = self.flatten(x4)
             x4 = F.normalize(x4)
-            return x1, x2, x3, x4, x5, x6
+            return x1, x2, x3, x4, x5
 
     def forward(self, input1, input2, input3):
         if self.model == 'resnet50':
@@ -395,11 +395,11 @@ class TripletSiameseNetwork_custom(nn.Module):
             return x1_1, x1_2, x1_3, x1_4, x2_1, x2_2, x2_3, x2_4, x3_1, x3_2, x3_3, x3_4
 
         elif self.model == 'vgg' or self.model == 'vgg_fc7':
-            x1_1, x1_2, x1_3, x1_4, x1_5, x1_6 = self.forward_once(input1)
-            x2_1, x2_2, x2_3, x2_4, x2_5, x2_6 = self.forward_once(input2)
-            x3_1, x3_2, x3_3, x3_4, x3_5, x3_6 = self.forward_once(input3)
+            x1_1, x1_2, x1_3, x1_4, x1_5 = self.forward_once(input1)
+            x2_1, x2_2, x2_3, x2_4, x2_5 = self.forward_once(input2)
+            x3_1, x3_2, x3_3, x3_4, x3_5 = self.forward_once(input3)
 
-            return x1_1, x1_2, x1_3, x1_4, x1_5, x1_6, x2_1, x2_2, x2_3, x2_4, x2_5, x2_6, x3_1, x3_2, x3_3, x3_4, x3_5, x3_6
+            return x1_1, x1_2, x1_3, x1_4, x1_5, x2_1, x2_2, x2_3, x2_4, x2_5, x3_1, x3_2, x3_3, x3_4, x3_5
 
 
 
