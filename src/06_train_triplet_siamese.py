@@ -319,7 +319,7 @@ def train(args, augmentations_list):
                 elif args.model == 'vgg' or args.model == 'vgg_fc7':
                     q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, n1, n2, n3, n4, n5 = net(query_img, rp_img, rn_img)
                     optimizer.zero_grad()
-                    loss = criterion(q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, args.margin, args.regular,
+                    loss = criterion(q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, n5, args.margin, args.regular,
                                      cos=True, true_list=true_list)
 
             loss.backward()

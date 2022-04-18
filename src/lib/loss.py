@@ -44,13 +44,13 @@ class CustomLoss_vgg(torch.nn.Module):
     def __int__(self):
         super(CustomLoss_vgg, self).__init__()
 
-    def forward(self, q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n6, margin, lam, cos=True, true_list = None):
+    def forward(self, q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, n5, margin, lam, cos=True, true_list = None):
         if cos:
-            score_positive = 1 - F.cosine_similarity(q6, p6)
-            score_negative = 1 - F.cosine_similarity(q6, n6)
+            score_positive = 1 - F.cosine_similarity(q5, p5)
+            score_negative = 1 - F.cosine_similarity(q5, n5)
         else:
-            score_positive = F.pairwise_distance(q6, p6, p=2.0)
-            score_negative = F.pairwise_distance(q6, n6, p=2.0)
+            score_positive = F.pairwise_distance(q5, p5, p=2.0)
+            score_negative = F.pairwise_distance(q5, n5, p=2.0)
         if true_list is None:
             triplet_loss = torch.mean(
                 torch.clamp(torch.pow(score_positive, 2) - torch.pow(score_negative, 2) + margin, min=0.0))
@@ -58,7 +58,7 @@ class CustomLoss_vgg(torch.nn.Module):
             d2 = torch.mean(F.pairwise_distance(q2, p2, p=2.0))
             d3 = torch.mean(F.pairwise_distance(q3, p3, p=2.0))
             d4 = torch.mean(F.pairwise_distance(q4, p4, p=2.0))
-            d5 = torch.mean(F.pairwise_distance(q5, p5, p=2.0))
+            # d5 = torch.mean(F.pairwise_distance(q5, p5, p=2.0))
         else:
             triplet_loss = torch.mean(
                 torch.clamp(torch.pow(score_positive, 2) - torch.pow(score_negative, 2) + margin, min=0.0)*true_list)
@@ -66,8 +66,8 @@ class CustomLoss_vgg(torch.nn.Module):
             d2 = torch.mean(F.pairwise_distance(q2, p2, p=2.0)*true_list)
             d3 = torch.mean(F.pairwise_distance(q3, p3, p=2.0)*true_list)
             d4 = torch.mean(F.pairwise_distance(q4, p4, p=2.0)*true_list)
-            d5 = torch.mean(F.pairwise_distance(q5, p5, p=2.0)*true_list)
-        regular = lam * (d1 + d2 + d3 + d4 + d5)
+            # d5 = torch.mean(F.pairwise_distance(q5, p5, p=2.0)*true_list)
+        regular = lam * (d1 + d2 + d3 + d4)
         # regular = lam * (F.l1_loss(q1, p1) + F.l1_loss(p2, q2) + F.l1_loss(q3, p3) + F.l1_loss(q4, p4) + F.l1_loss(q5, p5))
         loss = triplet_loss + regular
         return loss
