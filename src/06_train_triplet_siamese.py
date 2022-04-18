@@ -34,8 +34,8 @@ def generate_features(args, net, data_loader):
                 for no, data in enumerate(data_loader):
                     images = data
                     images = images.to(args.device)
-                    _, _, _, _, _, feats6 = net.forward_once(images)
-                    features_list.append(feats6.cpu().numpy())
+                    _, _, _, _, feats5 = net.forward_once(images)
+                    features_list.append(feats5.cpu().numpy())
         features = torch.Tensor(np.vstack(features_list))
 
     else:
@@ -317,9 +317,9 @@ def train(args, augmentations_list):
                     optimizer.zero_grad()
                     loss = criterion(q1, q2, q3, q4, p1, p2, p3, p4, n1, n2, n3, n4, args.margin, args.regular, cos=True)
                 elif args.model == 'vgg' or args.model == 'vgg_fc7':
-                    q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n1, n2, n3, n4, n5, n6 = net(query_img, rp_img, rn_img)
+                    q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, n1, n2, n3, n4, n5 = net(query_img, rp_img, rn_img)
                     optimizer.zero_grad()
-                    loss = criterion(q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n6, args.margin, args.regular,
+                    loss = criterion(q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, args.margin, args.regular,
                                      cos=True, true_list=true_list)
 
             loss.backward()
