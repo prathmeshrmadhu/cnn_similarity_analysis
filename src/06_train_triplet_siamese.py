@@ -363,11 +363,11 @@ def train(args, augmentations_list):
                         p_score = F.cosine_similarity(q3, p3)
                         n_score = F.cosine_similarity(q3, n3)
                     elif args.model == 'vgg' or args.model == 'vgg_fc7':
-                        q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n1, n2, n3, n4, n5, n6 = net(query_img, rp_img, rn_img)
-                        loss = criterion(q1, q2, q3, q4, q5, q6, p1, p2, p3, p4, p5, p6, n6, args.margin, args.regular,
+                        q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, n1, n2, n3, n4, n5 = net(query_img, rp_img, rn_img)
+                        loss = criterion(q1, q2, q3, q4, q5, p1, p2, p3, p4, p5, n5, args.margin, args.regular,
                                          cos=True)
-                        p_score = F.cosine_similarity(q6, p6)
-                        n_score = F.cosine_similarity(q6, n6)
+                        p_score = F.cosine_similarity(q5, p5)
+                        n_score = F.cosine_similarity(q5, n5)
                     val_loss.append(loss)
                     p_score_list.append(torch.mean(p_score))
                     n_score_list.append(torch.mean(n_score))
