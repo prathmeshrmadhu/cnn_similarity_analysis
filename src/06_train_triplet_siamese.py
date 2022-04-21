@@ -224,7 +224,7 @@ def train(args, augmentations_list):
 
             if args.train_dataset == "artdl" or args.train_dataset == "photoart50":
                 '''online mining training list'''
-                logging.info("start mining for artdl")
+                logging.info("start mining for {}".format(args.train_dataset))
                 train_origin = generate_train_list(args)
                 query_train_o = list(train_origin['anchor_query'])
                 p_train_o = list(train_origin['ref_positive'])
