@@ -284,16 +284,30 @@ def generate_train_list(args):
     anchor_query = []
     ref_positive = []
     ref_negative = []
-    for i in range(10):
-        sub_df_p = train_df[train_df['label_encoded'] == i]
-        sub_df_n = train_df[train_df['label_encoded'] != i]
-        for ite in sub_df_p['item']:
-            for j in range(10):
-                r_p = random.choice(list(sub_df_p['item']))
-                r_n = random.choice(list(sub_df_n['item']))
-                anchor_query.append(args.database_path + ite + '.jpg')
-                ref_positive.append(args.database_path + r_p + '.jpg')
-                ref_negative.append(args.database_path + r_n + '.jpg')
+    if args.train_dataset == "artdl":
+        for i in range(10):
+            sub_df_p = train_df[train_df['label_encoded'] == i]
+            sub_df_n = train_df[train_df['label_encoded'] != i]
+            for ite in sub_df_p['item']:
+                for j in range(10):
+                    r_p = random.choice(list(sub_df_p['item']))
+                    r_n = random.choice(list(sub_df_n['item']))
+                    anchor_query.append(args.database_path + ite + '.jpg')
+                    ref_positive.append(args.database_path + r_p + '.jpg')
+                    ref_negative.append(args.database_path + r_n + '.jpg')
+    elif args.train_dataset == "photoart50":
+        for i in range(50):
+            sub_df_p = train_df[train_df['label_encoded'] == i]
+            sub_df_n = train_df[train_df['label_encoded'] != i]
+            for ite in sub_df_p['item']:
+                for j in range(10):
+                    r_p = random.choice(list(sub_df_p['item']))
+                    r_n = random.choice(list(sub_df_n['item']))
+                    anchor_query.append(args.database_path + ite)
+                    ref_positive.append(args.database_path + r_p)
+                    ref_negative.append(args.database_path + r_n)
+
+
     train_disc = {'anchor_query': anchor_query,
                   'ref_positive': ref_positive,
                   'ref_negative': ref_negative}
@@ -307,16 +321,29 @@ def generate_val_list(args):
     anchor_query = []
     ref_positive = []
     ref_negative = []
-    for i in range(10):
-        sub_df_p = val_df[val_df['label_encoded'] == i]
-        sub_df_n = val_df[val_df['label_encoded'] != i]
-        for ite in sub_df_p['item']:
-            for j in range(10):
-                r_p = random.choice(list(sub_df_p['item']))
-                r_n = random.choice(list(sub_df_n['item']))
-                anchor_query.append(args.database_path + ite + '.jpg')
-                ref_positive.append(args.database_path + r_p + '.jpg')
-                ref_negative.append(args.database_path + r_n + '.jpg')
+    if args.train_dataset == "artdl":
+        for i in range(10):
+            sub_df_p = val_df[val_df['label_encoded'] == i]
+            sub_df_n = val_df[val_df['label_encoded'] != i]
+            for ite in sub_df_p['item']:
+                for j in range(10):
+                    r_p = random.choice(list(sub_df_p['item']))
+                    r_n = random.choice(list(sub_df_n['item']))
+                    anchor_query.append(args.database_path + ite + '.jpg')
+                    ref_positive.append(args.database_path + r_p + '.jpg')
+                    ref_negative.append(args.database_path + r_n + '.jpg')
+    elif args.train_dataset == "photoart50":
+        for i in range(50):
+            sub_df_p = val_df[val_df['label_encoded'] == i]
+            sub_df_n = val_df[val_df['label_encoded'] != i]
+            for ite in sub_df_p['item']:
+                for j in range(10):
+                    r_p = random.choice(list(sub_df_p['item']))
+                    r_n = random.choice(list(sub_df_n['item']))
+                    anchor_query.append(args.database_path + ite)
+                    ref_positive.append(args.database_path + r_p)
+                    ref_negative.append(args.database_path + r_n)
+
     val_disc = {'anchor_query': anchor_query,
                   'ref_positive': ref_positive,
                   'ref_negative': ref_negative}
@@ -329,8 +356,12 @@ def generate_test_list(args):
     test_df = pd.read_csv(args.data_path + args.test_list)
     test_list = []
     test_labels = list(test_df["label_encoded"])
-    for i in range(len(test_labels)):
-        test_list.append(args.database_path + list(test_df['item'])[i] + '.jpg')
+    if args.train_dataset == "artdl":
+        for i in range(len(test_labels)):
+            test_list.append(args.database_path + list(test_df['item'])[i] + '.jpg')
+    elif args.train_dataset == "photoart50":
+        for i in range(len(test_labels)):
+            test_list.append(args.database_path + list(test_df['item'])[i])
     test_disc = {'test_images': test_list,
                  'label': test_labels}
     test_data = DataFrame(test_disc)
