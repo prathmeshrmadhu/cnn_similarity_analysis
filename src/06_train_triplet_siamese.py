@@ -84,10 +84,10 @@ def train(args, augmentations_list):
             for i in range(len(query_train)):
                 train_list.append((query_train[i], p_train[i], n_train[i]))
 
-    if args.train_dataset == "artdl":
+    if args.train_dataset == "artdl" or args.train_dataset == "photoart50":
 
         if args.mining_mode == "offline":
-            print("Used dataset: ArtDL")
+            print("Used dataset:{}".format(args.train_dataset))
             val_list = args.data_path + args.val_list
             val = pd.read_csv(val_list)
             query_val = list(val['anchor_query'])
@@ -104,8 +104,8 @@ def train(args, augmentations_list):
                 train_list.append((query_train[i], p_train[i], n_train[i]))
 
         elif args.mining_mode == "online":
-            print("Used dataset: ArtDL")
-            logging.info('Used dataset: ArtDL')
+            print("Used dataset:{}".format(args.train_dataset))
+            logging.info('Used dataset:{}'.format(args.train_dataset))
             val = generate_val_list(args)
             query_val = list(val['anchor_query'])
             p_val = list(val['ref_positive'])
@@ -222,7 +222,7 @@ def train(args, augmentations_list):
                 for i in range(len(query_train)):
                     train_list.append((query_train[i], p_train[i], n_train[i]))
 
-            if args.train_dataset == "artdl":
+            if args.train_dataset == "artdl" or args.train_dataset == "photoart50":
                 '''online mining training list'''
                 logging.info("start mining for artdl")
                 train_origin = generate_train_list(args)
