@@ -12,7 +12,7 @@ import pdb
 
 import lib.arguments as arguments
 import lib.utils as utils
-from src.CONFIG import CONFIG
+from CONFIG import CONFIG
 
 def create_experiment():
     """
