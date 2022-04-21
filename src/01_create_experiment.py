@@ -10,8 +10,8 @@ Usage:
 import os
 import pdb
 
-import src.lib.arguments as arguments
-import src.lib.utils as utils
+import lib.arguments as arguments
+import lib.utils as utils
 from src.CONFIG import CONFIG
 
 def create_experiment():
