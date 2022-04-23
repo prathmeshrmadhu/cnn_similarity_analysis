@@ -122,22 +122,22 @@ def extract_features(args):
         generate_features(args, net, d2_images, d2_loader, args.d2_f)
         generate_features(args, net, d3_images, d3_loader, args.d3_f)
 
-    elif args.test_dataset == "artdl":
+    elif args.test_dataset == "artdl" or args.train_dataset == "photoart50":
         save_path_test = args.exp_path + args.test_f
-        save_path_db = args.exp_path + args.db_f
+        # save_path_db = args.exp_path + args.db_f
         test_set = generate_test_list(args)
         test_paths = list(test_set['test_images'])
         test_dataset = ImageList(test_paths, transform=transforms)
         test_dataloader = DataLoader(dataset=test_dataset, shuffle=False, num_workers=args.num_workers,
                                batch_size=args.batch_size)
         generate_features(args, net, test_paths, test_dataloader, save_path_test)
-        db_file = args.data_path + args.db_list
-        sample_set = pd.read_csv(db_file)
-        sample_paths = list(sample_set['samples'])
-        sample_dataset = ImageList(sample_paths, transform=transforms)
-        sample_dataloader = DataLoader(dataset=sample_dataset, shuffle=False, num_workers=args.num_workers,
-                                     batch_size=args.batch_size)
-        generate_features(args, net, sample_paths, sample_dataloader, save_path_db)
+        # db_file = args.data_path + args.db_list
+        # sample_set = pd.read_csv(db_file)
+        # sample_paths = list(sample_set['samples'])
+        # sample_dataset = ImageList(sample_paths, transform=transforms)
+        # sample_dataloader = DataLoader(dataset=sample_dataset, shuffle=False, num_workers=args.num_workers,
+        #                              batch_size=args.batch_size)
+        # generate_features(args, net, sample_paths, sample_dataloader, save_path_db)
 
     elif args.test_dataset == "the_MET":
         save_path_test = args.exp_path + args.test_f
