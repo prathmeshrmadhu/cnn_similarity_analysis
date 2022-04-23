@@ -85,7 +85,7 @@ def extract_features(args):
 
     net.eval()
     net.to(args.device)
-    print("checkpoint {} loaded\n".format(args.checkpoint))
+    # print("checkpoint {} loaded\n".format(args.checkpoint))
 
     if args.test_dataset == "image_collation":
         p1_images = [args.p1 + 'illustration/' + l.strip() for l in open(args.p1 + 'files.txt', "r")]
@@ -122,7 +122,7 @@ def extract_features(args):
         generate_features(args, net, d2_images, d2_loader, args.d2_f)
         generate_features(args, net, d3_images, d3_loader, args.d3_f)
 
-    elif args.test_dataset == "artdl" or args.train_dataset == "photoart50":
+    elif args.test_dataset == "artdl" or args.test_dataset == "photoart50":
         save_path_test = args.exp_path + args.test_f
         # save_path_db = args.exp_path + args.db_f
         test_set = generate_test_list(args)
@@ -155,7 +155,6 @@ def extract_features(args):
     # creating the dataset
     #query_images, database_images, _ = generate_extraction_dataset(query, ref, ref)
 
-    print("computing features")
     # query_dataset = ImageList(query_images, transform=transforms)
     # database_dataset = ImageList(database_images, transform=transforms)
 
