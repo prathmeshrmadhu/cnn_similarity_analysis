@@ -469,8 +469,11 @@ def ranked_recall(gt_array, vectors, rank):
     return recall
 
 
-def ranked_mean_precision(gt_array, vectors, rank):
-    precisions = np.zeros(17)
+def ranked_mean_precision(args, gt_array, vectors, rank):
+    if args.test_dataset == 'artdl':
+        precisions = np.zeros(17)
+    elif args.test_dataset == "photoart50":
+        precisions = np.zeros(50)
     for i in range(gt_array.shape[0]):
         label = gt_array[i]
         class_num = gt_array[gt_array == label].shape[0]

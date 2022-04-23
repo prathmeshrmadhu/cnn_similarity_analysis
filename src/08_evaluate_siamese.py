@@ -87,7 +87,7 @@ def evaluation(args):
         print('GAP d1-d3: {}'.format(gap_d1d3))
         print('GAP d2-d3: {}'.format(gap_d2d3))
 
-    elif args.test_dataset == 'artdl':
+    elif args.test_dataset == 'artdl' or args.test_dataset == "photoart50":
         print('Dataset to be evaluate: ArtDL')
         test_features = args.exp_path + args.test_f
         print('test file {} will be loaded'.format(test_features))
