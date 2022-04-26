@@ -131,6 +131,7 @@ class FocalLoss(torch.nn.Module):
         super(TripletLoss, self).__init__()
 
     def forward(self, p, label, alpha, gamma):
-        p[label == 0] = 1 - p[label == 0]
-        loss = torch.mean(-alpha * (1 - p)**gamma * torch.log(p))
+        pt = p.clone()
+        pt[label == 0] = 1 - pt[label == 0]
+        loss = torch.mean(-alpha * (1 - pt)**gamma * torch.log(pt))
         return loss
