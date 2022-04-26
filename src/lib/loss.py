@@ -125,16 +125,13 @@ class SimCLR_Loss(torch.nn.Module):
             print(neg_sum)
         return loss2
 
+
 class FocalLoss(torch.nn.Module):
     def __int__(self):
         super(TripletLoss, self).__init__()
 
     def forward(self, p, label, alpha, gamma):
-        if label == 1:
-            pt = p
-        elif label == 0:
-            pt == 1 - p
-        else:
-            print('label must be 0 or 1')
-        loss = -alpha * (1 - pt)^gamma * torch.log(pt)
+        pt = p
+        pt[label == 0] = 1 - pt[label == 0]
+        loss = torch.mean(-alpha * (1 - pt)^gamma * torch.log(pt))
         return loss
