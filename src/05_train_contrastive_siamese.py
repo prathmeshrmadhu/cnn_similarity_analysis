@@ -13,7 +13,7 @@ from src.lib.siamese.dataset import generate_extraction_dataset, get_transforms
 from src.lib.augmentations import *
 from src.data.siamese_dataloader import ContrastiveValList
 from src.lib.siamese.model import ContrastiveSiameseNetwork
-from src.lib.io import read_config, generate_focal_val_list, generate_focal_val_list
+from src.lib.io import read_config, generate_focal_train_list, generate_focal_val_list
 
 
 def train(args, augmentations_list):
@@ -33,6 +33,8 @@ def train(args, augmentations_list):
         val_list.append((query_val[j], db_val[j], label_val[j]))
 
     val_pairs = ContrastiveValList(val_list, transform=transforms, imsize=args.imsize, argumentation=None)
+    val_dataloader = DataLoader(dataset=val_pairs, shuffle=True, num_workers=args.num_workers,
+                                batch_size=args.batch_size)
 
     print("loading siamese model")
     net = ContrastiveSiameseNetwork(args.model)
@@ -44,21 +46,31 @@ def train(args, augmentations_list):
     # Defining the criteria for training
     criterion = FocalLoss()
     criterion.to(args.device)
-    optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, net.parameters()),
-                                 lr=args.lr, weight_decay=args.weight_decay)
+    if args.optimizer == "sgd":
+        optimizer = torch.optim.SGD(net.parameters(), lr=args.lr, momentum=args.momentum,
+                                    weight_decay=args.weight_decay)
+    elif args.optimizer == "adam":
+        optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, net.parameters()),
+                                     lr=args.lr, weight_decay=args.weight_decay)
 
     loss_history = list()
     epoch_losses = list()
     train_losses = list()
-    epoch_size = int(len(train_list) / args.num_epochs)
     best_val_loss = np.inf
     for epoch in range(args.num_epochs):
-        training_subset = train_list[epoch * epoch_size: (epoch + 1) * epoch_size - 1]
-        image_pairs = ContrastiveTrainList(training_subset, train_images,
-                                           transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
-        train_dataloader = DataLoader(dataset=image_pairs, shuffle=True, num_workers=args.num_workers,
-                                      batch_size=args.batch_size)
+        if args.mining_mode == "online":
+            train = generate_focal_train_list(args)
+            query_train = list(train['query'])
+            db_train = list(train['reference'])
+            label_train = list(train['label'])
+            train_list = []
+            for j in range(len(query_train)):
+                val_list.append((query_train[j], db_train[j], label_train[j]))
 
+        train_pairs = ContrastiveValList(train_list, transform=transforms, imsize=args.imsize,
+                                         argumentation=augmentations_list)
+        train_dataloader = DataLoader(dataset=train_pairs, shuffle=True, num_workers=args.num_workers,
+                                      batch_size=args.batch_size)
         # Training over batches
         for i, batch in enumerate(train_dataloader, 0):
             query_img, reference_img, label = batch
@@ -66,9 +78,9 @@ def train(args, augmentations_list):
             reference_img = reference_img.to(args.device)
             label = label.to(args.device)
 
-            output, emb_i, emb_j = net(query_img, reference_img)
+            p_score = net(query_img, reference_img)
             optimizer.zero_grad()
-            loss = criterion(emb_i, emb_j)
+            loss = criterion(p_score, label, 0.5, 0.5)
             loss.backward()
             optimizer.step()
             loss_history.append(loss)
@@ -88,8 +100,8 @@ def train(args, augmentations_list):
                 reference_img = reference_img.to(args.device)
                 label = label.to(args.device)
 
-                output, emb_i, emb_j = net(query_img, reference_img)
-                val_loss.append(criterion(emb_i, emb_j))
+                p_score = net(query_img, reference_img)
+                val_loss.append(criterion(p_score, label, 0.5, 0.5))
             val_loss = torch.mean(torch.Tensor(val_loss))
         print("Epoch:{},  Current validation loss {}\n".format(epoch, val_loss))
         epoch_losses.append(val_loss.cpu())
