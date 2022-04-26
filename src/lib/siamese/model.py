@@ -211,7 +211,7 @@ class ContrastiveSiameseNetwork(nn.Module):
         self.fc = nn.Sequential(
             nn.Linear(512, 256),
             # nn.Linear(2048 * 16 * 16, 1024),
-            nn.ReLU(inplace=True),
+            nn.ReLU(inplace=False),
             nn.Dropout2d(p=0.2),
             nn.Linear(256, 1),
         )
