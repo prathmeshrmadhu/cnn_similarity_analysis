@@ -5,6 +5,7 @@ from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 import sys
 import pandas as pd
+import numpy as np
 sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 
 from lib.loss import FocalLoss
@@ -66,7 +67,7 @@ def train(args, augmentations_list):
             label_train = list(train['label'])
             train_list = []
             for j in range(len(query_train)):
-                val_list.append((query_train[j], db_train[j], label_train[j]))
+                train_list.append((query_train[j], db_train[j], label_train[j]))
 
         train_pairs = ContrastiveValList(train_list, transform=transforms, imsize=args.imsize,
                                          augmentation=augmentations_list)
