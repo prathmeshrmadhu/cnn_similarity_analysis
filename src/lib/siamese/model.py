@@ -233,7 +233,7 @@ class ContrastiveSiameseNetwork(nn.Module):
         output2 = self.forward_once(input2)
         diff = output1 - output2
         x = self.fc(diff)
-        p = F.functional.sigmoid(x)
+        p = F.sigmoid(x)
         return p
 
 
