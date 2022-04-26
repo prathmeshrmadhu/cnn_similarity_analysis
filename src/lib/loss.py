@@ -132,6 +132,6 @@ class FocalLoss(torch.nn.Module):
 
     def forward(self, p, label, alpha, gamma):
         pt = p
-        pt[label == 0] = 1 - pt[label == 0]
+        pt[label == 0] = 1 - pt[label == 0].clone()
         loss = torch.mean(-alpha * (1 - pt)**gamma * torch.log(pt))
         return loss
