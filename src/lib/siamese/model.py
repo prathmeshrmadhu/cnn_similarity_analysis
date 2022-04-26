@@ -202,33 +202,20 @@ def load_siamese_checkpoint(name, checkpoint_file):
         return model
 
 
-
 class ContrastiveSiameseNetwork(nn.Module):
     def __init__(self, model, checkpoint='vgg'):
         super(ContrastiveSiameseNetwork, self).__init__()
         self.head = load_siamese_checkpoint(model, checkpoint)
-        # for p in self.parameters():
-        #     p.requires_grad = False
 
         self.flatten = nn.Flatten()
-        # self.fc1 = nn.Sequential(
-        #     nn.Linear(2048, 1024),
-        #     # nn.Linear(2048 * 16 * 16, 1024),
-        #     nn.ReLU(inplace=True),
-        #     nn.Dropout2d(p=0.2),
-        #     nn.Linear(1024, 512),
-        #     nn.ReLU(inplace=True),
-        #     nn.Linear(512, 256)
-        # )
-        #
-        # self.fc2 = nn.Sequential(
-        #     nn.Linear(1000, 512),
-        #     nn.ReLU(inplace=True),
-        #
-        #     nn.Linear(512, 256)
-        # )
-
-        self.score = nn.PairwiseDistance(p=2)
+        self.fc = nn.Sequential(
+            nn.Linear(512, 256),
+            # nn.Linear(2048 * 16 * 16, 1024),
+            nn.ReLU(inplace=True),
+            nn.Dropout2d(p=0.2),
+            nn.Linear(256, 1),
+        )
+        self.sigmoid = nn.Sigmoid()
 
     def gem(self, x, p=3, eps=1e-6):
         x = torch.clamp(x, eps, np.inf)
@@ -260,8 +247,9 @@ class ContrastiveSiameseNetwork(nn.Module):
         output1 = self.forward_once(input1)
         output2 = self.forward_once(input2)
         diff = output1 - output2
-        score = self.score(output1, output2)
-        return score, output1, output2
+        x = self.fc(diff)
+        p = self.sigmoid(x)
+        return p
 
 
 class TripletSiameseNetwork(nn.Module):
