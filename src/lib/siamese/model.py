@@ -355,14 +355,19 @@ class TripletSiameseNetwork_custom(nn.Module):
         elif self.model == 'vgg_fc7':
             '''relu1_2'''
             x1 = self.head.features[:3](x)
+            x1 = F.relu(x1)
             '''relu2_2'''
             x2 = self.head.features[4:9](x1)
+            x2 = F.relu(x2)
             '''relu3_3'''
             x3 = self.head.features[9:16](x2)
+            x3 = F.relu(x3)
             '''relu4_3'''
             x4 = self.head.features[16:23](x3)
+            x4 = F.relu(x4)
             '''linear classifier'''
             x_pool5 = self.head.features[23:](x4)
+            x_pool5 = F.relu(x_pool5)
             # x5 = self.head.avgpool(x_pool5)
             # x5 = self.flatten(x5)
             # x5 = self.head.classifier[0](x5)
