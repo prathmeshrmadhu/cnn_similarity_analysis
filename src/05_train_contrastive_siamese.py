@@ -32,7 +32,7 @@ def train(args, augmentations_list):
     for j in range(len(query_val)):
         val_list.append((query_val[j], db_val[j], label_val[j]))
 
-    val_pairs = ContrastiveValList(val_list, transform=transforms, imsize=args.imsize, argumentation=None)
+    val_pairs = ContrastiveValList(val_list, transform=transforms, imsize=args.imsize, augmentation=None)
     val_dataloader = DataLoader(dataset=val_pairs, shuffle=True, num_workers=args.num_workers,
                                 batch_size=args.batch_size)
 
