@@ -234,6 +234,7 @@ class ContrastiveSiameseNetwork(nn.Module):
         diff = output1 - output2
         x = self.fc(diff)
         p = F.sigmoid(x)
+        p = p.unsqueeze(-1)
         return p
 
 
