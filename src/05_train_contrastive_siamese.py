@@ -4,39 +4,35 @@ import torch
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 import sys
+import pandas as pd
 sys.path.append('/cluster/yinan/cnn_similarity_analysis')
 
-from src.lib.loss import ContrastiveLoss, TripletLoss, ContrastiveLossSimClr
+from src.lib.loss import FocalLoss
 from src.lib.siamese.args import  siamese_args
 from src.lib.siamese.dataset import generate_extraction_dataset, get_transforms
 from src.lib.augmentations import *
 from src.data.siamese_dataloader import ContrastiveTrainList
 from src.lib.siamese.model import ContrastiveSiameseNetwork
+from src.lib.io import read_config, generate_focal_val_list, generate_focal_val_list
 
 
 def train(args, augmentations_list):
     if args.device == "cuda:0":
         print("hardware_image_description:", torch.cuda.get_device_name(0))
-
     # Getting the query, train, ref.. lists
-    #get_necessary_lists(args, dataset)
-    query_list = [l.strip() for l in open(args.query_list, "r")]
-    database_list = [l.strip() for l in open(args.db_list, "r")]
-    train_list = [l.strip() for l in open(args.train_list, "r")]
-    
+    if args.train_dataset == "photoart50":
+        print("Used dataset:{}".format(args.train_dataset))
+        if args.mining_mode == "online":
+            print("Used dataset:{}".format(args.train_dataset))
+            val = generate_focal_val_list(args)
+            query_val = list(val['query'])
+            db_val = list(val['reference'])
+            label_val = list(val['label'])
+    val_list = []
+    for j in range(len(query_val)):
+        val_list.append((query_val[j], db_val[j], label_val[j]))
 
-    # creating the dataset
-    _, _, train_images = generate_extraction_dataset(query_list, database_list, train_list)
-    train_list = train_images[args.i0:args.i1]
-
-    # defining the transforms
-    transforms = get_transforms(args)
-
-    # Defining the fixed validation dataloader for modular evaluation
-    val_list = train_images[0:args.len]
-    val_pairs = ContrastiveTrainList(val_list, train_images, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
-    val_dataloader = DataLoader(dataset=val_pairs, shuffle=True, num_workers=args.num_workers,
-                                batch_size=args.batch_size)
+    #TODO
 
     print("loading siamese model")
     net = ContrastiveSiameseNetwork(args.model)
