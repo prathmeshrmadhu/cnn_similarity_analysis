@@ -74,6 +74,7 @@ def train(args, augmentations_list):
         train_dataloader = DataLoader(dataset=train_pairs, shuffle=True, num_workers=args.num_workers,
                                       batch_size=args.batch_size)
         # Training over batches
+        torch.autograd.set_detect_anomaly(True)
         for i, batch in enumerate(train_dataloader, 0):
             query_img, reference_img, label = batch
             query_img = query_img.to(args.device)
