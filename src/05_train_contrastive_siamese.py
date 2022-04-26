@@ -11,7 +11,7 @@ from src.lib.loss import FocalLoss
 from src.lib.siamese.args import  siamese_args
 from src.lib.siamese.dataset import generate_extraction_dataset, get_transforms
 from src.lib.augmentations import *
-from src.data.siamese_dataloader import ContrastiveTrainList
+from src.data.siamese_dataloader import ContrastiveValList
 from src.lib.siamese.model import ContrastiveSiameseNetwork
 from src.lib.io import read_config, generate_focal_val_list, generate_focal_val_list
 
@@ -32,7 +32,7 @@ def train(args, augmentations_list):
     for j in range(len(query_val)):
         val_list.append((query_val[j], db_val[j], label_val[j]))
 
-    #TODO
+    val_pairs = ContrastiveValList(val_list, transform=transforms, imsize=args.imsize, argumentation=None)
 
     print("loading siamese model")
     net = ContrastiveSiameseNetwork(args.model)
@@ -42,7 +42,7 @@ def train(args, augmentations_list):
     net.to(args.device)
 
     # Defining the criteria for training
-    criterion = ContrastiveLossSimClr(args.batch_size)
+    criterion = FocalLoss()
     criterion.to(args.device)
     optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, net.parameters()),
                                  lr=args.lr, weight_decay=args.weight_decay)

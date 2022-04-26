@@ -141,11 +141,12 @@ class TripletValList(Dataset):
 
 class ContrastiveValList(Dataset):
 
-    def __init__(self, image_list, imsize=None, transform=None):
+    def __init__(self, image_list, imsize=None, transform=None, augmentation=None):
         Dataset.__init__(self)
         self.image_list = image_list
         self.transform = transform
         self.imsize = imsize
+        self.augmentation = augmentation
 
     def __len__(self):
         return len(self.image_list)
@@ -156,9 +157,15 @@ class ContrastiveValList(Dataset):
         db_image = Image.open(r)
         query_image = query_image.convert("RGB")
         db_image = db_image.convert("RGB")
+        if self.augmentation is not None:
+            random.shuffle(self.argumentation)
+            augment = Compose(self.argumentation)
+            query_image = augment(query_image)
+            db_image = augment(db_image)
         if self.transform is not None:
             query_image = self.transform(query_image)
             db_image = self.transform(db_image)
+
         return query_image, db_image, label
 
 
