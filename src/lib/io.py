@@ -366,3 +366,35 @@ def generate_test_list(args):
                  'label': test_labels}
     test_data = DataFrame(test_disc)
     return test_data
+
+
+def generate_focal_train_list(args):
+    train_df = pd.read_csv(args.data_path + args.train_list)
+    query = []
+    db = []
+    match_label = []
+    for i in range(50):
+        sub_df_p = train_df[train_df['label_encoded'] == i]
+        sub_df_n = train_df[train_df['label_encoded'] != i]
+        for ite in sub_df_p['item']:
+            for j in range(10):
+                label = random.randint(0, 1)
+                match_label.append(label)
+                query.append(args.database_path + ite)
+                if label == 1:
+                    r_p = random.choice(list(sub_df_p['item']))
+                    db.append(args.database_path + r_p)
+                elif label == 0:
+                    r_n = random.choice(list(sub_df_n['item']))
+                    db.append(args.database_path + r_n)
+
+    train_disc = {'query': query,
+                  'reference': db,
+                  'label': match_label}
+
+    train_data = DataFrame(train_disc)
+    return train_data
+
+
+
+
