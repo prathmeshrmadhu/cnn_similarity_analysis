@@ -225,22 +225,8 @@ class ContrastiveSiameseNetwork(nn.Module):
 
     def forward_once(self, x):
         x = self.head(x)
-        if self.method == 'center_extraction' or self.method == 'warp_extraction':
-            x = F.normalize(x)
-        elif self.method == 'max_pool':
-            x = F.adaptive_max_pool2d(x, (1, 1))
-            x = self.flatten(x)
-        elif self.method == 'sum_pool':
-            x = x.size()[2] * x.size()[3] * F.adaptive_avg_pool2d(x, (1, 1))
-            x = self.flatten(x)
-        elif self.method == 'sum_pool_2x2':
-            x = x.size()[2] * x.size()[3] * 0.25 * F.adaptive_avg_pool2d(x, (2, 2))
-            x = self.flatten(x)
-        elif self.method == 'feature_map':
-            pass
-        else:
-            x = self.gem(x)
-            x = self.flatten(x)
+        x = self.gem(x)
+        x = self.flatten(x)
         return x
 
     def forward(self, input1, input2):
