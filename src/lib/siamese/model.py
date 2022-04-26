@@ -209,11 +209,8 @@ class ContrastiveSiameseNetwork(nn.Module):
         self.head = load_siamese_checkpoint(model, checkpoint)
         # for p in self.parameters():
         #     p.requires_grad = False
-        if model == "zoo_resnet50" or model == "multigrain_resnet50" or model == "resnet152":
-            self.map = True
-        else:
-            self.map = False
-        # self.flatten = nn.Flatten()
+
+        self.flatten = nn.Flatten()
         # self.fc1 = nn.Sequential(
         #     nn.Linear(2048, 1024),
         #     # nn.Linear(2048 * 16 * 16, 1024),
@@ -233,28 +230,36 @@ class ContrastiveSiameseNetwork(nn.Module):
 
         self.score = nn.PairwiseDistance(p=2)
 
-    def forward_once(self, x):
-        if self.map:
-            x = self.head.conv1(x)
-            x = self.head.bn1(x)
-            x = self.head.relu(x)
-            x = self.head.maxpool(x)
+    def gem(self, x, p=3, eps=1e-6):
+        x = torch.clamp(x, eps, np.inf)
+        x = x ** p
+        x = F.adaptive_avg_pool2d(x, (1, 1))
+        return x ** (1. / p)
 
-            x = self.head.layer1(x)
-            x = self.head.layer2(x)
-            x = self.head.layer3(x)
-            x = self.head.layer4(x)
-            x = F.adaptive_avg_pool2d(x, (1, 1))
-            output = self.flatten(x)
-            # output = self.fc1(x)
+    def forward_once(self, x):
+        x = self.head(x)
+        if self.method == 'center_extraction' or self.method == 'warp_extraction':
+            x = F.normalize(x)
+        elif self.method == 'max_pool':
+            x = F.adaptive_max_pool2d(x, (1, 1))
+            x = self.flatten(x)
+        elif self.method == 'sum_pool':
+            x = x.size()[2] * x.size()[3] * F.adaptive_avg_pool2d(x, (1, 1))
+            x = self.flatten(x)
+        elif self.method == 'sum_pool_2x2':
+            x = x.size()[2] * x.size()[3] * 0.25 * F.adaptive_avg_pool2d(x, (2, 2))
+            x = self.flatten(x)
+        elif self.method == 'feature_map':
+            pass
         else:
-            output = self.head(x)
-            # output = self.fc2(x)
-        return output
+            x = self.gem(x)
+            x = self.flatten(x)
+        return x
 
     def forward(self, input1, input2):
         output1 = self.forward_once(input1)
         output2 = self.forward_once(input2)
+        diff = output1 - output2
         score = self.score(output1, output2)
         return score, output1, output2
 
