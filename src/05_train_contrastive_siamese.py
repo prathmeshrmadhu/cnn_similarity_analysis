@@ -28,6 +28,7 @@ def train(args, augmentations_list):
             query_val = list(val['query'])
             db_val = list(val['reference'])
             label_val = list(val['label'])
+    transforms = get_transforms(args)
     val_list = []
     for j in range(len(query_val)):
         val_list.append((query_val[j], db_val[j], label_val[j]))
@@ -68,7 +69,7 @@ def train(args, augmentations_list):
                 val_list.append((query_train[j], db_train[j], label_train[j]))
 
         train_pairs = ContrastiveValList(train_list, transform=transforms, imsize=args.imsize,
-                                         argumentation=augmentations_list)
+                                         augmentation=augmentations_list)
         train_dataloader = DataLoader(dataset=train_pairs, shuffle=True, num_workers=args.num_workers,
                                       batch_size=args.batch_size)
         # Training over batches
