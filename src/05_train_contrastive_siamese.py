@@ -7,13 +7,13 @@ import sys
 import pandas as pd
 sys.path.append('/cluster/yinan/cnn_similarity_analysis')
 
-from src.lib.loss import FocalLoss
-from src.lib.siamese.args import  siamese_args
-from src.lib.siamese.dataset import generate_extraction_dataset, get_transforms
-from src.lib.augmentations import *
-from src.data.siamese_dataloader import ContrastiveValList
-from src.lib.siamese.model import ContrastiveSiameseNetwork
-from src.lib.io import read_config, generate_focal_train_list, generate_focal_val_list
+from lib.loss import FocalLoss
+from lib.siamese.args import  siamese_args
+from lib.siamese.dataset import generate_extraction_dataset, get_transforms
+from lib.augmentations import *
+from data.siamese_dataloader import ContrastiveValList
+from lib.siamese.model import ContrastiveSiameseNetwork
+from lib.io import read_config, generate_focal_train_list, generate_focal_val_list
 
 
 def train(args, augmentations_list):
