@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 import sys
 import pandas as pd
-sys.path.append('/cluster/yinan/cnn_similarity_analysis')
+sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 
 from lib.loss import FocalLoss
 from lib.siamese.args import  siamese_args
