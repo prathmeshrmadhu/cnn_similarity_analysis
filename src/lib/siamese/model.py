@@ -211,11 +211,10 @@ class ContrastiveSiameseNetwork(nn.Module):
         self.fc = nn.Sequential(
             nn.Linear(512, 256),
             # nn.Linear(2048 * 16 * 16, 1024),
-            nn.ReLU(inplace=False),
+            nn.ReLU(inplace=True),
             nn.Dropout2d(p=0.2),
             nn.Linear(256, 1),
         )
-        self.sigmoid = nn.Sigmoid()
 
     def gem(self, x, p=3, eps=1e-6):
         x = torch.clamp(x, eps, np.inf)
@@ -234,7 +233,7 @@ class ContrastiveSiameseNetwork(nn.Module):
         output2 = self.forward_once(input2)
         diff = output1 - output2
         x = self.fc(diff)
-        p = self.sigmoid(x)
+        p = F.functional.sigmoid(x)
         return p
 
 
