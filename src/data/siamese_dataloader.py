@@ -158,8 +158,8 @@ class ContrastiveValList(Dataset):
         query_image = query_image.convert("RGB")
         db_image = db_image.convert("RGB")
         if self.augmentation is not None:
-            random.shuffle(self.argumentation)
-            augment = Compose(self.argumentation)
+            random.shuffle(self.augmentation)
+            augment = Compose(self.augmentation)
             query_image = augment(query_image)
             db_image = augment(db_image)
         if self.transform is not None:
