@@ -47,7 +47,7 @@ def evaluate(args):
             reference_img = reference_img.to(args.device)
             label = label.to(args.device)
             p_score = net(query_img, reference_img)
-            # p_score = p_score.unsqueeze(-1)
+            p_score = p_score.unsqueeze(1)
             # label = label.unsqueeze(-1)
             predict = p_score.clone()
             predict[predict >= 0.5] = 1
