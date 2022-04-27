@@ -53,10 +53,7 @@ def evaluate(args):
             predict[predict >= 0.5] = 1
             predict[predict < 0.5] = 0
             match_num = torch.count_nonzero(predict == label)
-            print(predict.size())
-            print(label.size())
             hit += match_num.cpu()
-            print("matched: {}".format(match_num))
     
     acc = hit/num_tot
     print("accuracy is {}".format(acc))
