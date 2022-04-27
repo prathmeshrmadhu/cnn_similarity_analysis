@@ -38,6 +38,7 @@ def evaluate(args):
 
     hit = 0
     num_tot = len(query_test)
+    print(num_tot)
 
     with torch.no_grad():
         for j, batch in enumerate(test_dataloader):
@@ -53,6 +54,7 @@ def evaluate(args):
             predict[predict < 0.5] = 0
             match_num = torch.count_nonzero(predict == label)
             hit += match_num.cpu()
+            print("matched: {}".format(match_num))
     
     acc = hit/num_tot
     print("accuracy is {}".format(acc))
