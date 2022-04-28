@@ -233,7 +233,7 @@ class ContrastiveSiameseNetwork(nn.Module):
     def forward(self, input1, input2):
         output1 = self.forward_once(input1)
         output2 = self.forward_once(input2)
-        diff = output1 - output2
+        diff = torch.abs(output1 - output2)
         x = self.fc(diff)
         p = F.sigmoid(x)
         return p
