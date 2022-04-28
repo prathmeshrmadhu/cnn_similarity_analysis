@@ -49,7 +49,7 @@ def train(args, augmentations_list):
     criterion = FocalLoss()
     criterion.to(args.device)
     if args.optimizer == "sgd":
-        optimizer = torch.optim.SGD(net.parameters(), lr=args.lr, momentum=args.momentum,
+        optimizer = torch.optim.SGD(filter(lambda p: p.requires_grad, net.parameters()), lr=args.lr, momentum=args.momentum,
                                     weight_decay=args.weight_decay)
     elif args.optimizer == "adam":
         optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, net.parameters()),
