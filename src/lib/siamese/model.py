@@ -116,7 +116,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         print('used model: VGG16')
         print('--------------------------------------------------------------')
         model = VGG16Pool5()
-        # model.eval()
+        model.eval()
         return model
 
     elif name == "vgg_fc6":
@@ -206,6 +206,8 @@ class ContrastiveSiameseNetwork(nn.Module):
     def __init__(self, model, checkpoint='vgg'):
         super(ContrastiveSiameseNetwork, self).__init__()
         self.head = load_siamese_checkpoint(model, checkpoint)
+        for p in self.parameters():
+            p.requires_grad = False
 
         self.flatten = nn.Flatten()
         self.fc = nn.Sequential(
