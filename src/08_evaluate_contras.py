@@ -3,6 +3,7 @@ import torch
 import numpy as np
 sys.path.append('/cluster/yinan/yinan_cnn/cnn_similarity_analysis/')
 import pandas as pd
+from pandas.core.frame import DataFrame
 import torch.nn.functional as F
 from src.lib.io import *
 from src.lib.metrics import *
@@ -13,13 +14,28 @@ from data.siamese_dataloader import ContrastiveValList
 from torch.utils.data import DataLoader
 
 
+def conpute_confidence(args, net, data_loader):
+    confidence_list = list()
+    with torch.no_grad():
+        for j, batch in enumerate(data_loader):
+            query_img, reference_img, label = batch
+            query_img = query_img.to(args.device)
+            reference_img = reference_img.to(args.device)
+            p_score = net(query_img, reference_img)
+            confidence_list.append(p_score.cpu().numpy())
+    confidence = np.vstack(confidence_list)
+    confidence = np.squeeze(confidence)
+    return confidence.to_list()
+
+
 def evaluate(args):
     transforms = get_transforms(args)
     if args.test_dataset == "artdl" or args.test_dataset == "photoart50":
-        test = generate_test_focal_list(args)
+        test = pd.read_csv(args.data_path + args.test_list)
         query_test = list(test['query'])
         db_test = list(test['reference'])
         label_test = list(test['label'])
+        class_list = list(test['class'])
 
     test_list = []
     for j in range(len(query_test)):
@@ -36,27 +52,23 @@ def evaluate(args):
     net.eval()
     net.to(args.device)
 
-    hit = 0
-    num_tot = len(query_test)
-    print(num_tot)
+    conf_list = conpute_confidence(args, net, test_dataloader)
 
-    with torch.no_grad():
-        for j, batch in enumerate(test_dataloader):
-            query_img, reference_img, label = batch
-            query_img = query_img.to(args.device)
-            reference_img = reference_img.to(args.device)
-            label = label.to(args.device)
-            p_score = net(query_img, reference_img)
-            # p_score = p_score.unsqueeze(1)
-            label = label.unsqueeze(1)
-            predict = p_score.clone()
-            predict[predict >= 0.5] = 1
-            predict[predict < 0.5] = 0
-            match_num = torch.count_nonzero(predict == label)
-            hit += match_num.cpu()
-    
-    acc = hit/num_tot
-    print("accuracy is {}".format(acc))
+    eval_disc = {'confidence': conf_list,
+                 'ground_truth': label_test,
+                 'class': class_list}
+    eval_data = DataFrame(eval_disc)
+    precision_10 = []
+    for i in range(50):
+        eval_sub = eval_data[eval_data['class'] == i]
+        eval_sub_sort = eval_sub.sort_values(by=['confidence'], na_position='first', ascending=False)
+        sub_gt = list(eval_sub_sort['label_test'])[:11]
+        tp = sub_gt.count(1)
+        fp = sub_gt.count(0)
+        precision_10.append(tp/(tp+fp))
+    precision = np.mean(precision_10)
+    print('precision: {}'.format(precision))
+
     
 
 
