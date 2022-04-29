@@ -62,7 +62,7 @@ def evaluate(args):
     for i in range(50):
         eval_sub = eval_data[eval_data['class'] == i]
         eval_sub_sort = eval_sub.sort_values(by=['confidence'], na_position='first', ascending=False)
-        sub_gt = list(eval_sub_sort['label_test'])[:11]
+        sub_gt = list(eval_sub_sort['ground_truth'])[:11]
         tp = sub_gt.count(1)
         fp = sub_gt.count(0)
         precision_10.append(tp/(tp+fp))
