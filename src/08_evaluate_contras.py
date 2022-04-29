@@ -25,7 +25,7 @@ def conpute_confidence(args, net, data_loader):
             confidence_list.append(p_score.cpu().numpy())
     confidence = np.vstack(confidence_list)
     confidence = np.squeeze(confidence)
-    return confidence.to_list()
+    return confidence.tolist()
 
 
 def evaluate(args):
