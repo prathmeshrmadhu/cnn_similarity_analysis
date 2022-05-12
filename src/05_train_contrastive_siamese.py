@@ -112,7 +112,7 @@ def train(args, augmentations_list):
         # This re-write the model if validation loss is lower
         if val_loss.cpu() <= best_val_loss:
             best_val_loss = val_loss.cpu()
-            best_model_name = 'Siamese_best.pth'
+            best_model_name = 'vgg.pth'
             model_full_path = args.net + best_model_name
             torch.save(net.state_dict(), model_full_path)
             print('best model updated\n')
