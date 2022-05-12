@@ -428,10 +428,6 @@ if __name__ == "__main__":
         HorizontalFlip(probability=0.25),
         AuglyRotate(0.25),
     ]
-    try:
-        train(siamese_args, augmentations_list)
-    except Exception as e:
-        logging.error("error in training")
-        logging.error(e)
-        logging.error("\n" + traceback.format_exc())
-    logging.info('Finished')
+
+    train(siamese_args, augmentations_list)
+
