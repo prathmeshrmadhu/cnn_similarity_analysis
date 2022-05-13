@@ -198,7 +198,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         print('used model: resnet50')
         print('--------------------------------------------------------------')
         model = torchvision.models.resnet50(pretrained=False)
-        model.eval()
+        # model.eval()
         return model
 
 
