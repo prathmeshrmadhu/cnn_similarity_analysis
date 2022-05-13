@@ -84,7 +84,7 @@ def train(args, augmentations_list):
             for i in range(len(query_train)):
                 train_list.append((query_train[i], p_train[i], n_train[i]))
 
-    if args.train_dataset == "artdl" or args.train_dataset == "photoart50":
+    if args.train_dataset == "artdl" or args.train_dataset == "photoart50" or args.train_dataset == 'iconart':
 
         if args.mining_mode == "offline":
             print("Used dataset:{}".format(args.train_dataset))
