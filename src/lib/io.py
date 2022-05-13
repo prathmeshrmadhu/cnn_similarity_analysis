@@ -321,7 +321,7 @@ def generate_val_list(args):
     anchor_query = []
     ref_positive = []
     ref_negative = []
-    if args.train_dataset == "artdl":
+    if args.train_dataset == "artdl" or args.train_dataset == 'iconart':
         for i in range(10):
             sub_df_p = val_df[val_df['label_encoded'] == i]
             sub_df_n = val_df[val_df['label_encoded'] != i]
@@ -356,7 +356,7 @@ def generate_test_list(args):
     test_df = pd.read_csv(args.data_path + args.test_list)
     test_list = []
     test_labels = list(test_df["label_encoded"])
-    if args.train_dataset == "artdl":
+    if args.train_dataset == "artdl" or args.train_dataset == 'iconart':
         for i in range(len(test_labels)):
             test_list.append(args.database_path + list(test_df['item'])[i] + '.jpg')
     elif args.train_dataset == "photoart50":
