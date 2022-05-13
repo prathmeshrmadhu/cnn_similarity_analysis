@@ -1,8 +1,8 @@
 import argparse
 from lib.io import read_config
 # EXP_PATH = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/experiments/the_MET/experiment_2022-01-24_14-25-41/"
-EXP_PATH = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/experiments/artdl/experiment_2022-01-15_15-16-02/"
-# EXP_PATH = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/experiments/photoart50/experiment_2022-04-21_11-21-02/"
+# EXP_PATH = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/experiments/artdl/experiment_2022-01-15_15-16-02/"
+EXP_PATH = "/cluster/yinan/yinan_cnn/cnn_similarity_analysis/experiments/photoart50/experiment_2022-04-21_11-21-02/"
 EXP_PARAMS = read_config(EXP_PATH + "experiment_parameters.json")
 
 def siamese_args():
