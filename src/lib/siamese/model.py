@@ -192,6 +192,14 @@ def load_siamese_checkpoint(name, checkpoint_file):
         # model.eval()
         return model
 
+    elif name == "deit":
+        print('--------------------------------------------------------------')
+        print('used model: deit_small_patch16_224')
+        print('--------------------------------------------------------------')
+        model = torch.hub.load('facebookresearch/deit:main', 'deit_small_patch16_224', pretrained=True)
+        # model.eval()
+        return model
+
     # TODO: Train from scratch if the network weights are not available
     else:
         print('--------------------------------------------------------------')
