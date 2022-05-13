@@ -65,7 +65,7 @@ def process_create_experiment_arguments():
     args = parser.parse_args()
 
     # enforcing correct values
-    assert args.dataset_name in ["arthist", "classarch", "chrisarch", "artdl", "image_collation", "the_MET", "photoart50"],\
+    assert args.dataset_name in ["arthist", "classarch", "chrisarch", "artdl", "image_collation", "the_MET", "photoart50", "iconart"],\
         "Wrong dataset given. Only ['arthist', 'classarch', 'chrisarch', 'artdl', 'image_collation', 'the_MET', 'photoart50'] are allowed"
     assert args.model_name in ["resnet18", "resnet34", "resnet50", "vgg", "vgg_pool5", "vgg_fc6", "resnet50_conv4"],\
         "Wrong model name given. Only ['resnet18', 'resnet34', 'resnet50', 'vgg', 'vgg_pool5', 'vgg_fc6', 'resnet50_conv4'] are allowed"
