@@ -35,7 +35,10 @@ class CustomLoss(torch.nn.Module):
             score_negative = F.pairwise_distance(q3, n3, p=2.0)
         triplet_loss = torch.mean(
             torch.clamp(torch.pow(score_positive, 2) - torch.pow(score_negative, 2) + margin, min=0.0))
-        regular = lam * (F.l1_loss(q1, p1) + F.l1_loss(p2, q2) + F.l1_loss(q4, p4))
+        d1 = torch.mean(F.pairwise_distance(q1, p1, p=2.0))
+        d2 = torch.mean(F.pairwise_distance(q2, p2, p=2.0))
+        d4 = torch.mean(F.pairwise_distance(q4, p4, p=2.0))
+        regular = lam * (d1 + d2 + d4)
         loss = triplet_loss + regular
         return loss
 
