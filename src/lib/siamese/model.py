@@ -76,7 +76,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         print('used model: zoo_resnet18')
         print('--------------------------------------------------------------')
         model = torchvision.models.resnet18(pretrained=True)
-        model.eval()
+        # model.eval()
         return model
 
     elif name == "resnet34":
@@ -84,7 +84,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         print('used model: zoo_resnet34')
         print('--------------------------------------------------------------')
         model = torchvision.models.resnet34(pretrained=True)
-        model.eval()
+        # model.eval()
         return model
 
     elif name == "multigrain_resnet50":
@@ -116,7 +116,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         print('used model: VGG16')
         print('--------------------------------------------------------------')
         model = VGG16Pool5()
-        model.eval()
+        # model.eval()
         return model
 
     elif name == "vgg_fc6":
@@ -148,7 +148,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         print('used model: ResNet152')
         print('--------------------------------------------------------------')
         model = torchvision.models.resnet152(pretrained=True)
-        model.eval()
+        # model.eval()
         return model
 
     elif name == "efficientnetb1":
@@ -156,7 +156,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         print('used model: EfficientNet-b1')
         print('--------------------------------------------------------------')
         model = EfficientNet.from_pretrained('efficientnet-b1')
-        model.eval()
+        # model.eval()
         return model
 
     elif name == "efficientnetb7":
@@ -164,7 +164,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         print('used model: EfficientNet-b7')
         print('--------------------------------------------------------------')
         model = EfficientNet.from_pretrained('efficientnet-b7')
-        model.eval()
+        # model.eval()
         return model
 
     elif name == "transformer":
@@ -172,7 +172,7 @@ def load_siamese_checkpoint(name, checkpoint_file):
         print('used model: ViT')
         print('--------------------------------------------------------------')
         model = ViT('B_16_imagenet1k', pretrained=True)
-        model.eval()
+        # model.eval()
         return model
 
     elif name == "visformer":
