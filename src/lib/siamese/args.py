@@ -77,6 +77,7 @@ def siamese_args():
     aa('--test_f', default=None, help="save test result to this folder")
     aa('--net', default=EXP_PATH + 'models/', help="save network parameters to this folder")
     aa('--plots', default=EXP_PATH + 'plots/', help="save visualized test result to this folder")
+    aa('--save_model', default='best.pth', help="name of the saved cehckpoint")
     aa('--p1_f', default=None, help="write p1 features to this file")
     aa('--p2_f', default=None, help="write p2 features to this file")
     aa('--p3_f', default=None, help="write p3 features to this file")
