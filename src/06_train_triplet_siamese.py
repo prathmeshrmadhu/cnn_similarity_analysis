@@ -387,7 +387,7 @@ def train(args, augmentations_list):
                 best_model_name = args.save_model
             model_full_path = args.net + best_model_name
             torch.save(net.state_dict(), model_full_path)
-            print('best model updated\n')
+            print('best model updated to {}\n'.format(model_full_path))
             logging.info("best model updated\n")
 
     print("Training finished")
