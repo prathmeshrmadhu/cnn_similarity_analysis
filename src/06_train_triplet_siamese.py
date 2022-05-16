@@ -222,7 +222,7 @@ def train(args, augmentations_list):
                 for i in range(len(query_train)):
                     train_list.append((query_train[i], p_train[i], n_train[i]))
 
-            if args.train_dataset == "artdl" or args.train_dataset == "photoart50":
+            if args.train_dataset == "artdl" or args.train_dataset == "photoart50" or args.train_dataset == 'iconart':
                 '''online mining training list'''
                 logging.info("start mining for {}".format(args.train_dataset))
                 train_origin = generate_train_list(args)
