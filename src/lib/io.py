@@ -284,7 +284,7 @@ def generate_train_list(args):
     anchor_query = []
     ref_positive = []
     ref_negative = []
-    if args.train_dataset == "artdl":
+    if args.train_dataset == "artdl" or args.train_dataset == 'iconart':
         for i in range(10):
             sub_df_p = train_df[train_df['label_encoded'] == i]
             sub_df_n = train_df[train_df['label_encoded'] != i]
