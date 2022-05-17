@@ -286,6 +286,12 @@ def train(args, augmentations_list):
             image_pairs = TripletValList(train_list, transform=transforms, imsize=args.imsize, argumentation=augmentations_list)
         train_dataloader = DataLoader(dataset=image_pairs, shuffle=True, num_workers=args.num_workers,
                                       batch_size=args.batch_size)
+
+        # adjust learning rate
+        lr = args.lr * (0.1 ** (epoch // 5))
+        for param_group in optimizer.param_groups:
+            param_group['lr'] = lr
+
         net.train()
         # Training over batches
         logging.info("start training loop")
