@@ -288,9 +288,9 @@ def train(args, augmentations_list):
                                       batch_size=args.batch_size)
 
         # adjust learning rate
-        lr = args.lr * (0.1 ** (epoch // 5))
-        for param_group in optimizer.param_groups:
-            param_group['lr'] = lr
+        # lr = args.lr * (0.1 ** (epoch // 5))
+        # for param_group in optimizer.param_groups:
+        #     param_group['lr'] = lr
 
         net.train()
         # Training over batches
